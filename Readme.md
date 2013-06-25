@@ -1,7 +1,10 @@
-# Bork, your Sweedish Master Chef Puppet
+# Bork, your Sweedish Chef Puppet
 
 Bork puts the 'sh' back into IT. [Bork Bork
 Bork](https://www.youtube.com/results?search_query=swedish+chef).
+
+While you could technically call Bork a bash-based DSL for system configuration
+managment, please don't.
 
 by Matthew Lyon <matthew@lyonheart.us>
 
@@ -16,6 +19,9 @@ Bork should run on any modern UNIX system's base install. It requires:
 
 You will also need a way to move files around. You can either scp them or have
 curl installed already.
+
+If you're using a modern unix variant and the base requirements are not met by
+your distribution, we'd like to work with you to figure out how to bootstrap
 
 ### Usage
 
@@ -71,6 +77,14 @@ not want responsibility for:
 - **Orchestration**: There are plenty of good tools that do this already.
   [Fabric][] and [Capistrano][] come immediately to mind.
 - **Role Management**: Just include and/or source another config.
+- **Dependency Management**: This should be outsourced to your package manager,
+  then managed inline in your scripts. For example, the 'rbenv' package should
+  be installed before calling an rbenv source. This is coding 101.
+
+### Problems
+
+- Will likely need a way to rehash after things are installed.
+- Will need a way to add to $PATH for things like nodenv that don't go to path.
 
 ## Roadmap
 
