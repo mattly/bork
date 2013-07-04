@@ -1,4 +1,4 @@
-lookups=$(cat <<EOF
+osx_lookups=$(cat <<EOF
 dialogs.expandAll: NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 dialogs.expandAll: NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 
@@ -15,13 +15,13 @@ timeMachine.off: com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 EOF)
 
 osx () {
-  directives=$(echo "$lookups" | grep -e "$1:\s\+")
+  directives=$(echo "$osx_lookups" | grep -e "$1:\s\+")
   echo "$directives" | while read directive; do
     domain=$(get_field "$directive" 2)
     key=$(get_field "$directive" 3)
     val_or_type=$(get_field "$directive" 4)
 
-    if matches "$val_or_type" "^\-"; then
+    if includes "$val_or_type" "^\-"; then
       type=$val_or_type
       val=$(get_field "$directive" 5)
     else
@@ -52,7 +52,7 @@ osx () {
 
     if [[ $val_matches = false ]] || [[ $type_matches = false ]]; then
       c="defaults write $domain $key $type $value"
-      echo "$c"
+      bake "$c"
     fi
   done
 }

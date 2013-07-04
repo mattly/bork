@@ -1,21 +1,4 @@
 #!/bin/bash
-includes () {
-  present=$(echo "$1" | grep -e "$2" > /dev/null)
-  return $present
-}
-
-replace () {
-  echo $(echo "$1" | sed -E 's/'"$2"'/'"$3"'/')
-}
-
-get_field () {
-  echo $(echo "$1" | awk '{print $'"$2"'}')
-}
-
-get_directory () {
-  echo $(eval "echo $1")
-}
-
 brew () {
   local pkg=${1}
   local c=''
@@ -26,7 +9,7 @@ brew () {
   else
     c="brew install $@"
   fi
-  if [ -n "$c" ] ; then echo "command $c" ; fi
+  if [ -n "$c" ] ; then bake "command $c" ; fi
 }
 brews_have=$(command brew list)
 brews_outdated=$(command brew outdated | awk '{print $1}')
@@ -35,22 +18,24 @@ github () {
   repo=$1
   dir=$(get_directory $2)
   if [ ! -d $dir ]; then
-    echo mkdir -p $dir
-    c="git clone --bare https://github.com/$(echo $repo).git $dir"
+    c="mkdir -p $dir"
+    c="$c && git clone --bare https://github.com/$(echo $repo).git $dir"
   else
     c="cd $dir && git pull"
   fi
-  if [ -n "$c" ] ; then echo $c ; fi
+  if [ -n "$c" ] ; then
+    bake "$c"
+  fi
 }
 
 
 nodenv () {
   if ! includes "$(command nodenv versions --bare )" $1; then
-    echo $(command nodenv install $1)
+    bake "command nodenv install $1"
   fi
 }
 
-lookups=$(cat <<EOF
+osx_lookups=$(cat <<EOF
 dialogs.expandAll: NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 dialogs.expandAll: NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 
@@ -67,13 +52,13 @@ timeMachine.off: com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 EOF)
 
 osx () {
-  directives=$(echo "$lookups" | grep -e "$1:\s\+")
+  directives=$(echo "$osx_lookups" | grep -e "$1:\s\+")
   echo "$directives" | while read directive; do
     domain=$(get_field "$directive" 2)
     key=$(get_field "$directive" 3)
     val_or_type=$(get_field "$directive" 4)
 
-    if matches "$val_or_type" "^\-"; then
+    if includes "$val_or_type" "^\-"; then
       type=$val_or_type
       val=$(get_field "$directive" 5)
     else
@@ -104,15 +89,62 @@ osx () {
 
     if [[ $val_matches = false ]] || [[ $type_matches = false ]]; then
       c="defaults write $domain $key $type $value"
-      echo "$c"
+      bake "$c"
     fi
   done
 }
 rbenv () {
   if ! includes "$(command rbenv versions --bare )" $1; then
-    echo $(command rbenv install $1)
+    bake "command rbenv install $1"
   fi
 }
 
 
-. $1
+includes () {
+  present=$(echo "$1" | grep -e "$2" > /dev/null)
+  return $present
+}
+
+replace () {
+  echo $(echo "$1" | sed -E 's|'"$2"'|'"$3"'|')
+}
+
+substring () {
+  echo $(expr "$1" : $2)
+}
+
+get_field () {
+  echo $(echo "$1" | awk '{print $'"$2"'}')
+}
+
+get_directory () {
+  echo $(eval "echo $1")
+}
+
+include () {
+  if [ -e "$scriptDir/$1" ]; then
+    # if [ $operation = 'build' ]; then
+    #   echo "$scriptDir/$1"
+    # else
+      . "$scriptDir/$1"
+    # fi
+  else
+    echo "include: $scriptDir/$1: No such file or directory"
+    exit 1
+  fi
+}
+
+bake () {
+  if [ $operation = 'install' ]; then
+    echo "$(1)"
+  elif [ $operation = 'print' ]; then
+    echo "$1"
+  fi
+}
+operation=$1
+script=$2
+scriptName=$(substring "/$script" '.*/\(.*\)')
+scriptDir=$(substring "$script" '\(.*\)/.*')
+echo "$scriptDir $scriptName"
+
+include $scriptName

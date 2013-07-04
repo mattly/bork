@@ -16,6 +16,7 @@ Bork should run on any modern UNIX system's base install. It requires:
 - grep
 - sed
 - awk
+- expr
 
 You will also need a way to move files around. You can either scp them or have
 curl installed already.
@@ -25,7 +26,7 @@ your distribution, we'd like to work with you to figure out how to bootstrap
 
 ### Usage
 
-    ./{runner} {config}
+    ./{runner} {operation} {config}
 
 ## Concepts
 
@@ -60,14 +61,11 @@ a bash script that is executed by the runner.
 You might ask, why not use [Chef][] or [Puppet][] instead? Good question.
 They're existing mature tools for doing this kind of thing, with vibrant
 communities. However, after working with both, I wanted something dramatically
-simpler. Both of these tools are architected primarily around commercial use.
-Both are responsible for managing roles across large groups of machines. Both
-have a lot of concepts to wrap your head around before you can get started. Both
-require a fair amount of setup on a machine before you can actually use them.
+simpler and less opinionated.
 
 Bork is a shell script. Excuse me, a shell **program**. You run it how you want.
 
-### Look At All The Things It's **NOT** Doing
+### Look At All The Things It's NOT Doing
 
 To the degree Bork is opinionated, it is *very* opinionated about what it does
 not want responsibility for:
@@ -79,7 +77,8 @@ not want responsibility for:
 - **Role Management**: Just include and/or source another config.
 - **Dependency Management**: This should be outsourced to your package manager,
   then managed inline in your scripts. For example, the 'rbenv' package should
-  be installed before calling an rbenv source. This is coding 101.
+  be installed before calling an rbenv source. This is coding 101, people. It
+  ain't that hard.
 
 ### Problems
 

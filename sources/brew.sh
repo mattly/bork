@@ -8,7 +8,7 @@ brew () {
   else
     c="brew install $@"
   fi
-  if [ -n "$c" ] ; then echo "command $c" ; fi
+  if [ -n "$c" ] ; then bake "command $c" ; fi
 }
 brews_have=$(command brew list)
 brews_outdated=$(command brew outdated | awk '{print $1}')
