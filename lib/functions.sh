@@ -19,8 +19,12 @@ get_field () {
   echo $(echo "$1" | awk '{print $'"$2"'}')
 }
 
-get_directory () {
-  echo $(eval "echo $1")
+current_destination=$PWD
+set_dir () {
+  current_destination=$1
+}
+unset_dir () {
+  current_destination=$PWD
 }
 
 include () {
@@ -36,10 +40,22 @@ include () {
   fi
 }
 
+baking_dir=$PWD
+bake_at () {
+  baking_dir=$1
+}
 bake () {
   if [ $operation = 'install' ]; then
     echo "$1"
-    echo $($1)
+    (
+      cd $baking_dir
+      $1
+    )
+    status="$(echo $?)"
+    baking_dir=$PWD
+    if [ "$status" -gt "0" ]; then
+      exit $status
+    fi
   elif [ $operation = 'print' ]; then
     echo "$1"
   fi
