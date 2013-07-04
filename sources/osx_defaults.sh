@@ -35,7 +35,7 @@ osx () {
     type_matches=false
     val_matches=false
 
-    if [[ "$existing_type" = "-$type" ]]; then
+    if [ "$existing_type" = "-$type" ]; then
       type_matches=true
     elif [[ "$existing_type" = "boolean" ]] && [[ "$type" = "-bool" ]]; then
       type_matches=true
@@ -51,7 +51,7 @@ osx () {
     fi
 
     if [[ $val_matches = false ]] || [[ $type_matches = false ]]; then
-      c="defaults write $domain $key $type $value"
+      c="defaults write $domain $key $type $val"
       bake "$c"
     fi
   done
