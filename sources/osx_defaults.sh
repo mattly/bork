@@ -21,7 +21,7 @@ osx () {
     key=$(get_field "$directive" 3)
     val_or_type=$(get_field "$directive" 4)
 
-    if includes "$val_or_type" "^\-"; then
+    if matches "$val_or_type" "^\-"; then
       type=$val_or_type
       val=$(get_field "$directive" 5)
     else

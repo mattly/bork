@@ -1,8 +1,8 @@
 brew () {
   local pkg=${1}
   local c=''
-  if includes "$brews_have" "$pkg" ; then
-    if includes "$brews_outdated" "$pkg" ; then
+  if contains "$brews_have" "$pkg" ; then
+    if contains "$brews_outdated" "$pkg" ; then
       c="brew upgrade $pkg"
     fi
   else

@@ -1,4 +1,8 @@
-includes () {
+contains () {
+  matches "$1" "^$2\$"
+}
+
+matches () {
   present=$(echo "$1" | grep -e "$2" > /dev/null)
   return $present
 }
@@ -34,7 +38,8 @@ include () {
 
 bake () {
   if [ $operation = 'install' ]; then
-    echo "$(1)"
+    echo "$1"
+    echo $($1)
   elif [ $operation = 'print' ]; then
     echo "$1"
   fi
