@@ -7,4 +7,7 @@ reload:
 	@rm bork.sh
 	@make bork.sh
 
-.PHONY: reload
+test:
+	@bats test/
+
+.PHONY: reload test
