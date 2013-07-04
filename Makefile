@@ -1,11 +1,11 @@
-bork.sh:
-	@echo '#!/bin/bash' > bork.sh
-	@cat sources/* lib/* >> bork.sh
-	@chmod +x bork.sh
+bork:
+	@echo '#!/bin/bash' > bork
+	@cat sources/* lib/* >> bork
+	@chmod +x bork
 
 reload:
-	@rm bork.sh
-	@make bork.sh
+	@rm bork
+	@make bork
 
 test:
 	@bats test/
