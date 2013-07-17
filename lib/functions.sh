@@ -45,14 +45,20 @@ bake_at () {
   baking_dir=$1
 }
 bake () {
+  $opdir=$PWD
+
+  if matches "$1" "^--dir"; then
+    opdir="$2"
+    shift 2
+  fi
+
   if [ $operation = 'install' ]; then
     echo "$1"
     (
-      cd $baking_dir
+      cd $opdir
       $1
     )
     status="$(echo $?)"
-    baking_dir=$PWD
     if [ "$status" -gt "0" ]; then
       exit $status
     fi
