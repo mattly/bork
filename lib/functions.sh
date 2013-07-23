@@ -45,7 +45,7 @@ bake_at () {
   baking_dir=$1
 }
 bake () {
-  $opdir=$PWD
+  opdir=$PWD
 
   if matches "$1" "^--dir"; then
     opdir="$2"
