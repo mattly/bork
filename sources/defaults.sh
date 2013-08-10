@@ -23,6 +23,6 @@ defaults() {
   if [[ "$current_val" = "$desired_val" ]]; then val_matches=true; fi
 
   if [[ $val_matches = false ]] || [[ $type_matches = false ]]; then
-    bake "defaults write $domain $key $desired_type $desired_val"
+    bake "command defaults write $domain $key $desired_type $desired_val"
   fi
 }
