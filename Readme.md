@@ -10,7 +10,7 @@ by Matthew Lyon <matthew@lyonheart.us>
 
 ## Bare Minimum Requirements
 
-Bork should run on any modern UNIX system's base install. It requires bash and
+Bork should run on any modern UNIX system's base install.  It requires bash and
 some basic posix helpers.
 
 You will also need a way to move files around. You can either scp them or have

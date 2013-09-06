@@ -6,7 +6,7 @@ brew () {
       bake "command brew upgrade $pkg"
     fi
   else
-    bake "command brew install $@"
+    bake "command brew install $*"
   fi
 }
 brews_have=$(command brew list)
