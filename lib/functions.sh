@@ -11,6 +11,10 @@ unset_dir () {
   current_destination=$PWD
 }
 
+has_exec () {
+  which $1
+}
+
 include () {
   if [ -e "$scriptDir/$1" ]; then
     # if [ $operation = 'build' ]; then
