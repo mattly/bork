@@ -1,19 +1,3 @@
-contains () {
-  matches "$1" "^$2\$"
-}
-
-matches () {
-  present=$(echo "$1" | grep -e "$2" > /dev/null)
-  return $present
-}
-
-replace () {
-  echo $(echo "$1" | sed -E 's|'"$2"'|'"$3"'|')
-}
-
-substring () {
-  echo $(expr "$1" : $2)
-}
 
 get_field () {
   echo $(echo "$1" | awk '{print $'"$2"'}')
