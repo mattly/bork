@@ -13,6 +13,20 @@ str_matches () {
   return $present
 }
 
+# Counts the number of iteratable items in a string.
+# Note that if the string is the output of a shell command, f.e:
+#   dir_listing=$(ls)
+# That you *must* quote the variable when passing it to the function:
+#   str_item_count "$dir_listing"
+# If you do not it will simply return '1'
+str_item_count () {
+  accum=0
+  for item in $1; do
+    ((accum++))
+  done
+  echo $accum
+}
+
 # Takes a string, replaces matches with a replacement
 # "foo bar" "b\w+" "oo" -> "foo boo"
 str_replace () {
