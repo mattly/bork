@@ -5,14 +5,6 @@ str_contains () {
   str_matches "$1" "^$2\$"
 }
 
-# Checks a string for any match. Accepts a regexp
-# pass: "foo bar bee" "o{2,}\s+"
-# fail: "foo bar bee" "ee\s+"
-str_matches () {
-  present=$(echo "$1" | grep -e "$2" > /dev/null)
-  return $present
-}
-
 # Counts the number of iteratable items in a string.
 # Note that if the string is the output of a shell command, f.e:
 #   dir_listing=$(ls)
@@ -25,6 +17,14 @@ str_item_count () {
     ((accum++))
   done
   echo $accum
+}
+
+# Checks a string for any match. Accepts a regexp
+# pass: "foo bar bee" "o{2,}\s+"
+# fail: "foo bar bee" "ee\s+"
+str_matches () {
+  present=$(echo "$1" | grep -e "$2" > /dev/null)
+  return $present
 }
 
 # Takes a string, replaces matches with a replacement
