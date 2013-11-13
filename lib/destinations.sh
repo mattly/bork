@@ -13,6 +13,7 @@ destination () {
       pop)
         unset bork_destinations[$last]
         ;;
+      *) return 1 ;;
     esac
   fi
 }

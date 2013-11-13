@@ -12,5 +12,9 @@
   [ "$(destination)" = $HOME ]
   destination pop
   [ "$(destination)" = $PWD ]
+}
+
+@test "it returns 1 on unknown command" {
   run destination foo
+  [ "$status" -eq 1 ]
 }
