@@ -4,12 +4,13 @@
 
 @test "it maintains a stack of destinations" {
   [ "$(destination)" = $PWD ]
-  destination_push $HOME
+  destination push $HOME
   [ "$(destination)" = $HOME ]
-  destination_push $PWD/.git
+  destination push $PWD/.git
   [ "$(destination)" = "$PWD/.git" ]
-  destination_pop
+  destination pop
   [ "$(destination)" = $HOME ]
-  destination_pop
+  destination pop
   [ "$(destination)" = $PWD ]
+  run destination foo
 }
