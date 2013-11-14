@@ -7,12 +7,10 @@ destination () {
     [ -z "$current" ] && echo $PWD || echo $current
   else
     case "$1" in
-      push)
-        bork_destinations[$last+1]=$2
-        ;;
-      pop)
-        unset bork_destinations[$last]
-        ;;
+      clear) bork_destinations=( ) ;;
+      pop) unset bork_destinations[$last] ;;
+      push) bork_destinations[$last+1]=$2 ;;
+      size) echo ${#bork_destinations[*]} ;;
       *) return 1 ;;
     esac
   fi
