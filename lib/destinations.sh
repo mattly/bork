@@ -3,8 +3,9 @@ bork_destinations=( )
 destination () {
   (( last = ${#bork_destinations[*]} - 1 ))
   if [ -z "$1" ]; then
-    current=${bork_destinations[$last]}
-    [ -z "$current" ] && echo $PWD || echo $current
+    if [ $last -eq -1 ]; then echo $PWD
+    else echo ${bork_destinations[$last]}
+    fi
   else
     case "$1" in
       clear) bork_destinations=( ) ;;
