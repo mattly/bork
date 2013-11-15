@@ -20,15 +20,15 @@ case $operation in
     if str_matches "$git_stat" "^fatal: Not a git repository"; then return 20; fi
     # If there are changes, conflict
     if str_matches "$git_stat" "is ahead"; then return 20; fi
-    if str_matches "$git_stat" "Changes not staged"; then return 20; fi
+    # if str_matches "$git_stat" "Changes not staged"; then return 20; fi
 
-    # If it's behind or there are new commits, outdated
-    if str_matches "$git_stat" "Your branch is behind"; then return 11; fi
-    git_fetch=$(cd $git_dir; $cmd fetch --dry-run 2>&1)
-    if str_matches "$git_fetch" "\s\+[a-f0-9]\{7\}\.\.[a-f0-9]\{7\}"; then return 11; fi
+    # # If it's behind or there are new commits, outdated
+    # if str_matches "$git_stat" "Your branch is behind"; then return 11; fi
+    # git_fetch=$(cd $git_dir; $cmd fetch --dry-run 2>&1)
+    # if str_matches "$git_fetch" "\s\+[a-f0-9]\{7\}\.\.[a-f0-9]\{7\}"; then return 11; fi
 
-    return 0
-    ;;
+    # return 0
+    # ;;
 esac
 
 # git () {

@@ -19,6 +19,14 @@ teardown () {
   destination clear
 }
 
+setup_git_repo () {
+  command git init .
+  echo "foo" > $target_dir/file
+  command git add *
+  command git commit -m "fix"
+  command git remote add origin git@github.com:mattly/bork
+}
+
 @test "status: returns 10 when the directory doesn't exist" {
   rmdir $target_dir
   [ ! -d $target_dir ]
@@ -39,15 +47,14 @@ teardown () {
   skip
 }
 @test "status: returns 20 when the local git repository is ahead" {
-  command git init .
-  echo "foo" > $target_dir/file
-  command git add *
-  command git commit -m "fix"
-  command git remote add origin git@github.com:mattly/bork
+  setup_git_repo
   run git git@github.com:mattly/bork
+  [ "$status" -eq 20 ]
 }
 @test "status: returns 20 when the local git repository has uncommitted changes" {
-skip
+  setup_git_repo
+  run git@github.com:mattly/bork
+  [ "$status" -eq 20 ]
 }
 @test "status: returns 11 when the local git repository is known to be behind" {
 skip
