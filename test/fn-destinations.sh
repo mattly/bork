@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-. lib/destinations.sh
+. test/helpers.sh
 
 @test "it maintains a stack of destinations" {
   [ "$(destination)" = $PWD ]

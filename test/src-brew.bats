@@ -1,6 +1,5 @@
 #!/usr/bin/env bats
 
-. lib/functions-text.sh
 . test/helpers.sh
 
 functionize_thing "sources/brew.sh"

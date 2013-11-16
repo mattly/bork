@@ -5,6 +5,12 @@ str_contains () {
   str_matches "$1" "^$2\$"
 }
 
+# retrieves the space-seperated field from a string
+# str_get_field "foo bar bee" 2 -> "bar"
+str_get_field () {
+  echo $(echo "$1" | awk '{print $'"$2"'}')
+}
+
 # Counts the number of iteratable items in a string.
 # Note that if the string is the output of a shell command, f.e:
 #   dir_listing=$(ls)

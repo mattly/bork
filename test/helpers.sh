@@ -1,3 +1,5 @@
+for f in $(ls lib/*.sh); do . $f; done
+
 functionize_thing () {
   name=$(basename $1 .sh)
   tmpfile=$(mktemp -t $name)

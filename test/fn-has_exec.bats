@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-. lib/functions.sh
+. test/helpers.sh
 
 @test "it returns 0 when an exec exists" {
   run has_exec "sh"
