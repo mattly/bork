@@ -3,6 +3,7 @@ cmd="command git"
 git_url=$1
 git_name=$(basename $git_url .git)
 git_dir="$(destination)/$git_name"
+git_branch="master"
 
 case $operation in
   depends) echo "exec: git" ;;
@@ -14,21 +15,29 @@ case $operation in
     git_dir_contents=$(str_item_count "$(ls -A $git_dir)")
     [[ $git_dir_contents = 0 ]] && return 10
 
-    git_stat=$(cd $git_dir; $cmd status)
+    git_stat="$(cd $git_dir; $cmd status -uno -b --porcelain)"
     # If the directory isn't a git repo, conflict
     [ $? -ne 0 ] && return 20
     if str_matches "$git_stat" "^fatal: Not a git repository"; then return 20; fi
-    # If there are changes, conflict
-    if str_matches "$git_stat" "is ahead"; then return 20; fi
-    # if str_matches "$git_stat" "Changes not staged"; then return 20; fi
 
-    # # If it's behind or there are new commits, outdated
-    # if str_matches "$git_stat" "Your branch is behind"; then return 11; fi
+    git_first_line=$(echo "$git_stat" | head -n 1)
+
+    if ! str_matches "$git_first_line" "^## $git_branch"; then return 20; fi
+
+    git_divergence=$(str_get_field "$git_first_line" 3)
+    if str_matches "$git_divergence" '\\[ahead'; then return 20; fi
+
+    # are there changes?
+    if str_matches "$git_stat" '^\\s\\{0,1\\}\\w'; then return 20; fi
+
+    # # If it's known to be behind, outdated
+    if str_matches "$git_divergence" '\\[behind'; then return 11; fi
+
     # git_fetch=$(cd $git_dir; $cmd fetch --dry-run 2>&1)
     # if str_matches "$git_fetch" "\s\+[a-f0-9]\{7\}\.\.[a-f0-9]\{7\}"; then return 11; fi
 
-    # return 0
-    # ;;
+    # guess we're clean, so things are OK
+    ;;
 esac
 
 # git () {
