@@ -1,12 +1,14 @@
 cmd="command git"
 
-git_url=$1
+action=$1
+git_url=$2
+shift 2
+
 git_name=$(basename $git_url .git)
 git_dir="$(destination)/$git_name"
 git_branch="master"
 
-mode=$(bork_mode)
-case $mode in
+case $action in
   depends) echo "exec: git" ;;
   status)
     # if the directory is missing, it's missing
@@ -43,6 +45,7 @@ case $mode in
 
     # guess we're clean, so things are OK
     ;;
+  *) return 1 ;;
 esac
 
 # git () {
