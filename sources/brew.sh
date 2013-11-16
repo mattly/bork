@@ -24,15 +24,9 @@ case $action in
   depends) echo "pkg: brew" ;;
   status)
     brew_status
-    return $?  ;;
-  satisfy)
-    brew_status
-    case "$?" in
-      "0") return 0 ;;
-      "10") bake "$cmd install $name" ;;
-      "11") bake "$cmd upgrade $name" ;;
-    esac
-    ;;
+    return $? ;;
+  install) bake "$cmd install $name" ;;
+  upgrade) bake "$cmd upgrade $name" ;;
   *) return 1 ;;
 esac
 
