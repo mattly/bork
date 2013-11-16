@@ -1,18 +1,51 @@
-
-get_field () {
-  echo $(echo "$1" | awk '{print $'"$2"'}')
-}
-
-current_destination=$PWD
-set_dir () {
-  current_destination=$1
-}
-unset_dir () {
-  current_destination=$PWD
+status_for () {
+  case "$1" in
+    "0")  echo "current" ;;
+    "10") echo "missing" ;;
+    "11") echo "outdated" ;;
+    "20") echo "conflict" ;;
+    *)    echo "unknown status: $?" ;;
+  esac
 }
 
 has_exec () {
-  which $1
+  which $1 > /dev/null
+}
+
+is_platform () {
+  [ $platform = $1 ]
+}
+
+bork_mode () {
+  [ -z "$this_op" ] && echo $bork_operation || echo $this_op
+}
+
+pkg () {
+  name=$1
+  this_op='depends'
+  $(bork_pkg_$name 2>&1 > /dev/null)
+  present=$?
+  this_op=''
+  if [ "$present" -eq 0 ]; then
+    shift
+    pkg_runner "bork_pkg_$name" "$name" $*
+  else
+    case $platform in
+      Darwin) manager="brew" ;;
+    esac
+    pkg_runner "src_$manager" "pkg" $*
+  fi
+}
+
+pkg_runner () {
+  fn=$1
+  pretty=$2
+  shift 2
+  $fn $*
+  ret=$?
+  if [ "$(bork_mode)" = 'status' ]; then
+    echo "$(status_for $ret): $pretty $*"
+  fi
 }
 
 include () {
