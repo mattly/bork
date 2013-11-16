@@ -27,9 +27,9 @@
   run check_output_for "this_command_doesnt_exist" "Matthew Lyon" "Something Else"
   [ "$status" -eq 1 ]
 }
-@test "check_output_for: returns 1 if binary is present but match conditions" {
+@test "check_output_for: returns 2 if binary is present but doesn't match conditions" {
   run check_output_for "cat LICENSE" "Matthew Lyon" "GPL"
-  [ "$status" -eq 1 ]
+  [ "$status" -eq 2 ]
 }
 @test "check_output_for: returns 0 if binary is present and matches conditions" {
   run check_output_for "cat LICENSE" "Matthew Lyon" "MIT License"
