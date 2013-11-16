@@ -1,17 +1,16 @@
 #!/usr/bin/env bats
 
+. lib/functions-text.sh
 . lib/arguments.sh
 
-@test "parse extracts the main argument" {
-  skip
+@test "get echoes a value when present" {
+  result=$(arguments get foo thing --foo=bar)
+  [ "$result" = "bar" ]
 }
 
-@test "parse extracts subsequent --arguments" {
-  skip
-}
-
-@test "get returns a value" {
-  skip
+@test "get echoes nothing when not present" {
+  result=$(arguments get bar thing --foo=bar)
+  [ -z "$result" ]
 }
 
 @test "unknown command returns 1" {
