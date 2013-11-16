@@ -5,8 +5,9 @@ __brew_pkg_is_installed=$?
 $(str_contains "$($cmd outdated | awk '{print $1}')" "$1")
 __brew_pkg_is_outdated=$?
 
-case $operation in
-  depends) echo "pkg: __homebrew" ;;
+mode=$(bork_mode)
+case $mode in
+  depends) echo "pkg: brew" ;;
   status)
     [[ $__brew_pkg_is_installed > 0 ]] && return 10
     [[ $__brew_pkg_is_outdated = 0 ]] && return 11

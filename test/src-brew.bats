@@ -7,7 +7,7 @@ functionize_thing "sources/brew.sh"
 return_status=0
 brew_packages=""
 brew_outdated=""
-operation='status'
+bork_operation='status'
 test_brew () {
   case $1 in
     list) echo "$brew_packages" ;;
