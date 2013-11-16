@@ -29,8 +29,8 @@ str_item_count () {
 # pass: "foo bar bee" "o{2,}\s+"
 # fail: "foo bar bee" "ee\s+"
 str_matches () {
-  present=$(echo "$1" | grep -e "$2" > /dev/null)
-  return $present
+  $(echo "$1" | grep -e "$2" > /dev/null)
+  return $?
 }
 
 # Takes a string, replaces matches with a replacement
