@@ -22,3 +22,16 @@
   run is_platform "HAL9000"
   [ "$status" -eq 1 ]
 }
+
+@test "check_output_for: returns 1 if binary is missing" {
+  run check_output_for "this_command_doesnt_exist" "Matthew Lyon" "Something Else"
+  [ "$status" -eq 1 ]
+}
+@test "check_output_for: returns 1 if binary is present but match conditions" {
+  run check_output_for "cat LICENSE" "Matthew Lyon" "GPL"
+  [ "$status" -eq 1 ]
+}
+@test "check_output_for: returns 0 if binary is present and matches conditions" {
+  run check_output_for "cat LICENSE" "Matthew Lyon" "MIT License"
+  [ "$status" -eq 0 ]
+}
