@@ -1,7 +1,7 @@
-script=$1
-scriptName=$(basename $script)
-scriptDir=$(dirname $script)
+# script=$1
+# scriptName=$(basename $script)
+# scriptDir=$(dirname $script)
 
-operation='install'
+# operation='install'
 
-include $scriptName
+# include $scriptName
