@@ -5,9 +5,9 @@
 functionize_thing "sources/brew.sh"
 
 return_status=0
-brew_packages=""
-brew_outdated=""
-bork_operation='status'
+brew_packages=
+brew_outdated=
+baked_output=
 test_brew () {
   case $1 in
     list) echo "$brew_packages" ;;
@@ -26,19 +26,40 @@ setup () {
     echo "outdated_package (0.5 < 0.6)"
     echo "another_outdated_package (0.4 < 0.4.1)"
   )
+  baked_output=$(mktemp -t brewtest)
 }
 
-@test "status reports a package is missing" {
-  run brew missing_package_is_missing
+@test "brew status reports a package is missing" {
+  run brew status missing_package_is_missing
   [ "$status" -eq 10 ]
 }
 
-@test "status reports a package is outdated" {
-  run brew outdated_package
+@test "brew status reports a package is outdated" {
+  run brew status outdated_package
   [ "$status" -eq 11 ]
 }
 
-@test "status reports a packge is current" {
-  run brew current_package
+@test "brew status reports a packge is current" {
+  run brew status current_package
   [ "$status" -eq 0 ]
+}
+
+bake () { echo "$*" > $baked_output; }
+
+@test "brew satisfy runs 'install' when missing" {
+  run brew satisfy missing_package_is_missing
+  [ "$status" -eq 0 ]
+  [ "$(cat $baked_output)" = 'test_brew install missing_package_is_missing' ]
+}
+
+@test "brew satsify runs 'upgrade' when outdated" {
+  run brew satisfy outdated_package
+  [ "$status" -eq 0 ]
+  [ "$(cat $baked_output)" = 'test_brew upgrade outdated_package' ]
+}
+
+@test "brew satisfy bakes nothing when current" {
+  run brew satisfy current_package
+  [ "$status" -eq 0 ]
+  [ -z "$(cat $baked_output)" ]
 }

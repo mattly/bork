@@ -1,36 +1,43 @@
+# TODO
+# specifying brew install/upgrade options, such as --env --cc, etc
+# specifying / comapring package options, f.e.
+#   reattach-to-user-namespace's --wrap-pbcopy-and-pbpaste option
+#   if differs, should be some other 1? option code
+# specifying a formula should be taken from a tap
+#   not sure if specifying taps themselves would be entirely useful
+
 cmd="command brew"
 
-$(str_contains "$($cmd list)" "$1")
-__brew_pkg_is_installed=$?
-$(str_contains "$($cmd outdated | awk '{print $1}')" "$1")
-__brew_pkg_is_outdated=$?
+action=$1
+name=$2
+shift 2
 
-mode=$(bork_mode)
-case $mode in
+brew_status () {
+  $(str_contains "$($cmd list)" "$name")
+  [ "$?" -gt 0 ] && return 10
+  $(str_contains "$($cmd outdated | awk '{print $1}')" "$name")
+  [ "$?" -eq 0 ] && return 11
+  return 0
+}
+
+case $action in
   depends) echo "pkg: brew" ;;
   status)
-    [[ $__brew_pkg_is_installed > 0 ]] && return 10
-    [[ $__brew_pkg_is_outdated = 0 ]] && return 11
-    return 0
+    brew_status
+    return $?  ;;
+  satisfy)
+    brew_status
+    case "$?" in
+      "0") return 0 ;;
+      "10") bake "$cmd install $name" ;;
+      "11") bake "$cmd upgrade $name" ;;
+    esac
     ;;
-  satisfy) ;;
+  *) return 1 ;;
 esac
 
 
 # from old version, keeping it around until all functionality merged in
-# brew () {
-#   local pkg=${1}
-#   local c=''
-#   if contains "$brews_have" "$pkg" ; then
-#     if contains "$brews_outdated" "$pkg" ; then
-#       bake "command brew upgrade $pkg"
-#     fi
-#   else
-#     bake "command brew install $*"
-#   fi
-# }
-# brews_have=$(command brew list)
-# brews_outdated=$(command brew outdated | awk '{print $1}')
 # brew_taps=$(command brew tap)
 
 # brew_tap () {
