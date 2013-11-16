@@ -8,14 +8,6 @@ status_for () {
   esac
 }
 
-has_exec () {
-  which $1 > /dev/null
-}
-
-is_platform () {
-  [ $platform = $1 ]
-}
-
 bork_mode () {
   [ -z "$this_op" ] && echo $bork_operation || echo $this_op
 }
