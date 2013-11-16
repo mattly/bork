@@ -14,6 +14,10 @@ functionize_thing () {
   rm $tmpfile
 }
 
+baking_file=$(mktemp -t bork_test)
+bake () { echo "$*" >> $baking_file; }
+baked_output () { cat $baking_file; }
+
 here=$PWD
 debug_mode="$DEBUG"
 p () {

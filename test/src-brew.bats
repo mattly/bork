@@ -44,17 +44,15 @@ setup () {
   [ "$status" -eq 0 ]
 }
 
-bake () { echo "$*" > $baked_output; }
-
 @test "brew install runs 'install'" {
   run brew install missing_package_is_missing
   [ "$status" -eq 0 ]
-  [ "$(cat $baked_output)" = 'test_brew install missing_package_is_missing' ]
+  [ "$(baked_output)" = 'test_brew install missing_package_is_missing' ]
 }
 
 @test "brew upgrade runs 'upgrade'" {
   run brew upgrade outdated_package
   [ "$status" -eq 0 ]
-  [ "$(cat $baked_output)" = 'test_brew upgrade outdated_package' ]
+  [ "$(baked_output)" = 'test_brew upgrade outdated_package' ]
 }
 
