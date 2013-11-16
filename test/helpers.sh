@@ -15,4 +15,8 @@ functionize_thing () {
 }
 
 here=$PWD
-p () { echo "$*" >> "$here/debug"; }
+debug_mode="$DEBUG"
+p () {
+  [ -n "$debug_mode" ] && echo "$*" >> "$here/debug"
+  return 0
+}
