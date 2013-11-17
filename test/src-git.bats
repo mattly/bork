@@ -122,3 +122,25 @@ git_repo_is_fine () {
   [ "$status" -eq 0 ]
 }
 
+@test "src git install: bakes target dir, git clone" {
+  url="git@github.com:mattly/bork"
+  run git install $url
+  [ "$status" -eq 0 ]
+  run baked_output
+  md="mkdir -p $tmpdir/bork"
+  [ "${lines[0]}" = $md ]
+  clone="test_git clone $url $tmpdir/bork"
+  [ "${lines[1]}" = $clone ]
+}
+
+@test "src git upgrade: merges to new ref, echoes changelog" {
+  run git upgrade "git@github.com:mattly/bork"
+  [ "$status" -eq 0 ]
+  run baked_output
+  pull="test_git --git-dir=$tmpdir/bork pull"
+  display="test_git --git-dir=$tmpdir/bork log HEAD@{1}.."
+  p $lines
+  [ "${lines[0]}" = $pull ]
+  [ "${lines[1]}" = $display ]
+}
+
