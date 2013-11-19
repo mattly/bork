@@ -1,14 +1,21 @@
 action=$1
-pattern=$2
+glob=$2
 shift 2
 
-bork_symlink_name_for_file () { echo $(basename $1); }
+tmpl='$f'
+targ=$(arguments get tmpl $*)
+[ -n "$parg" ] && tmpl="$parg"
+
+bork_symlink_name_for_file () {
+  f=$(basename $1)
+  echo $(eval echo "$tmpl")
+}
 
 case "$action" in
   status)
     missing=0
     accum=0
-    for f in $pattern; do
+    for f in $glob; do
       (( accum++ ))
       fname=$(bork_symlink_name_for_file $f)
       if [ -e $fname ]; then
@@ -23,7 +30,7 @@ case "$action" in
     return 0
     ;;
   install|upgrade)
-    for f in $pattern; do
+    for f in $glob; do
       fname=$(bork_symlink_name_for_file $f)
       [ ! -L $fname ] && bake "ln -s $f $fname"
     done

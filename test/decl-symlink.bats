@@ -51,6 +51,15 @@ make_links () {
   [ "$status" -eq 20 ]
 }
 
+@test "symlink: status handles --tmpl argument" {
+  make_links
+  run symlink status "$source/*" --tmpl=".\$f"
+  [ "$status" -eq 10 ]
+  ln -s "$source/LICENSE" "$tmpdir/.LICENSE"
+  run symlink status "$source/*" --tmpl=".\$f"
+  [ "$status" -eq 11 ]
+}
+
 @test "symlink: install creates all target files" {
   run symlink install "$source/*"
   [ "$status" -eq 0 ]
@@ -72,4 +81,16 @@ make_links () {
   [ "${#lines[@]}" -eq 1 ]
   bake_cmd="ln -s $source/LICENSE LICENSE"
   [ "${lines[0]}" = $bake_cmd ]
+}
+
+@test "symlink: install brews using --tmpl" {
+  run symlink install "$source/*" --tmpl=".\$f"
+  [ "$status" -eq 0 ]
+  run baked_output
+  while [ "$accum" -l ${#files[@]} ]; do
+    fname=${files[accum]}
+    baked_cmd="ln -s $source/$fname .$fname"
+    [ "${lines[accum]}" = $baked_cmd ]
+    (( accum++ ))
+  done
 }
