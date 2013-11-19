@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-functionize_thing sources/symlink.sh
+functionize_thing declarations/symlink.sh
 
 tmpdir=
 setup () {

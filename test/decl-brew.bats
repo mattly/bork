@@ -2,7 +2,7 @@
 
 . test/helpers.sh
 
-functionize_thing "sources/brew.sh"
+functionize_thing "declarations/brew.sh"
 
 return_status=0
 brew_packages=

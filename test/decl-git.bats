@@ -2,7 +2,7 @@
 
 . test/helpers.sh
 
-functionize_thing "sources/git.sh"
+functionize_thing "declarations/git.sh"
 
 git_cmd_pointer=""
 git_cmd_status=0
