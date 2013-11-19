@@ -139,7 +139,6 @@ git_repo_is_fine () {
   run baked_output
   pull="test_git --git-dir=$tmpdir/bork pull"
   display="test_git --git-dir=$tmpdir/bork log HEAD@{1}.."
-  p $lines
   [ "${lines[0]}" = $pull ]
   [ "${lines[1]}" = $display ]
 }
