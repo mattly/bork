@@ -16,6 +16,7 @@ functionize_thing () {
 
 baking_file=$(mktemp -t bork_test)
 bake () { echo "$*" >> $baking_file; }
+bake_in () { echo "bake_in $*" >> $baking_file; }
 baked_output () { cat $baking_file; }
 
 here=$PWD

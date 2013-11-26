@@ -16,6 +16,7 @@ test_git () {
 set_test_pointer () { git_cmd_pointer=$1; }
 
 setup () {
+  baking_dir=
   p $BATS_TEST_DESCRIPTION
   git_cmd_pointer="command git"
   git_cmd_status=0
@@ -118,7 +119,6 @@ git_repo_is_fine () {
 @test "src git status: returns 0 when the git repository is up-to-date" {
   set_test_pointer 'git_repo_is_fine'
   run git status git@github.com:mattly/bork
-  p "$status"
   [ "$status" -eq 0 ]
 }
 
@@ -137,9 +137,11 @@ git_repo_is_fine () {
   run git upgrade "git@github.com:mattly/bork"
   [ "$status" -eq 0 ]
   run baked_output
-  pull="test_git --git-dir=$tmpdir/bork pull"
-  display="test_git --git-dir=$tmpdir/bork log HEAD@{1}.."
-  [ "${lines[0]}" = $pull ]
-  [ "${lines[1]}" = $display ]
+  bake_dir="bake_in $tmpdir/bork"
+  pull="test_git pull"
+  display="test_git log HEAD@{1}.."
+  [ "${lines[0]}" = $bake_dir ]
+  [ "${lines[1]}" = $pull ]
+  [ "${lines[2]}" = $display ]
 }
 

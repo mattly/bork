@@ -57,8 +57,9 @@ case $action in
     bake "$cmd clone $git_url $git_dir"
     ;;
   upgrade)
-    bake "$cmd --git-dir=$git_dir pull"
-    bake "$cmd --git-dir=$git_dir log HEAD@{1}.."
+    bake_in $git_dir
+    bake "$cmd pull"
+    bake "$cmd log HEAD@{1}.."
     ;;
   *) return 1 ;;
 esac
