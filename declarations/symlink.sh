@@ -4,7 +4,7 @@ shift 2
 
 tmpl='$f'
 targ=$(arguments get tmpl $*)
-[ -n "$parg" ] && tmpl="$parg"
+[ -n "$targ" ] && tmpl="$targ"
 
 bork_symlink_name_for_file () {
   f=$(basename $1)
@@ -15,12 +15,19 @@ case "$action" in
   status)
     missing=0
     accum=0
-    for f in $glob; do
+    for item in $glob; do
       (( accum++ ))
-      fname=$(bork_symlink_name_for_file $f)
-      if [ -e $fname ]; then
-        [ ! -L $fname ] && return 20
-        [ "$(readlink $fname)" != $f ] && return 20
+      fname=$(bork_symlink_name_for_file $item)
+      if [ -h $fname ]; then
+        if [ "$(readlink $fname)" != $item ]; then
+          echo "$fname points to wrong destination"
+          return 20
+        else
+          : # is current
+        fi
+      elif [ -e $fname ]; then
+        echo "$fname exists as a non-symlink"
+        return 20
       else
         (( missing++ ))
       fi
@@ -32,7 +39,7 @@ case "$action" in
   install|upgrade)
     for f in $glob; do
       fname=$(bork_symlink_name_for_file $f)
-      [ ! -L $fname ] && bake "ln -s $f $fname"
+      [ ! -h $fname ] && bake "ln -s $f $fname"
     done
     return 0
     ;;
