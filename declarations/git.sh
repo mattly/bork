@@ -1,10 +1,3 @@
-# TODO
-# * fetches updates from remote
-# * uses merge instead of pull
-# * specify alternate ref than "master"
-# * "tmpdir" option?
-# * "--shallow" option?
-
 cmd="command git"
 
 action=$1

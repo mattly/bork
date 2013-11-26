@@ -1,11 +1,3 @@
-# TODO
-# specifying brew install/upgrade options, such as --env --cc, etc
-# specifying / comapring package options, f.e.
-#   reattach-to-user-namespace's --wrap-pbcopy-and-pbpaste option
-#   if differs, should be some other 1? option code
-# specifying a formula should be taken from a tap
-#   not sure if specifying taps themselves would be entirely useful
-
 cmd="command brew"
 
 action=$1
