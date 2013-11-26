@@ -60,6 +60,13 @@ make_links () {
   [ "$status" -eq 11 ]
 }
 
+@test "symlink: status handles a --dest argument" {
+  make_links
+  cd $(mktemp -d -t bork_sym_2)
+  run symlink status "$source/*" --dest=$tmpdir
+  [ "$status" -eq 0 ]
+}
+
 @test "symlink: install creates all target files" {
   run symlink install "$source/*"
   [ "$status" -eq 0 ]
@@ -83,8 +90,21 @@ make_links () {
   [ "${lines[0]}" = $bake_cmd ]
 }
 
-@test "symlink: install brews using --tmpl" {
+@test "symlink: install bakes using --tmpl" {
   run symlink install "$source/*" --tmpl=".\$f"
+  [ "$status" -eq 0 ]
+  run baked_output
+  while [ "$accum" -l ${#files[@]} ]; do
+    fname=${files[accum]}
+    baked_cmd="ln -s $source/$fname .$fname"
+    [ "${lines[accum]}" = $baked_cmd ]
+    (( accum++ ))
+  done
+}
+
+@test "symlink: install handles a --dest argument" {
+  cd $(mktemp -d -t bork_sym2)
+  run symlink install "$source/*" --dest=$tmpdir
   [ "$status" -eq 0 ]
   run baked_output
   while [ "$accum" -l ${#files[@]} ]; do

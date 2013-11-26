@@ -2,13 +2,18 @@ action=$1
 glob=$2
 shift 2
 
+dest=$(arguments get dest $*)
+
 tmpl='$f'
 targ=$(arguments get tmpl $*)
 [ -n "$targ" ] && tmpl="$targ"
 
 bork_symlink_name_for_file () {
   f=$(basename $1)
-  echo $(eval echo "$tmpl")
+  fname=$(eval echo "$tmpl")
+  if [ -n "$dest" ]; then echo $dest/$fname
+  else echo $fname
+  fi
 }
 
 case "$action" in
