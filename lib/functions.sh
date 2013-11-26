@@ -1,30 +1,75 @@
-contains () {
-  matches "$1" "^$2\$"
+status_for () {
+  case "$1" in
+    "0")  echo "current" ;;
+    "10") echo "missing" ;;
+    "11") echo "outdated" ;;
+    "20") echo "conflict" ;;
+    *)    echo "unknown status: $?" ;;
+  esac
 }
 
-matches () {
-  present=$(echo "$1" | grep -e "$2" > /dev/null)
-  return $present
+pkg () {
+  name=$1
+  $(bork_pkg_$name >> /dev/null 2>&1)
+  present=$?
+  if [ "$present" -eq 0 ]; then
+    shift
+    pkg_runner "bork_pkg_$name" "$name" $*
+  else
+    case $platform in
+      Darwin) manager="brew" ;;
+    esac
+    pkg_runner "bork_decl_$manager" "pkg" $*
+  fi
 }
 
-replace () {
-  echo $(echo "$1" | sed -E 's|'"$2"'|'"$3"'|')
+performed_install=0
+performed_upgrade=0
+pkg_runner () {
+  performed_install=0
+  performed_upgrade=0
+  fn=$1
+  pretty=$2
+  shift 2
+  baking_dir=$PWD
+  case $operation in
+    status)
+      $fn status $*
+      echo "$(status_for $?): $pretty $*"
+      ;;
+    satisfy)
+      $fn status $*
+      status=$?
+      case $status in
+        0) : ;;
+        10)
+          echo "---------------------------------"
+          echo "Package $1 missing. Installing..."
+          $fn install $*
+          [ "$?" -eq 0 ] && performed_install=1
+          ;;
+        11)
+          echo "---------------------------------"
+          echo "Package $1 outdated. Upgrading..."
+          $fn upgrade $*
+          [ "$?" -eq 0 ] && performed_upgrade=1
+          ;;
+        20)
+          echo "---------------------------------"
+          echo "Package $1 conflicted. Please resolve manually."
+          ;;
+      esac
+      ;;
+  esac
 }
 
-substring () {
-  echo $(expr "$1" : $2)
-}
-
-get_field () {
-  echo $(echo "$1" | awk '{print $'"$2"'}')
-}
-
-current_destination=$PWD
-set_dir () {
-  current_destination=$1
-}
-unset_dir () {
-  current_destination=$PWD
+did_install () { [ "$performed_install" -eq 1 ] && return 0 else return 1; }
+did_upgrade () { [ "$performed_upgrade" -eq 1 ] && return 0 else return 1; }
+did_update () {
+  if did_install; then return 0
+  elif did_upgrade; then return 0
+  else return 1
+  fi
 }
 
 include () {
@@ -40,29 +85,19 @@ include () {
   fi
 }
 
-baking_dir=$PWD
-bake_at () {
+baking_dir=
+bake_in () {
   baking_dir=$1
 }
 bake () {
-  opdir=$PWD
-
-  if matches "$1" "^--dir"; then
-    opdir="$2"
-    shift 2
-  fi
-
-  if [ $operation = 'install' ]; then
-    echo "$1"
-    (
-      cd $opdir
-      $1
-    )
-    status="$(echo $?)"
-    if [ "$status" -gt "0" ]; then
-      exit $status
-    fi
-  elif [ $operation = 'print' ]; then
-    echo "$1"
+  echo "$1"
+  (
+    cd $baking_dir
+    $1
+  )
+  status="$(echo $?)"
+  if [ "$status" -gt "0" ]; then
+    echo "failed with status: $status"
+    exit $status
   fi
 }
