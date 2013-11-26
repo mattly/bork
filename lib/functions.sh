@@ -8,16 +8,10 @@ status_for () {
   esac
 }
 
-bork_mode () {
-  [ -z "$this_op" ] && echo $bork_operation || echo $this_op
-}
-
 pkg () {
   name=$1
-  this_op='depends'
-  $(bork_pkg_$name 2>&1 > /dev/null)
+  $(bork_pkg_$name >> /dev/null 2>&1)
   present=$?
-  this_op=''
   if [ "$present" -eq 0 ]; then
     shift
     pkg_runner "bork_pkg_$name" "$name" $*
@@ -25,18 +19,56 @@ pkg () {
     case $platform in
       Darwin) manager="brew" ;;
     esac
-    pkg_runner "src_$manager" "pkg" $*
+    pkg_runner "bork_decl_$manager" "pkg" $*
   fi
 }
 
+performed_install=0
+performed_upgrade=0
 pkg_runner () {
+  performed_install=0
+  performed_upgrade=0
   fn=$1
   pretty=$2
   shift 2
-  $fn $*
-  ret=$?
-  if [ "$(bork_mode)" = 'status' ]; then
-    echo "$(status_for $ret): $pretty $*"
+  baking_dir=$PWD
+  case $operation in
+    status)
+      $fn status $*
+      echo "$(status_for $?): $pretty $*"
+      ;;
+    satisfy)
+      $fn status $*
+      status=$?
+      case $status in
+        0) : ;;
+        10)
+          echo "---------------------------------"
+          echo "Package $1 missing. Installing..."
+          $fn install $*
+          [ "$?" -eq 0 ] && performed_install=1
+          ;;
+        11)
+          echo "---------------------------------"
+          echo "Package $1 outdated. Upgrading..."
+          $fn upgrade $*
+          [ "$?" -eq 0 ] && performed_upgrade=1
+          ;;
+        20)
+          echo "---------------------------------"
+          echo "Package $1 conflicted. Please resolve manually."
+          ;;
+      esac
+      ;;
+  esac
+}
+
+did_install () { [ "$performed_install" -eq 1 ] && return 0 else return 1; }
+did_upgrade () { [ "$performed_upgrade" -eq 1 ] && return 0 else return 1; }
+did_update () {
+  if did_install; then return 0
+  elif did_upgrade; then return 0
+  else return 1
   fi
 }
 
@@ -53,29 +85,19 @@ include () {
   fi
 }
 
-baking_dir=$PWD
-bake_at () {
+baking_dir=
+bake_in () {
   baking_dir=$1
 }
 bake () {
-  opdir=$PWD
-
-  if matches "$1" "^--dir"; then
-    opdir="$2"
-    shift 2
-  fi
-
-  if [ $operation = 'install' ]; then
-    echo "$1"
-    (
-      cd $opdir
-      $1
-    )
-    status="$(echo $?)"
-    if [ "$status" -gt "0" ]; then
-      exit $status
-    fi
-  elif [ $operation = 'print' ]; then
-    echo "$1"
+  echo "$1"
+  (
+    cd $baking_dir
+    $1
+  )
+  status="$(echo $?)"
+  if [ "$status" -gt "0" ]; then
+    echo "failed with status: $status"
+    exit $status
   fi
 }
