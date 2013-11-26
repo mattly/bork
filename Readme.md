@@ -3,69 +3,20 @@
 Bork puts the 'sh' back into IT. [Bork Bork
 Bork](https://www.youtube.com/results?search_query=swedish+chef).
 
-While you could technically call Bork a bash-based DSL for system configuration
-managment, please don't. Bork might have to hurt you.
+Bork is a bash-based DSL for system configuration management.  Its goal is to
+provide a zero-dependency solution for making assertions about the state of
+a system and when needed, truthing them.
 
 by Matthew Lyon <matthew@lyonheart.us>
 
 ## Bare Minimum Requirements
 
-Bork should run on any modern UNIX system's base install.  It requires bash and
-some basic posix helpers.
+Bork is written against Bash 4.0. It may not perfectly run there yet, and that's
+where you come in :) The goal is to run out-of-box on any modern UNIX system,
+whcih should (hopefully) include sed, awk and grep.
 
-You will also need a way to move files around. You can either scp them or have
-curl installed already.
-
-If you're using a modern unix variant and the base requirements are not met by
-your distribution, we'd like to work with you to figure out how to bootstrap.
-
-### Usage
-
-    ./bork {config}
-
-#### Config
-
-A config is a bash script that uses bork's functions and helpers to describe the
-state the system it's run on should be in. When ran, its **source** functions
-do the heavy lifing of installing or updating components as needed.
-
-Example:
-
-``` bash
-# setup for my mac-based dev environment
-brew readline
-brew openssl
-brew git
-brew ack
-include pl/ruby                 # installs rbenv, ruby-build, various rubies
-github mattly/dotfiles $HOME/code/dotfiles
-brew vim
-set_dir $HOME/code/dotfiles/vim/bundle
-  github tpope/vim-pathogen     # installs to ....vim/bundle/vim-pathogen
-  github altercation/vim-colors-solarized
-unset_dir
-```
-
-#### Sources
-
-A source is a shell function that, given arguments from the config, knows if
-a given item needs to be installed, updated or removed. Example sources include:
-
-- `brew`: Homebrew on MacOS X. A coming **pkg** will use this on OS X.
-- `git`: A git repository at a location.
-- `github`: A git repository on GitHub.
-- `rbenv`: A version of ruby to install via [rbenv][].
-- `nodenv`: A version of node.js to install via [nodenv][].
-- more coming, including archive (with & without make support), url, etc.
-
-##### Sources-Contrib
-
-- `osx`: Modify system preferences in OS X
-
-#### Helpers
-
-- `include`: Includes by reference another config relative to the config's path.
-- `set_dir`: Sets the default destination directory for sources.
+If you're going to use it, you'll presumably need a way to copy files to your
+target machine, such as scp or curl.
 
 ## Why
 
@@ -76,13 +27,70 @@ simpler and less opinionated.
 
 Bork is a shell program. You run it how you want.
 
+## Concepts
+
+### Configs
+
+A config is a bash script that is run under a bork "harness" that makes
+assertions about the state of a system. A basic config would look like this:
+
+``` bash
+pkg git                   # asserts system pkg manager has git package installed
+directories ~/code        # asserts ~/code exists
+cd ~/code                 # passes through to system, changes working dir
+github mattly/dotfiles    # asserts code from git@github.com:mattly/dotfiles 
+                          #   exists in ~/code/dotfiles
+pkg vim                   # asserts system pkg manager has vim package installed
+cd ~/code/dotfiles/vim/bundle
+github tpope/vim-pathogen # asserts pathogen installed from github
+github shougo/vimproc     # asserts vimproc installed from github
+if did_update; then       # if vimproc was installed or updated, then...
+  pushd vimproc > /dev/null
+  make clean && make      # re-make
+  popd > /dev/null
+fi
+```
+
+This config could be tested by bork with `bork status vim.sh` or satisfied with
+`bork satisfy vim.sh`. In the future, I'd like to provide a 'compile' option to
+generate a single shell script.
+
+### Assertions
+
+An assertion is basically something like:
+- "this package should be installed"
+- "this directory should exist"
+- "these files should exist from somewhere else on the internet"
+- "this file should be symlinked to somewhere else or have these permissions"
+
+Use your imagination. Look in `declaratiions/` and see the existing ones:
+
+* `pkg:` a pass-through to the system package manager. Currently only has homebrew
+  for OS X right now.
+* `brew`: homebrew, used by the above
+* `git`: code from a git repository
+* `github`: like previously, but with a github url pattern
+* `directories`: that certain directories exist
+* `symlink`: that certain files are symlinked elsewhere
+
+More assertion types are planned:
+
+* other package managers: apt, yum, etc.
+* VCS managers: hg, darcs
+* PL package managers: npm, rubygems, pip, cabal, etc. Note that bork is
+  intended for global installation of these packages, not per-project; tools
+  like Bundler are more appropriate for project-level assertions.
+* Cron jobs, init.d files, launchctl tasks, etc
+* Files exist with certain text, and some kind of template renderer
+* OS X settings via defaults
+
 ### Look At All The Things It's NOT Doing
 
 To the degree Bork is opinionated, it is *very* opinionated about what it does
 not want responsibility for:
 
 - **Collaboration**: Use GitHub. Or Whatever.
-- **Versioning**: Bring your own VCS.
+- **Versioning**: Bring your own VCS. Git, Mercurial, Darcs, CVS or whatever.
 - **Orchestration**: There are plenty of good tools that do this already.
   [Fabric][] and [Capistrano][] come immediately to mind.
 - **Role Management**: Just include another config. Compose configs from
@@ -92,24 +100,10 @@ not want responsibility for:
   be installed before calling an rbenv source. This is coding 101, people. It
   ain't that hard.
 
-### Problems
-
-- Will need a way to add to $PATH for things like nodenv that don't go to path.
-
-## Roadmap
-
-- source: pull from url or local file and install via make
-- source: bootstrap homebrew
-- config: ability to build a set of configs into a single one for easy transport
-- config: group items into bundles (f.e. 'vim plugins')
-- config: callbacks for items and groups (after: install, update)
-- config: templates to setup
-- runner: `--only {group}` flag
-
 ## License
 
-Bork is copyright 2013 Matthew Lyon and licensed under the Apache 2.0 License.
-Full text to come.
+Bork is copyright 2013 Matthew Lyon and licensed under the MIT License. See
+LICENSE for more information.
 
 [rbenv]: https://github.com/sstephenson/rbenv
 [nodenv]: https://github.com/OiNutter/nodenv
