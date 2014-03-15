@@ -6,12 +6,24 @@ functionize_thing "declarations/git.sh"
 
 git_cmd_pointer=""
 git_cmd_status=0
+git_cmd_fetch=
+git_fetch () {
+  echo "." > $tmpdir/git_fetch
+}
 test_git () {
-  echo "$($git_cmd_pointer $*)"
-  s=$?
-  if [ "$git_cmd_pointer" = "command git" ]; then return $s
-  else return $git_cmd_status
+  if [ "$1" = "fetch" ]; then
+    git_fetch
+  else
+    echo "$($git_cmd_pointer $*)"
+    s=$?
+    if [ "$git_cmd_pointer" = "command git" ]; then return $s
+    else return $git_cmd_status
+    fi
   fi
+}
+test_git_fetched () {
+  fetched=$(cat "$tmpdir/git_fetch" | wc -l | awk '{print $1}')
+  [ "$fetched" -eq 1 ]
 }
 set_test_pointer () { git_cmd_pointer=$1; }
 
@@ -50,6 +62,7 @@ teardown () {
 @test "src git status: returns 20 when the directory is not empty and not a git repository" {
   run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
+  test_git_fetched
 }
 
 git_repo_incorrect_branch () {
@@ -59,6 +72,7 @@ git_repo_incorrect_branch () {
   set_test_pointer 'git_repo_incorrect_branch'
   run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
+  test_git_fetched
 }
 
 @test "src git status: returns 20 when the local git repository uses another origin" {
@@ -72,6 +86,7 @@ git_repo_is_ahead () {
   set_test_pointer 'git_repo_is_ahead'
   run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
+  test_git_fetched
 }
 
 git_repo_has_unstaged_changes () {
@@ -82,6 +97,7 @@ git_repo_has_unstaged_changes () {
   set_test_pointer 'git_repo_has_unstaged_changes'
   run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
+  test_git_fetched
 }
 
 git_repo_has_uncommitted_changes () {
@@ -92,6 +108,7 @@ git_repo_has_uncommitted_changes () {
   set_test_pointer 'git_repo_has_uncommitted_changes'
   run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
+  test_git_fetched
 }
 
 git_repo_is_known_to_be_behind () {
@@ -101,14 +118,13 @@ git_repo_is_known_to_be_behind () {
   set_test_pointer 'git_repo_is_known_to_be_behind'
   run git status git@github.com:mattly/bork
   [ "$status" -eq 11 ]
+  test_git_fetched
 }
 
 @test "src git status: returns 20 when the local repository is known to have diverged" {
 skip
 }
-@test "src git status: returns 11 when after fetching, the local git repository is behind" {
-skip
-}
+
 @test "src git status: returns 20 when after fetching, the local repository has diverged" {
 skip
 }
@@ -120,6 +136,7 @@ git_repo_is_fine () {
   set_test_pointer 'git_repo_is_fine'
   run git status git@github.com:mattly/bork
   [ "$status" -eq 0 ]
+  test_git_fetched
 }
 
 @test "src git install: bakes target dir, git clone" {
