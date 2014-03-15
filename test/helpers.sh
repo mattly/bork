@@ -1,3 +1,10 @@
+here=$PWD
+debug_mode="$DEBUG"
+p () {
+  [ -n "$debug_mode" ] && echo "$*" >> "$here/debug"
+  return 0
+}
+
 for f in $(ls lib/*.sh); do . $f; done
 
 functionize_thing () {
@@ -19,9 +26,3 @@ bake () { echo "$*" >> $baking_file; }
 bake_in () { echo "bake_in $*" >> $baking_file; }
 baked_output () { cat $baking_file; }
 
-here=$PWD
-debug_mode="$DEBUG"
-p () {
-  [ -n "$debug_mode" ] && echo "$*" >> "$here/debug"
-  return 0
-}
