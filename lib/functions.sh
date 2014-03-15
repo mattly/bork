@@ -10,7 +10,7 @@ status_for () {
 
 pkg () {
   name=$1
-  $(bork_pkg_$name >> /dev/null 2>&1)
+  $(bork_pkg_$name depends >> /dev/null 2>&1)
   present=$?
   if [ "$present" -eq 0 ]; then
     shift
