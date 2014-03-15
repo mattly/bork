@@ -4,19 +4,14 @@ action=$1
 name=$2
 shift 2
 
-brew_status () {
-  $(str_contains "$($cmd list)" "$name")
-  [ "$?" -gt 0 ] && return 10
-  $(str_contains "$($cmd outdated | awk '{print $1}')" "$name")
-  [ "$?" -eq 0 ] && return 11
-  return 0
-}
-
 case $action in
   depends) echo "pkg: brew" ;;
   status)
-    brew_status
-    return $? ;;
+    $(str_contains "$($cmd list)" "$name")
+    [ "$?" -gt 0 ] && return 10
+    $(str_contains "$($cmd outdated | awk '{print $1}')" "$name")
+    [ "$?" -eq 0 ] && return 11
+    return 0 ;;
   install) bake "$cmd install $name" ;;
   upgrade) bake "$cmd upgrade $name" ;;
   *) return 1 ;;
