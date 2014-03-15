@@ -73,14 +73,14 @@ did_update () {
 }
 
 include () {
-  if [ -e "$scriptDir/$1" ]; then
+  if [ -e "$bork_script_dir/$1" ]; then
     # if [ $operation = 'build' ]; then
     #   echo "$scriptDir/$1"
     # else
-      . "$scriptDir/$1"
+      . "$bork_script_dir/$1"
     # fi
   else
-    echo "include: $scriptDir/$1: No such file or directory"
+    echo "include: $bork_script_dir/$1: No such file or directory"
     exit 1
   fi
 }
