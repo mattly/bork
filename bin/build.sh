@@ -7,19 +7,7 @@ for decl in declarations/*; do
   name=$(basename $decl .sh)
 cat <<HERE
 # ====== declaration $decl: $name ======================
-bork_decl_$name () {
 $(cat $decl)
-}
-$name () { pkg_runner 'bork_decl_$name' '$name' \$*; }
-HERE
-done
-
-for pkg in packages/*.sh; do
-  name=$(basename $pkg .sh)
-cat <<HERE
-# ======= package $pkg: $name ==========================
-bork_pkg_$name () {
-$(cat $pkg)
 }
 HERE
 done
