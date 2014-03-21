@@ -1,14 +1,14 @@
 # meta
-- dependencies
+- change declarations to types
+- dependencies:
 	brew: check if brew is installed, install if not
 - includes
 - "any" change flagger
 - runner
 - flag to not update remotes
 
-# declarations
+# types
 ## git
-- fetch update from remotes
 - use merge instead of pull
 - specify alternate refs than "master"
 - --tmpdir option
@@ -18,7 +18,6 @@
 - arg to toggle between http and ssh url schemes
 
 ## brew
-- fetch update from remote
 - specify 'brew install/upgrade' options, such as --env --cc, etc
 - specify / compare package options, fe reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
 - manage taps, or at least specify formula from a tap
