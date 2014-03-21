@@ -8,6 +8,13 @@ status_for () {
   esac
 }
 
+declare_source () {
+  name=$1
+  function=$1
+
+  eval "$1 () { pkg_runner '$2' '$1' \$*; }"
+}
+
 pkg () {
   name=$1
   $(bork_pkg_$name depends >> /dev/null 2>&1)
