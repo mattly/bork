@@ -3,6 +3,8 @@
 . test/helpers.sh
 . declarations/apt.sh
 
+baked_output=
+
 dpkg_get_selections () {
   echo "outdated_package              installed"
   echo "current_package               installed"
@@ -14,8 +16,10 @@ apt_upgrade_dry () {
 }
 
 setup () {
+  bork_setup_apt "apt_cmd" "test_apt"
   bork_setup_apt "list_cmd" "dpkg_get_selections"
   bork_setup_apt "outdated_cmd" "apt_upgrade_dry"
+  baked_output=$(mktemp -t apttest)
 }
 
 @test "apt status reports a package is missing" {
@@ -32,3 +36,10 @@ setup () {
   run bork_decl_apt status current_package
   [ "$status" -eq 0 ]
 }
+
+@test "apt install runs 'apt-get install'" {
+  run bork_decl_apt install missing_package
+  [ "$status" -eq 0 ]
+  [ "$(baked_output)" = 'test_apt --yes install missing_package' ]
+}
+
