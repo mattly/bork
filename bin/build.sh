@@ -8,7 +8,6 @@ for decl in declarations/*; do
 cat <<HERE
 # ====== declaration $decl: $name ======================
 $(cat $decl)
-}
 HERE
 done
 
