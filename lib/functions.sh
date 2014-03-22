@@ -50,6 +50,7 @@ pkg_runner () {
       echo "$(status_for $?): $pretty $*"
       ;;
     satisfy)
+      bork_operation="$fn-$1"
       $fn status $*
       status=$?
       case $status in
@@ -71,6 +72,7 @@ pkg_runner () {
           echo "Package $1 conflicted. Please resolve manually."
           ;;
       esac
+      clean_tmpdir
       ;;
   esac
 }
