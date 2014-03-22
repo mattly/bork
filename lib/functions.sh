@@ -25,6 +25,11 @@ pkg () {
   else
     case $platform in
       Darwin) manager="brew" ;;
+      Linux)
+        if has_exec "apt-get"; then manager="apt"
+        else return 1
+        fi ;;
+      *) return 1 ;;
     esac
     pkg_runner "bork_decl_$manager" "pkg" $*
   fi
