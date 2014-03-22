@@ -7,14 +7,14 @@
   [ "$status" -eq 0 ]
 }
 
-@test "has_exec: returns 127 when an exec doesn't exist" {
+@test "has_exec: returns 10 when an exec doesn't exist" {
   run has_exec "nothing_to_see_here_nope_move_right_along"
-  [ "$status" -eq 127 ]
+  [ "$status" -eq 10 ]
 }
 
-@test "has_exec: returns 1 if exec doesn't exit cleanly" {
+@test "has_exec: returns 20 if exec doesn't exit cleanly" {
   run has_exec "git --" "foo"
-  [ "$status" -eq 1 ]
+  [ "$status" -eq 20 ]
 }
 
 @test "has_exec: returns 0 when exec exists and matches condiditions" {
@@ -22,9 +22,9 @@
   [ "$status" -eq 0 ]
 }
 
-@test "has_exec: returns 2 if exec is present but doesn't match conditions" {
+@test "has_exec: returns 11 if exec is present but doesn't match conditions" {
   run has_exec "cat LICENSE" "Matthew Lyon" "GPL"
-  [ "$status" -eq 2 ]
+  [ "$status" -eq 11 ]
 }
 
 # == is_platform

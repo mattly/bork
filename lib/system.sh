@@ -3,13 +3,13 @@ has_exec () {
   shift
   bin=$(str_get_field "$test_cmd" 1)
   which "$bin" > /dev/null
-  [ "$?" -ne 0 ] && return 127
+  [ "$?" -ne 0 ] && return 10
   if [ -n "$1" ]; then
     output=$($test_cmd)
-    [ "$?" -ne 0 ] && return 1
+    [ "$?" -ne 0 ] && return 20
     for arg in $*; do
       str_matches "$output" "$arg"
-      [ "$?" -ne 0 ] && return 2
+      [ "$?" -ne 0 ] && return 11
     done
   fi
   return 0
