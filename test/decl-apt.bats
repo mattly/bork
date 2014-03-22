@@ -43,3 +43,9 @@ setup () {
   [ "$(baked_output)" = 'test_apt --yes install missing_package' ]
 }
 
+@test "apt upgrade runs 'apt-get upgrade'" {
+  run bork_decl_apt upgrade outdated_package
+  [ "$status" -eq 0 ]
+  [ "$(baked_output)" = 'test_apt --yes install outdated_package' ]
+}
+

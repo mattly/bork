@@ -30,8 +30,8 @@ bork_decl_apt () {
       $(str_contains "$($outdated_cmd | grep "^Inst" | awk '{print $2}')" "$name")
       [ "$?" -eq 0 ] && return 11
       return 0 ;;
-    install)
-      bake "$apt_cmd --yes install $name" ;;
+    install) bake "$apt_cmd --yes install $name" ;;
+    upgrade) bake "$apt_cmd --yes install $name" ;;
     *) return 1 ;;
   esac
 }
