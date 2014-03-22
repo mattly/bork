@@ -7,7 +7,7 @@ setup () {
   cwd=$PWD
 }
 
-@test "it maintains a stack of destinations" {
+@test "destinations maintains a stack of locations" {
   [ "$(destination)" = $cwd ]
   [ "$(destination size)" -eq 0 ]
 
@@ -39,12 +39,12 @@ setup () {
   [ "$PWD" = "$cwd" ]
 }
 
-@test "it returns 1 on unknown command" {
+@test "destinations returns 1 on unknown command" {
   run destination foo
   [ "$status" -eq 1 ]
 }
 
-@test "pop returns 1 on empty stack" {
+@test "destinations pop returns 1 on empty stack" {
   run destination pop
   [ "$status" -eq 1 ]
 }
