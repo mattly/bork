@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-. declarations/git.sh
+git () { . $bork_script_dir/stdlib/git.sh $*; }
 
 git_cmd_pointer=""
 git_cmd_status=0
@@ -29,7 +29,7 @@ set_test_pointer () { git_cmd_pointer=$1; }
 setup () {
   baking_dir=
   p $BATS_TEST_DESCRIPTION
-  bork_setup_git 'cmd' 'test_git'
+  command_git='test_git'
   git_cmd_pointer="command git"
   git_cmd_status=0
   tmpdir=$(mktemp -d -t "git-status-test")
@@ -48,19 +48,19 @@ teardown () {
 @test "src git status: returns 10 when the directory doesn't exist" {
   rm -rf $target_dir
   [ ! -d $target_dir ]
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 10 ]
 }
 
 @test "src git status: returns 10 when the directory is empty" {
   rm -rf $target_dir/*
   [ $(str_item_count "$(ls $target_dir)") -eq 0 ]
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 10 ]
 }
 
 @test "src git status: returns 20 when the directory is not empty and not a git repository" {
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
   test_git_fetched
 }
@@ -70,7 +70,7 @@ git_repo_incorrect_branch () {
 }
 @test "src git status: returns 20 when not on the desired branch" {
   set_test_pointer 'git_repo_incorrect_branch'
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
   test_git_fetched
 }
@@ -84,7 +84,7 @@ git_repo_is_ahead () {
 }
 @test "src git status: returns 20 when the local git repository is ahead" {
   set_test_pointer 'git_repo_is_ahead'
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
   test_git_fetched
 }
@@ -95,7 +95,7 @@ git_repo_has_unstaged_changes () {
 }
 @test "src git status: returns 20 when the local git repository has unstaged changes" {
   set_test_pointer 'git_repo_has_unstaged_changes'
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
   test_git_fetched
 }
@@ -106,7 +106,7 @@ git_repo_has_uncommitted_changes () {
 }
 @test "src git status: returns 20 when local git repository has uncommitted staged changes" {
   set_test_pointer 'git_repo_has_uncommitted_changes'
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 20 ]
   test_git_fetched
 }
@@ -116,7 +116,7 @@ git_repo_is_known_to_be_behind () {
 }
 @test "src git status: returns 11 when the local git repository is known to be behind" {
   set_test_pointer 'git_repo_is_known_to_be_behind'
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 11 ]
   test_git_fetched
 }
@@ -134,14 +134,14 @@ git_repo_is_fine () {
 }
 @test "src git status: returns 0 when the git repository is up-to-date" {
   set_test_pointer 'git_repo_is_fine'
-  run bork_decl_git status git@github.com:mattly/bork
+  run git status git@github.com:mattly/bork
   [ "$status" -eq 0 ]
   test_git_fetched
 }
 
 @test "src git install: bakes target dir, git clone" {
   url="git@github.com:mattly/bork"
-  run bork_decl_git install $url
+  run git install $url
   [ "$status" -eq 0 ]
   run baked_output
   md="mkdir -p $tmpdir/bork"
@@ -151,7 +151,7 @@ git_repo_is_fine () {
 }
 
 @test "src git upgrade: merges to new ref, echoes changelog" {
-  run bork_decl_git upgrade "git@github.com:mattly/bork"
+  run git upgrade "git@github.com:mattly/bork"
   [ "$status" -eq 0 ]
   run baked_output
   bake_dir="bake_in $tmpdir/bork"
