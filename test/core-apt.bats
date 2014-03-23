@@ -2,7 +2,7 @@
 
 . test/helpers.sh
 
-apt () { . $BORK_SOURCE_DIR/stdlib/apt.sh $*; }
+apt () { . $BORK_SOURCE_DIR/core/apt.sh $*; }
 
 baked_output=
 

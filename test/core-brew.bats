@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-brew () { . $BORK_SOURCE_DIR/stdlib/brew.sh $*; }
+brew () { . $BORK_SOURCE_DIR/core/brew.sh $*; }
 
 return_status=0
 brew_packages=
