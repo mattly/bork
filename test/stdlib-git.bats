@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-git () { . $bork_script_dir/stdlib/git.sh $*; }
+git () { . $BORK_SOURCE_DIR/stdlib/git.sh $*; }
 
 git_cmd_pointer=""
 git_cmd_status=0

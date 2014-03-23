@@ -1,10 +1,9 @@
-bork_destinations_root=$PWD
 bork_destinations=( )
 
 destination () {
   (( last = ${#bork_destinations[*]} - 1 ))
   if [ -z "$1" ]; then
-    if [ $last -eq -1 ]; then echo $bork_destinations_root
+    if [ $last -eq -1 ]; then echo $BORK_WORKING_DIR
     else echo ${bork_destinations[$last]}
     fi
   else

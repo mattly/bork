@@ -1,4 +1,6 @@
-bork_script_dir=$PWD
+BORK_WORKING_DIR=$PWD
+BORK_SOURCE_DIR=$PWD
+BORK_SCRIPT_DIR=$PWD
 
 here=$PWD
 debug_mode="$DEBUG"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-symlink () { . $bork_script_dir/core/symlink.sh $*; }
+symlink () { . $BORK_SOURCE_DIR/core/symlink.sh $*; }
 
 tmpdir=
 setup () {

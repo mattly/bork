@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-directories () { . $bork_script_dir/core/directories.sh $*; }
+directories () { . $BORK_SOURCE_DIR/core/directories.sh $*; }
 
 setup () {
   tmpdir=$(mktemp -d -t bork-dir)
