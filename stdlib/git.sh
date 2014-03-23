@@ -79,9 +79,3 @@ case $action in
   *) return 1 ;;
 esac
 
-# bork_decl_github () {
-#   action=$1
-#   repo=$2
-#   shift 2
-#   bork_decl_git $action "https://github.com/$(echo $repo).git" $*
-# }
