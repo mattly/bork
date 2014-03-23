@@ -24,5 +24,7 @@ else
   bork_script_dir="\$(cd \$_fullDir; echo \$PWD)"
 fi
 
+bork_script_dir="\$( cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd )"
+
 . \$2
 HERE
