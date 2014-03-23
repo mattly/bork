@@ -8,11 +8,28 @@ status_for () {
   esac
 }
 
-declare_source () {
-  name=$1
-  function=$1
+stdlib_types=""
+use () {
+  for item in $*; do
+    [ ! -e "$bork_script_dir/stdlib/$(echo $item).sh" ] && return 1
+    stdlib_types=$(echo "$used_types"; echo "$item")
+  done
+}
 
-  eval "$1 () { pkg_runner '$2' '$1' \$*; }"
+ok () {
+  fn=
+  if [ -e "$bork_script_dir/core/$(echo $1).sh" ]; then
+    fn="$bork_script_dir/core/$(echo $1).sh"
+    shift
+  elif str_contains "$stdlib_types" "$1"; then
+    fn="$bork_script_dir/stdlib/$(echo $1).sh"
+    shift
+  fi
+  case $operation in
+    echo) echo $fn $* ;;
+    status) $fn status $* ;;
+    satisfy) ;;
+  esac
 }
 
 pkg () {
