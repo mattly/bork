@@ -9,10 +9,34 @@ status_for () {
 }
 
 stdlib_types=""
+assertion_types=""
+
+for file in $BORK_SOURCE_DIR/core/* ; do
+  type=$(basename $file '.sh')
+  assertion_types=$(echo "$assertion_types"; echo "$type=$file")
+done
+
 use () {
-  for item in $*; do
-    [ ! -e "$BORK_SOURCE_DIR/stdlib/$(echo $item).sh" ] && return 1
-    stdlib_types=$(echo "$stdlib_types"; echo "$item")
+  for file in $*; do
+    type=$(basename $file '.sh')
+    if [ -e "$BORK_SCRIPT_DIR/$file" ]; then
+      file="$BORK_SCRIPT_DIR/$file"
+    elif [ -e "$BORK_SOURCE_DIR/stdlib/$(echo $file).sh" ]; then
+      file="$BORK_SOURCE_DIR/stdlib/$(echo $file).sh"
+    else
+      return 1
+    fi
+    assertion_types=$(echo "$assertion_types"; echo "$type=$file")
+  done
+}
+
+get_val () {
+  echo "$assertion_types" | while read line; do
+    key=${line%%=*}
+    if [ "$key" = $1 ]; then
+      echo "${line##*=}"
+      return 0
+    fi
   done
 }
 
@@ -23,13 +47,10 @@ ok () {
   performed_upgrade=0
   encountered_error=0
   baking_dir=$PWD
-  fn=
-  if [ -e "$BORK_SOURCE_DIR/core/$(echo $assertion).sh" ]; then
-    fn="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
-  elif str_contains "$stdlib_types" "$assertion"; then
-    fn="$BORK_SOURCE_DIR/stdlib/$(echo $assertion).sh"
-  fi
-  if [ -z $fn ]; then echo "invalid type $assertion not found in $stdlib_types"
+  fn=$(get_val $assertion)
+  if [ -z $fn ]; then
+    echo "invalid type $assertion not found in $assertion_types"
+    return 1
   else
     case $operation in
       echo) echo $fn $* ;;
