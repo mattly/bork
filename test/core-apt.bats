@@ -1,7 +1,8 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-. declarations/apt.sh
+
+apt () { . $BORK_SOURCE_DIR/core/apt.sh $*; }
 
 baked_output=
 
@@ -16,35 +17,35 @@ apt_upgrade_dry () {
 }
 
 setup () {
-  bork_setup_apt "apt_cmd" "test_apt"
-  bork_setup_apt "list_cmd" "dpkg_get_selections"
-  bork_setup_apt "outdated_cmd" "apt_upgrade_dry"
+  command_apt_get="test_apt"
+  command_apt_list="dpkg_get_selections"
+  command_apt_outdated="apt_upgrade_dry"
   baked_output=$(mktemp -t apttest)
 }
 
 @test "apt status reports a package is missing" {
-  run bork_decl_apt status missing_package
+  run apt status missing_package
   [ "$status" -eq 10 ]
 }
 
 @test "apt status reports a package is outdated" {
-  run bork_decl_apt status outdated_package
+  run apt status outdated_package
   [ "$status" -eq 11 ]
 }
 
 @test "apt status reports a package is current" {
-  run bork_decl_apt status current_package
+  run apt status current_package
   [ "$status" -eq 0 ]
 }
 
 @test "apt install runs 'apt-get install'" {
-  run bork_decl_apt install missing_package
+  run apt install missing_package
   [ "$status" -eq 0 ]
   [ "$(baked_output)" = 'test_apt --yes install missing_package' ]
 }
 
 @test "apt upgrade runs 'apt-get upgrade'" {
-  run bork_decl_apt upgrade outdated_package
+  run apt upgrade outdated_package
   [ "$status" -eq 0 ]
   [ "$(baked_output)" = 'test_apt --yes install outdated_package' ]
 }

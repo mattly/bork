@@ -11,7 +11,7 @@ by Matthew Lyon <matthew@lyonheart.us>
 
 ## Bare Minimum Requirements
 
-Bork is written against Bash 4.0. It may not perfectly run there yet, and that's
+Bork is written against Bash 3.2. It may not perfectly run there yet, and that's
 where you come in :) The goal is to run out-of-box on any modern UNIX system,
 whcih should (hopefully) include sed, awk and grep.
 
@@ -35,25 +35,24 @@ A config is a bash script that is run under a bork "harness" that makes
 assertions about the state of a system. A basic config would look like this:
 
 ``` bash
-pkg git                   # asserts system pkg manager has git package installed
-directories ~/code        # asserts ~/code exists
-cd ~/code                 # passes through to system, changes working dir
-github mattly/dotfiles    # asserts code from git@github.com:mattly/dotfiles 
-                          #   exists in ~/code/dotfiles
-pkg vim                   # asserts system pkg manager has vim package installed
-cd ~/code/dotfiles/vim/bundle
-github tpope/vim-pathogen # asserts pathogen installed from github
-github shougo/vimproc     # asserts vimproc installed from github
-if did_update; then       # if vimproc was installed or updated, then...
-  pushd vimproc > /dev/null
-  make clean && make      # re-make
-  popd > /dev/null
+use brew git github           # pulls these assertions out of stdlib into use
+ok git                        # asserts system pkg manager has git package installed
+directories ~/code            # asserts ~/code exists
+destination push ~/code       # uses the "destination stack" to change the 'working' directory
+ok github mattly/dotfiles     # asserts code from git@github.com:mattly/dotfiles 
+                              #   exists in ~/code/dotfiles
+pkg vim                       # asserts system pkg manager has vim package installed
+destination push vim/bundle
+ok github tpope/vim-pathogen  # asserts pathogen installed from github
+github shougo/vimproc         # asserts vimproc installed from github
+if did_update; then           # if vimproc was installed or updated, then re-run make
+  (cd vimproc && make clean && make)
 fi
 ```
 
 This config could be tested by bork with `bork status vim.sh` or satisfied with
 `bork satisfy vim.sh`. In the future, I'd like to provide a 'compile' option to
-generate a single shell script.
+generate a single, portable shell script.
 
 ### Assertions
 
@@ -63,11 +62,11 @@ An assertion is basically something like:
 - "these files should exist from somewhere else on the internet"
 - "this file should be symlinked to somewhere else or have these permissions"
 
-Use your imagination. Look in `declaratiions/` and see the existing ones:
+Use your imagination. Look in `core/` and `stdlib/` and see the existing ones:
 
-* `pkg:` a pass-through to the system package manager. Currently only has homebrew
-  for OS X right now.
+* `pkg:` a pass-through to the system package manager. 
 * `brew`: homebrew, used by the above
+* `apt`: apt, used by pkg
 * `git`: code from a git repository
 * `github`: like previously, but with a github url pattern
 * `directories`: that certain directories exist
@@ -79,7 +78,7 @@ More assertion types are planned:
 * VCS managers: hg, darcs
 * PL package managers: npm, rubygems, pip, cabal, etc. Note that bork is
   intended for global installation of these packages, not per-project; tools
-  like Bundler are more appropriate for project-level assertions.
+  like Bundler or package.json are more appropriate for project-level assertions.
 * Cron jobs, init.d files, launchctl tasks, etc
 * Files exist with certain text, and some kind of template renderer
 * OS X settings via defaults
@@ -95,10 +94,10 @@ not want responsibility for:
   [Fabric][] and [Capistrano][] come immediately to mind.
 - **Role Management**: Just include another config. Compose configs from
   sub-configs.
-- **Dependency Management**: This should be outsourced to your package manager,
-  then managed inline in your scripts. For example, the 'rbenv' package should
-  be installed before calling an rbenv source. This is coding 101, people. It
-  ain't that hard.
+- **Hardcore Dependency Management**: This should be outsourced to your package
+  manager, then managed inline in your scripts. For example, the 'rbenv'
+  package should be installed before calling an rbenv source. This is coding
+  101, people. It ain't that hard.
 
 ## License
 

@@ -1,3 +1,7 @@
+BORK_WORKING_DIR=$PWD
+BORK_SOURCE_DIR=$PWD
+BORK_SCRIPT_DIR=$PWD
+
 here=$PWD
 debug_mode="$DEBUG"
 p () {
@@ -6,20 +10,6 @@ p () {
 }
 
 for f in $(ls lib/*.sh); do . $f; done
-
-functionize_thing () {
-  name=$(basename $1 .sh)
-  tmpfile=$(mktemp -t $name)
-  echo "$name () {" > $tmpfile
-  cat $1 | while read line; do
-    if [ "${line:0:4}" = "cmd=" ]; then echo "cmd='test_$name'" >> $tmpfile
-    else echo $line >> $tmpfile
-    fi
-  done
-  echo '}' >> $tmpfile
-  . $tmpfile
-  rm $tmpfile
-}
 
 baking_file=$(mktemp -t bork_test)
 bake () { echo "$*" >> $baking_file; }
