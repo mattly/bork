@@ -1,9 +1,9 @@
 apt_cmd="command sudo apt-get"
-if [ -n $command_apt_get ]; then apt_cmd=$command_apt_get; fi
+if [ -n "$command_apt_get" ]; then apt_cmd=$command_apt_get; fi
 apt_outdated_cmd="$apt_cmd -u upgrade --dry-run"
-if [ -n $command_apt_outdated ]; then apt_outdated_cmd=$command_apt_outdated; fi
+if [ -n "$command_apt_outdated" ]; then apt_outdated_cmd=$command_apt_outdated; fi
 apt_list_cmd="command dpkg --get-selections"
-if [ -n $command_apt_list ]; then apt_list_cmd=$command_apt_list; fi
+if [ -n "$command_apt_list" ]; then apt_list_cmd=$command_apt_list; fi
 
 action=$1
 name=$2

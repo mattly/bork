@@ -1,5 +1,5 @@
 cmd="command git"
-if [ -n $command_git ]; then cmd=$command_git; fi
+if [ -n "$command_git" ]; then cmd=$command_git; fi
 
 action=$1
 git_url=$2

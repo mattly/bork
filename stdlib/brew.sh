@@ -1,5 +1,5 @@
-cmd="command brew"
-if [ -n $command_brew ]; then cmd=$command_brew; fi
+brew_cmd="command brew"
+if [ -n "$command_brew" ]; then brew_cmd=$command_brew; fi
 
 action=$1
 name=$2
@@ -29,13 +29,13 @@ else
   case $action in
     depends) echo "pkg: brew" ;;
     status)
-      $(str_contains "$($cmd list)" "$name")
+      $(str_contains "$($brew_cmd list)" "$name")
       [ "$?" -gt 0 ] && return 10
-      $(str_contains "$($cmd outdated | awk '{print $1}')" "$name")
+      $(str_contains "$($brew_cmd outdated | awk '{print $1}')" "$name")
       [ "$?" -eq 0 ] && return 11
       return 0 ;;
-    install) bake "$cmd install $name" ;;
-    upgrade) bake "$cmd upgrade $name" ;;
+    install) bake "$brew_cmd install $name" ;;
+    upgrade) bake "$brew_cmd upgrade $name" ;;
     *) return 1 ;;
   esac
 fi
