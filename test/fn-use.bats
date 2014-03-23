@@ -2,13 +2,14 @@
 
 . test/helpers.sh
 
-@test "pushes existing non-path values to \$used_types" {
-  use brew git
+@test "use pushes existing non-path values to \$stdlib_types" {
+  use brew apt git
   str_contains "$stdlib_types" "brew"
+  str_contains "$stdlib_types" "apt"
   str_contains "$stdlib_types" "git"
 }
 
-@test "returns 1 for non-valid values, does not add lib" {
+@test "use returns 1 for non-valid values, does not add lib" {
   existing="$stdlib_types"
   status=$(use foo; echo $?)
 }
