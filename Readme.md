@@ -37,15 +37,16 @@ assertions about the state of a system. A basic config would look like this:
 ``` bash
 use brew git github           # pulls these assertions out of stdlib into use
 ok git                        # asserts system pkg manager has git package installed
-directories ~/code            # asserts ~/code exists
-destination push ~/code       # uses the "destination stack" to change the 'working' directory
+ok directories ~/code         # asserts ~/code exists
+destination push ~/code       # uses the "destination stack" to change the working directory
+                              #   using this over pushd has some benefits
 ok github mattly/dotfiles     # asserts code from git@github.com:mattly/dotfiles 
                               #   exists in ~/code/dotfiles
-pkg vim                       # asserts system pkg manager has vim package installed
+ok brew vim                   # asserts homebrew has installed vim
 destination push vim/bundle
 ok github tpope/vim-pathogen  # asserts pathogen installed from github
-github shougo/vimproc         # asserts vimproc installed from github
-if did_update; then           # if vimproc was installed or updated, then re-run make
+ok github shougo/vimproc      # asserts vimproc installed from github
+if did_update; then           # if vimproc was installed or upgraded, then re-run make
   (cd vimproc && make clean && make)
 fi
 ```
