@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-. declarations/directories.sh
+directories () { . $bork_script_dir/core/directories.sh $*; }
 
 setup () {
   tmpdir=$(mktemp -d -t bork-dir)
@@ -17,30 +17,30 @@ mkdirs () {
 
 @test "directories: status returns 0 if all directories are present" {
   mkdirs foo bar
-  run bork_decl_directories status foo bar
+  run directories status foo bar
   [ "$status" -eq 0 ]
 }
 
 @test "directories: status returns 10 if no directories are present" {
-  run bork_decl_directories status foo bar
+  run directories status foo bar
   [ "$status" -eq 10 ]
 }
 
 @test "directories: status returns 11 if some directories are present" {
   mkdirs bar bee
-  run bork_decl_directories status foo bar
+  run directories status foo bar
   [ "$status" -eq 11 ]
 }
 
 @test "directories: status returns 20 if any targets are non-directories" {
   echo "FOO" > foo
   mkdirs bee
-  run bork_decl_directories status bee bar foo
+  run directories status bee bar foo
   [ "$status" -eq 20 ]
 }
 
 @test "directories: install creates all target directories" {
-  run bork_decl_directories install foo bar bee
+  run directories install foo bar bee
   [ "$status" -eq 0 ]
   run baked_output
   [ "${lines[0]}" = "mkdir -p foo" ]
@@ -50,7 +50,7 @@ mkdirs () {
 
 @test "directories: upgrade creates all missing target directories" {
   mkdirs foo
-  run bork_decl_directories upgrade foo bar bee
+  run directories upgrade foo bar bee
   [ "$status" -eq 0 ]
   run baked_output
   [ "${lines[0]}" = "mkdir -p bar" ]
