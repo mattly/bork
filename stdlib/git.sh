@@ -23,10 +23,18 @@ case $action in
     # this *does* change the local repository's pointers and takes longer
     # up front, but I believe in the grand scheme is the right thing to do.
     git_fetch="$(cd $git_dir; $cmd fetch 2>&1)"
+    git_fetch_status=$?
 
     # If the directory isn't a git repo, conflict
-    [ $? -ne 0 ] && return 20
-    if str_matches "$git_fetch" '"^fatal"'; then return 20; fi
+    if [ $git_fetch_status -ne 0 ]; then
+      echo "destination directory $git_dir exists, not a git repository (exit status $git_fetch_status)"
+      return 20
+    fi
+    if str_matches "$git_fetch" '"^fatal"'; then 
+      echo "destination directory exists, not a git repository"
+      echo "$git_fetch"
+      return 20
+    fi
 
     git_stat="$(cd $git_dir; $cmd status -uno -b --porcelain)"
 
@@ -34,14 +42,23 @@ case $action in
 
     # str_matches "$git_first_line" "^\#\# $git_branch"
     str_matches "$(str_get_field "$git_first_line" 2)" "$git_branch"
-    if [ "$?" -ne 0 ]; then return 20; fi
+    if [ "$?" -ne 0 ]; then
+      echo "local git repository is on incorrect branch"
+      return 20
+    fi
 
     git_divergence=$(str_get_field "$git_first_line" 3)
-    if str_matches "$git_divergence" 'ahead'; then return 20; fi
+    if str_matches "$git_divergence" 'ahead'; then
+      echo "local git repository is ahead of remote"
+      return 20
+    fi
 
     # are there changes?
     # git_change_match="'^\\s\\?\\w'"
-    if str_matches "$git_stat" "^\\s\\?\\w"; then return 20; fi
+    if str_matches "$git_stat" "^\\s\\?\\w"; then
+      echo "local git repository has uncommitted changes"
+      return 20
+    fi
     # if str_matches "$git_stat" $git_change_match; then return 20; fi
 
     # # If it's known to be behind, outdated
@@ -57,6 +74,7 @@ case $action in
     bake_in $git_dir
     bake "$cmd pull"
     bake "$cmd log HEAD@{1}.."
+    printf "\n"
     ;;
   *) return 1 ;;
 esac
