@@ -12,15 +12,14 @@ stdlib_types=""
 assertion_types=""
 
 register () {
-  for file in $*; do
-    type=$(basename $file '.sh')
-    if [ -e "$BORK_SCRIPT_DIR/$file" ]; then
-      file="$BORK_SCRIPT_DIR/$file"
-    else
-      return 1
-    fi
-    assertion_types=$(echo "$assertion_types"; echo "$type=$file")
-  done
+  file=$1
+  type=$(basename $file '.sh')
+  if [ -e "$BORK_SCRIPT_DIR/$file" ]; then
+    file="$BORK_SCRIPT_DIR/$file"
+  else
+    return 1
+  fi
+  assertion_types=$(echo "$assertion_types"; echo "$type=$file")
 }
 
 get_val () {
@@ -41,9 +40,12 @@ ok () {
   encountered_error=0
   baking_dir=$PWD
   fn=$(get_val $assertion)
-  if [ -z $fn ] &&
-    [ -e "$BORK_SOURCE_DIR/core/$(echo $assertion).sh" ]; then
-    fn="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
+  if [ -z $fn ]; then
+    if [ -e "$BORK_SOURCE_DIR/core/$(echo $assertion).sh" ]; then
+      fn="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
+    elif [ -e "$BORK_SCRIPT_DIR/$assertion" ]; then
+      fn="$BORK_SCRIPT_DIR/$assertion"
+    fi
   fi
   if [ -z $fn ]; then
     echo "invalid type $assertion not found in $assertion_types"
