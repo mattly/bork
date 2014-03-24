@@ -8,8 +8,19 @@ status_for () {
   esac
 }
 
-stdlib_types=""
 assertion_types=""
+
+compile_file () {
+  type=$1
+  file=$2
+  if [ "$operation" = "compile" ] && ! str_contains "$compiled_types" "$assertion"; then
+    compiled_types=$(echo "$compiled_types"; echo "$type")
+    echo "# $file"
+    echo "type_$type () {"
+    echo "$(cat $file)"
+    echo "}"
+  fi
+}
 
 register () {
   file=$1
@@ -20,6 +31,7 @@ register () {
     return 1
   fi
   assertion_types=$(echo "$assertion_types"; echo "$type=$file")
+  compile_file $type $file
 }
 
 get_val () {
@@ -32,6 +44,14 @@ get_val () {
   done
 }
 
+compiled_types=""
+ok_run () {
+  fn=$1
+  shift
+  if [ -n $BORK_IS_COMPILED ]; then $1 $*
+  else . $fn $*
+  fi
+}
 ok () {
   assertion=$1
   shift
@@ -39,48 +59,55 @@ ok () {
   performed_upgrade=0
   encountered_error=0
   baking_dir=$PWD
-  fn=$(get_val $assertion)
-  if [ -z $fn ]; then
-    if [ -e "$BORK_SOURCE_DIR/core/$(echo $assertion).sh" ]; then
-      fn="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
-    elif [ -e "$BORK_SCRIPT_DIR/$assertion" ]; then
-      fn="$BORK_SCRIPT_DIR/$assertion"
+  if [ -n "$BORK_IS_COMPILED" ]; then
+    fn="type_$assertion"
+  else
+    fn=$(get_val $assertion)
+    if [ -z $fn ]; then
+      if [ -e "$BORK_SOURCE_DIR/core/$(echo $assertion).sh" ]; then
+        fn="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
+      elif [ -e "$BORK_SCRIPT_DIR/$assertion" ]; then
+        fn="$BORK_SCRIPT_DIR/$assertion"
+      fi
+    fi
+    if [ -z $fn ]; then
+      echo "invalid type $assertion not found in $assertion_types"
+      return 1
     fi
   fi
-  if [ -z $fn ]; then
-    echo "invalid type $assertion not found in $assertion_types"
-    return 1
-  else
-    case $operation in
-      echo) echo $fn $* ;;
-      status)
-        output=$(. $fn "status" $*)
-        status=$?
-        echo "$(status_for $status): $assertion $*"
-        [ "$status" -eq 20 ] && echo "* $output"
-        ;;
-      satisfy)
-        status_output=$(. $fn "status" $*)
-        status=$?
-        echo "$(status_for $status): $assertion $*"
-        case $status in
-          0) : ;;
-          10)
-            . $fn install $*
-            [ "$?" -eq 0 ] && performed_install=1 || encountered_error=0
-            ;;
-          11)
-            . $fn upgrade $*
-            [ "$?" -eq 0 ] && performed_ugprade=1 || encountered_error=0
-            ;;
-          20)
-            echo "* $status_output"
-            ;;
-        esac
-        clean_tmpdir
-        ;;
-    esac
-  fi
+  case $operation in
+    echo) echo $fn $* ;;
+    status)
+      output=$(ok_run $fn "status" $*)
+      status=$?
+      echo "$(status_for $status): $assertion $*"
+      [ "$status" -eq 20 ] && echo "* $output"
+      ;;
+    satisfy)
+      status_output=$(ok_run $fn "status" $*)
+      status=$?
+      echo "$(status_for $status): $assertion $*"
+      case $status in
+        0) : ;;
+        10)
+          ok_run $fn install $*
+          [ "$?" -eq 0 ] && performed_install=1 || encountered_error=0
+          ;;
+        11)
+          ok_run $fn upgrade $*
+          [ "$?" -eq 0 ] && performed_ugprade=1 || encountered_error=0
+          ;;
+        20)
+          echo "* $status_output"
+          ;;
+      esac
+      clean_tmpdir
+      ;;
+    compile)
+      compile_file $assertion $fn
+      echo "ok $assertion $*"
+      ;;
+  esac
 }
 
 pkg () {
