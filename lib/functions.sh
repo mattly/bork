@@ -48,7 +48,7 @@ compiled_types=""
 ok_run () {
   fn=$1
   shift
-  if [ -n $BORK_IS_COMPILED ]; then $1 $*
+  if [ -n "$BORK_IS_COMPILED" ]; then $fn $*
   else . $fn $*
   fi
 }
