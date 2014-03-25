@@ -117,9 +117,13 @@ ok () {
           ;;
       esac
       clean_tmpdir
+      baking_dir=
+      baking_user=
       ;;
     compile)
+      assertion=$(basename $assertion '.sh')
       compile_file $assertion $fn
+      ok_run $fn compile $*
       echo "ok $assertion $*"
       ;;
   esac
@@ -169,13 +173,17 @@ include () {
 }
 
 baking_dir=
+baking_user=
 bake_in () { baking_dir=$1; }
+bake_as () { baking_user=$1; }
 bake () {
-  echo "$1"
-  (
-    cd $baking_dir
-    $1
-  )
+  this_cmd=
+  [ -n "$baking_dir" ] && this_cmd="$cmd cd $baking_dir &&"
+  [ -n "$baking_user" ] && this_cmd="$this_cmd sudo -u $baking_user sh -c '"
+  this_cmd="$this_cmd$1"
+  [ -n "$baking_user" ] && this_cmd="$this_cmd'"
+  echo "$this_cmd"
+  (eval $this_cmd)
   status="$(echo $?)"
   if [ "$status" -gt "0" ]; then
     echo "failed with status: $status"
