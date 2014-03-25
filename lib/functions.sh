@@ -84,6 +84,7 @@ ok () {
       [ "$status" -eq 20 ] && echo "* $output"
       ;;
     satisfy)
+      echo "checking status: $assertion $*"
       status_output=$(ok_run $fn "status" $*)
       status=$?
       echo "$(status_for $status): $assertion $*"
@@ -91,11 +92,25 @@ ok () {
         0) : ;;
         10)
           ok_run $fn install $*
-          [ "$?" -eq 0 ] && performed_install=1 || encountered_error=0
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            performed_install=1
+            echo "success: $assertion $*"
+          else
+            encountered_error=0
+            echo "failure: $assertion $*"
+          fi
           ;;
         11)
           ok_run $fn upgrade $*
-          [ "$?" -eq 0 ] && performed_ugprade=1 || encountered_error=0
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            performed_ugprade=1
+            echo "success: $assertion $*"
+          else
+            encountered_error=0
+            echo "failure: $assertion $*"
+          fi
           ;;
         20)
           echo "* $status_output"
