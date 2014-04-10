@@ -178,7 +178,7 @@ bake_in () { baking_dir=$1; }
 bake_as () { baking_user=$1; }
 bake () {
   this_cmd=
-  [ -n "$baking_dir" ] && this_cmd="$cmd cd $baking_dir &&"
+  [ -n "$baking_dir" ] && this_cmd="cd $baking_dir &&"
   [ -n "$baking_user" ] && this_cmd="$this_cmd sudo -u $baking_user sh -c '"
   this_cmd="$this_cmd$1"
   [ -n "$baking_user" ] && this_cmd="$this_cmd'"
