@@ -50,8 +50,8 @@
 
 # == replace
 @test "replace: replaces the matched pattern with the result" {
-  result=$(str_replace "foobar" "o*b" "at")
-  [ "$result" = "fatar" ]
+  result=$(str_replace "foobobaz" "o*b" "at")
+  [ "$result" = "fatataz" ]
 }
 
 @test "replace: returns the input when the pattern does not match" {

@@ -36,7 +36,7 @@ str_matches () {
 # Takes a string, replaces matches with a replacement
 # "foo bar" "b\w+" "oo" -> "foo boo"
 str_replace () {
-  echo $(echo "$1" | sed -E 's|'"$2"'|'"$3"'|')
+  echo $(echo "$1" | sed -E 's|'"$2"'|'"$3"'|g')
 }
 
 
