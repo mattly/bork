@@ -4,7 +4,7 @@ status_for () {
     "10") echo "missing" ;;
     "11") echo "outdated" ;;
     "20") echo "conflict" ;;
-    *)    echo "unknown status: $?" ;;
+    *)    echo "unknown status: $1" ;;
   esac
 }
 
@@ -81,7 +81,7 @@ ok () {
       output=$(ok_run $fn "status" $*)
       status=$?
       echo "$(status_for $status): $assertion $*"
-      [ "$status" -eq 20 ] && echo "* $output"
+      [ "$status" -ne 0 ] && [ -n "$output" ] && echo "$output"
       ;;
     satisfy)
       echo "checking status: $assertion $*"
@@ -102,6 +102,7 @@ ok () {
           fi
           ;;
         11)
+          echo "$status_output"
           ok_run $fn upgrade $*
           status=$?
           if [ "$status" -eq 0 ]; then
@@ -121,6 +122,7 @@ ok () {
       baking_user=
       ;;
     compile)
+      echo "# compiling 'ok $assertion $*'"
       assertion=$(basename $assertion '.sh')
       compile_file $assertion $fn
       ok_run $fn compile $*
@@ -149,8 +151,8 @@ pkg () {
   fi
 }
 
-did_install () { [ "$performed_install" -eq 1 ] && return 0 else return 1; }
-did_upgrade () { [ "$performed_upgrade" -eq 1 ] && return 0 else return 1; }
+did_install () { [ "$performed_install" -eq 1 ] && return 0 || return 1; }
+did_upgrade () { [ "$performed_upgrade" -eq 1 ] && return 0 || return 1; }
 did_update () {
   if did_install; then return 0
   elif did_upgrade; then return 0
