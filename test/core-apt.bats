@@ -7,8 +7,8 @@ apt () { . $BORK_SOURCE_DIR/core/apt.sh $*; }
 baked_output=
 
 dpkg_get_selections () {
-  echo "outdated_package              installed"
-  echo "current_package               installed"
+  echo "outdated_package              install"
+  echo "current_package               install"
 }
 apt_upgrade_dry () {
   echo "Conf current_package"

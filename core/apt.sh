@@ -15,9 +15,11 @@ case $action in
     echo "exec: dkpg"
     ;;
   status)
-    $(str_contains "$($apt_list_cmd | awk '{print $1}')" "$name")
+    pkglist=$($apt_list_cmd | grep -E "^$name\\s+install$")
     [ "$?" -gt 0 ] && return 10
-    $(str_contains "$($apt_outdated_cmd | grep "^Inst" | awk '{print $2}')" "$name")
+
+    outdated=$($apt_outdated_cmd | grep "^Inst" | awk '{print $2}')
+    $(str_contains "$outdated" "$name")
     [ "$?" -eq 0 ] && return 11
     return 0 ;;
   install) bake "$apt_cmd --yes install $name" ;;
