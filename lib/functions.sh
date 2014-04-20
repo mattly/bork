@@ -78,27 +78,6 @@ ok () {
   esac
 }
 
-pkg () {
-  name=$1
-  $(bork_pkg_$name depends >> /dev/null 2>&1)
-  present=$?
-  if [ "$present" -eq 0 ]; then
-    shift
-    pkg_runner "bork_pkg_$name" "$name" $*
-  else
-    case $platform in
-      Darwin) manager="brew" ;;
-      Linux)
-        if has_exec "apt-get"; then manager="apt"
-        else return 1
-        fi ;;
-      *) return 1 ;;
-    esac
-    ok $manager $*
-  fi
-}
-
-
 # TODO maybe script dir should be a stack?
 include () {
   if [ -e "$BORK_SCRIPT_DIR/$1" ]; then
