@@ -11,7 +11,7 @@ status_for () {
 ok_run () {
   fn=$1
   shift
-  if [ -n "$BORK_IS_COMPILED" ]; then $fn $*
+  if is_compiled; then $fn $*
   else . $fn $*
   fi
 }
@@ -20,22 +20,8 @@ ok () {
   shift
   changes_reset
   baking_dir=$PWD
-  if [ -n "$BORK_IS_COMPILED" ]; then
-    fn="type_$assertion"
-  else
-    fn=$(multiline key 'assertion_types' $assertion)
-    if [ -z $fn ]; then
-      if [ -e "$BORK_SOURCE_DIR/core/$(echo $assertion).sh" ]; then
-        fn="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
-      elif [ -e "$BORK_SCRIPT_DIR/$assertion" ]; then
-        fn="$BORK_SCRIPT_DIR/$assertion"
-      fi
-    fi
-    if [ -z $fn ]; then
-      echo "invalid type $assertion not found in $assertion_types"
-      return 1
-    fi
-  fi
+  fn=$(lookup_assertion $assertion)
+  if [ "$?" -gt 0 ]; then return 1; fi
   case $operation in
     echo) echo $fn $* ;;
     status)
@@ -71,7 +57,7 @@ ok () {
     compile)
       echo "# compiling 'ok $assertion $*'"
       assertion=$(basename $assertion '.sh')
-      compile_file $assertion $fn
+      include_assertion $assertion $fn
       ok_run $fn compile $*
       echo "ok $assertion $*"
       ;;
