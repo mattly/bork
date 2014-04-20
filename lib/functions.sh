@@ -8,43 +8,6 @@ status_for () {
   esac
 }
 
-assertion_types=""
-
-compile_file () {
-  type=$1
-  file=$2
-  if [ "$operation" = "compile" ] && ! str_contains "$compiled_types" "$assertion"; then
-    compiled_types=$(echo "$compiled_types"; echo "$type")
-    echo "# $file"
-    echo "type_$type () {"
-    echo "$(cat $file)"
-    echo "}"
-  fi
-}
-
-register () {
-  file=$1
-  type=$(basename $file '.sh')
-  if [ -e "$BORK_SCRIPT_DIR/$file" ]; then
-    file="$BORK_SCRIPT_DIR/$file"
-  else
-    return 1
-  fi
-  assertion_types=$(echo "$assertion_types"; echo "$type=$file")
-  compile_file $type $file
-}
-
-get_val () {
-  echo "$assertion_types" | while read line; do
-    key=${line%%=*}
-    if [ "$key" = $1 ]; then
-      echo "${line##*=}"
-      return 0
-    fi
-  done
-}
-
-compiled_types=""
 ok_run () {
   fn=$1
   shift
@@ -55,14 +18,12 @@ ok_run () {
 ok () {
   assertion=$1
   shift
-  performed_install=0
-  performed_upgrade=0
-  encountered_error=0
+  changes_reset
   baking_dir=$PWD
   if [ -n "$BORK_IS_COMPILED" ]; then
     fn="type_$assertion"
   else
-    fn=$(get_val $assertion)
+    fn=$(multiline key 'assertion_types' $assertion)
     if [ -z $fn ]; then
       if [ -e "$BORK_SOURCE_DIR/core/$(echo $assertion).sh" ]; then
         fn="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
@@ -92,26 +53,12 @@ ok () {
         0) : ;;
         10)
           ok_run $fn install $*
-          status=$?
-          if [ "$status" -eq 0 ]; then
-            performed_install=1
-            echo "success: $assertion $*"
-          else
-            encountered_error=0
-            echo "failure: $assertion $*"
-          fi
+          changes_complete $? 'install'
           ;;
         11)
           echo "$status_output"
           ok_run $fn upgrade $*
-          status=$?
-          if [ "$status" -eq 0 ]; then
-            performed_ugprade=1
-            echo "success: $assertion $*"
-          else
-            encountered_error=0
-            echo "failure: $assertion $*"
-          fi
+          changes_complete $? 'upgrade'
           ;;
         20)
           echo "* $status_output"
@@ -151,14 +98,6 @@ pkg () {
   fi
 }
 
-did_install () { [ "$performed_install" -eq 1 ] && return 0 || return 1; }
-did_upgrade () { [ "$performed_upgrade" -eq 1 ] && return 0 || return 1; }
-did_update () {
-  if did_install; then return 0
-  elif did_upgrade; then return 0
-  else return 1
-  fi
-}
 
 # TODO maybe script dir should be a stack?
 include () {

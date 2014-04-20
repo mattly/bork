@@ -10,8 +10,8 @@ operation='echo'
   ok custom
 }
 
-@test "register: returns 1 for non-valid values, does not add lib" {
-  status=$(register foo; echo $?)
+@test "register: exits 1 for non-valid values, does not add lib" {
+  run register foo
   [ "$status" -eq 1 ]
   run ok foo
   [ "$status" -eq 1 ]
