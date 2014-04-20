@@ -28,25 +28,23 @@ user_shell () {
 }
 
 user_groups () {
-  if [ -n "$user_groups_cmd" ]; then current=$($user_groups_cmd "$1")
-  else current=$(groups $1)
+  current_groups=
+  if [ -n "$user_groups_cmd" ]; then current_groups=$($user_groups_cmd "$1")
+  else current_groups=$(groups $1)
   fi
   case $platform in
-    Linux) current=$(echo "$current" | cut -d: -f 2) ;;
+    Linux) current_groups=$(echo "$current" | cut -d: -f 2) ;;
   esac
-  missing=
-  expected=$(IFS=','; echo $groups)
-  for group in $expected; do
-    echo "$current" | grep -E "\b$group\b"
+  missing_groups=
+  expected_groups=$(IFS=','; echo $2)
+  for group in $expected_groups; do
+    echo "$current_groups" | grep -E "\b$group\b" > /dev/null
     if [ "$?" -gt 0 ]; then
-      [ -n "$missing" ] && missing="$missing,$group"
-      [ -z "$missing" ] && missing=$group
+      missing_groups=1
+      echo $group
     fi
   done
-  if [ -n "$missing" ]; then
-    echo $missing
-    return 1
-  fi
+  [ -n "$missing_groups" ] && return 1
   return 0
 }
 
@@ -56,16 +54,16 @@ case $action in
     row=$(user_get $handle)
     [ "$?" -gt 0 ] && return 10
     if [ -n "$shell" ]; then
-      current=$(user_shell "$row" $shell)
+      msg=$(user_shell "$row" $shell)
       if [ "$?" -gt 0 ]; then
-        echo "--shell: expected $shell; is $current"
+        echo "--shell: expected $shell; is $msg"
         outdated=1
       fi
     fi
     if [ -n "$groups" ]; then
-      missing=$(user_groups $handle $groups)
+      msg=$(user_groups $handle $groups)
       if [ "$?" -gt 0 ]; then
-        echo "--groups: expected $groups; missing $missing"
+        echo "--groups: expected $groups; missing $(echo $msg)"
         outdated=1
       fi
     fi

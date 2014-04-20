@@ -49,6 +49,9 @@ setup () {
 @test "user status: with shell, returns 11 when user exists, wrong shell" {
   run user status existant --shell=/bin/zsh
   [ "$status" -eq 11 ]
+  [ "${#lines[*]}" -eq 1 ]
+  echo "${lines[0]}" | grep -E "^--shell:" >/dev/null
+  echo "${lines[0]}" | grep -E "/bin/bash$" >/dev/null
 }
 
 @test "user status: with shell, returns 0 when user exists, right shell" {
@@ -80,16 +83,18 @@ setup () {
 
 @test "user status: with group, returns 11 when user belongs to none" {
   run user status existant --groups=foo,bar
-  p $status
   [ "$status" -eq 11 ]
   [ "${#lines[*]}" -eq 1 ]
   echo "${lines[0]}" | grep -E "^--groups:" >/dev/null
-  echo "${lines[0]}" | grep -E "foo,bar$" >/dev/null
+  echo "${lines[0]}" | grep -E "foo bar$" >/dev/null
 }
 
 @test "user status: with group, returns 11 when user belongs to some" {
   run user status existant --groups=foo,bar,bee
   [ "$status" -eq 11 ]
+  [ "${#lines[*]}" -eq 1 ]
+  echo "${lines[0]}" | grep -E "^--groups:" >/dev/null
+  echo "${lines[0]}" | grep -E "foo bar$" > /dev/null
 }
 
 @test "user status: with group, returns 0 when user belongs to all" {
