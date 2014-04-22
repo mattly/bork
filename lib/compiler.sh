@@ -10,17 +10,18 @@ is_compiled () {
 }
 
 # multiline, keeps list of compiled types
-compiled_types=
+bag init compiled_types
 
 # TODO: test
 # interface for the compiled_type multiline
 compiled_type_push () {
-  compiled_types=$(multiline add 'compiled_types' "$1")
+  bag push compiled_types "$1"
 }
 # TODO: test
 # interface for the compiled_type multiline
 compiled_type_exists () {
-  $(multiline find 'compiled_types' "^$1\$")
+  exists=$(bag find compiled_types "^$1\$")
+  [ -n "$exists" ]
   return $?
 }
 

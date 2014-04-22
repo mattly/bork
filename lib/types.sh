@@ -2,7 +2,7 @@
 
 # is a key/value 'multiline' that keeps track of assertion types and how to
 # run them.
-assertion_types=
+bag init assertion_types
 
 # register a local assertion type
 # register $filename
@@ -21,20 +21,18 @@ register () {
   else
     exit 1
   fi
-  assertion_types=$(multiline add 'assertion_types', "$type=$file")
-  include_assertion $type $file
+  bag set assertion_types $type $file
 }
 
-# TODO: test
 # lookup assertion function
-lookup_assertion () {
+lookup_type () {
   assertion=$1
   if is_compiled; then
     echo "type_$assertion"
     return
   fi
-  fn=$(multiline key 'assertion_types' $assertion)
-  if [ "$?" -eq 0 ]; then
+  fn=$(bag get assertion_types $assertion)
+  if [ -n "$fn" ]; then
     echo "$fn"
     return
   fi

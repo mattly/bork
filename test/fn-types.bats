@@ -20,21 +20,21 @@ operation='echo'
 # --- lookup_assertion -------------------------------------------
 @test "when is_compiled, echoes type_\$assertion" {
   BORK_IS_COMPILED=1
-  run lookup_assertion 'foo'
+  run lookup_type 'foo'
   [ "$status" -eq 0 ]
   [ "$output" = "type_foo" ]
 }
 
 @test "when assertion_types include type, echoes script" {
-  assertion_types=$(multiline add 'assertion_types' "foo=bar")
-  assertion_types=$(multiline add 'assertion_types' "bar=bee")
-  run lookup_assertion 'foo'
+  bag set assertion_types foo bar
+  bag set assertion_types bar bee
+  run lookup_type 'foo'
   [ "$status" -eq 0 ]
   [ "$output" = 'bar' ]
 }
 
 @test "when references official assertion, echoes that" {
-  run lookup_assertion "git"
+  run lookup_type "git"
   [ "$status" -eq 0 ]
   path="$BORK_SOURCE_DIR/core/git.sh"
   [ "$output" = $path ]
@@ -42,7 +42,7 @@ operation='echo'
 
 @test "when missing and references local script, echoes that" {
   script_path="test/fixtures/custom.sh"
-  run lookup_assertion "$script_path"
+  run lookup_type "$script_path"
   [ "$status" -eq 0 ]
   abs_path="$BORK_SCRIPT_DIR/$script_path"
   [ "$output" = $abs_path ]

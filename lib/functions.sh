@@ -20,7 +20,7 @@ ok () {
   shift
   changes_reset
   baking_dir=$PWD
-  fn=$(lookup_assertion $assertion)
+  fn=$(lookup_type $assertion)
   if [ "$?" -gt 0 ]; then return 1; fi
   case $operation in
     echo) echo $fn $* ;;
