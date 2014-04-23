@@ -3,13 +3,10 @@
 . test/helpers.sh
 brew () { . $BORK_SOURCE_DIR/core/brew.sh $*; }
 
-brew_responder () {
-  case "$1 $2" in
-    "brew list") cat "$fixtures/brew-list.txt" ;;
-    "brew outdated") cat "$fixtures/brew-outdated.txt" ;;
-  esac
+setup () {
+  respond_to "brew list" "cat $fixtures/brew-list.txt"
+  respond_to "brew outdated" "cat $fixtures/brew-outdated.txt"
 }
-baking_responder='brew_responder'
 
 @test "brew status reports a package is missing" {
   run brew status missing_package_is_missing

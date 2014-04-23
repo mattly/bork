@@ -19,12 +19,14 @@ bake () {
   handler=$(bag get responders $key)
   if [ -n "$handler" ]; then
     eval $handler
-  elif [ -n "$baking_responder" ]; then
-    $baking_responder $*
+  else
+    baking_responder $*
   fi
   return
 }
-bake_in () { echo "bake_in $*" >> $baking_file; }
+# overwrite this in your tests
+baking_responder () { :; }
+
 baked_output () { cat $baking_file; }
 
 fixtures="$BORK_SOURCE_DIR/test/fixtures"

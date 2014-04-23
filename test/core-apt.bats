@@ -4,19 +4,10 @@
 
 apt () { . $BORK_SOURCE_DIR/core/apt.sh $*; }
 
-apt_responder () {
-  case "$1 $2" in
-    "dpkg --get-selections") cat "$fixtures/apt-dpkg-dependencies.txt" ;;
-    "sudo apt-get")
-      shift 2
-      case "$*" in
-        "-u update --dry-run") cat "$fixtures/apt-update-dry.txt" ;;
-      esac
-      ;;
-  esac
+setup () {
+  respond_to "dpkg --get-selections" "cat $fixtures/apt-dpkg-dependencies.txt"
+  respond_to "sudo apt-get -u update --dry-run" "cat $fixtures/apt-update-dry.txt"
 }
-
-baking_responder='apt_responder'
 
 @test "apt status reports a package is missing" {
   run apt status missing_package

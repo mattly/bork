@@ -4,8 +4,7 @@
 directories () { . $BORK_SOURCE_DIR/core/directories.sh $*; }
 
 # these tests use live directories in a tempdir
-dir_responder () { eval "$*"; }
-baking_responder='dir_responder'
+baking_responder () { eval "$*"; }
 
 setup () {
   tmpdir=$(mktemp -d -t bork-dir)

@@ -4,8 +4,7 @@
 symlink () { . $BORK_SOURCE_DIR/core/symlink.sh $*; }
 
 # passes through to actual tests on the file system
-symlink_responder () { eval "$*"; }
-baking_responder='symlink_responder'
+baking_responder () { eval "$*"; }
 
 tmpdir=
 setup () {
