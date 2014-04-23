@@ -1,9 +1,5 @@
-apt_cmd="command sudo apt-get"
-if [ -n "$command_apt_get" ]; then apt_cmd=$command_apt_get; fi
-apt_outdated_cmd="$apt_cmd -u upgrade --dry-run"
-if [ -n "$command_apt_outdated" ]; then apt_outdated_cmd=$command_apt_outdated; fi
-apt_list_cmd="command dpkg --get-selections"
-if [ -n "$command_apt_list" ]; then apt_list_cmd=$command_apt_list; fi
+apt_cmd="sudo apt-get"
+[ -n "$command_apt_get" ] && apt_cmd=$command_apt_get
 
 action=$1
 name=$2
@@ -15,14 +11,15 @@ case $action in
     echo "exec: dkpg"
     ;;
   status)
-    pkglist=$($apt_list_cmd | grep -E "^$name\\s+install$")
+    echo "$(bake dpkg --get-selections)" | grep -E "^$name\\s+install$"
     [ "$?" -gt 0 ] && return 10
 
-    outdated=$($apt_outdated_cmd | grep "^Inst" | awk '{print $2}')
+    outdated=$(bake sudo apt-get -u update --dry-run \
+                | grep "^Inst" | awk '{print $2}')
     $(str_contains "$outdated" "$name")
     [ "$?" -eq 0 ] && return 11
     return 0 ;;
-  install) bake "$apt_cmd --yes install $name" ;;
-  upgrade) bake "$apt_cmd --yes install $name" ;;
+  install|upgrade) bake sudo apt-get --yes install $name ;;
   *) return 1 ;;
 esac
+
