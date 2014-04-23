@@ -3,6 +3,10 @@
 . test/helpers.sh
 directories () { . $BORK_SOURCE_DIR/core/directories.sh $*; }
 
+# these tests use live directories in a tempdir
+dir_responder () { eval "$*"; }
+baking_responder='dir_responder'
+
 setup () {
   tmpdir=$(mktemp -d -t bork-dir)
   cd $tmpdir
@@ -43,9 +47,9 @@ mkdirs () {
   run directories install foo bar bee
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${lines[0]}" = "mkdir -p foo" ]
-  [ "${lines[1]}" = "mkdir -p bar" ]
-  [ "${lines[2]}" = "mkdir -p bee" ]
+  [ "${lines[1]}" = "mkdir -p foo" ]
+  [ "${lines[3]}" = "mkdir -p bar" ]
+  [ "${lines[5]}" = "mkdir -p bee" ]
 }
 
 @test "directories: upgrade creates all missing target directories" {
@@ -53,6 +57,6 @@ mkdirs () {
   run directories upgrade foo bar bee
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${lines[0]}" = "mkdir -p bar" ]
-  [ "${lines[1]}" = "mkdir -p bee" ]
+  [ "${lines[2]}" = "mkdir -p bar" ]
+  [ "${lines[4]}" = "mkdir -p bee" ]
 }
