@@ -22,7 +22,8 @@ bag () {
     init) eval "$varname=( )" ;;
     push) eval "$varname[$length]=\"$1\"" ;;
     pop) eval "unset $varname[$last]=" ;;
-    read) echo $(eval "echo \${$varname[$last]}") ;;
+    read)
+      [ "$length" -gt 0 ] && echo $(eval "echo \${$varname[$last]}") ;;
     size) echo $length ;;
     filter)
       index=0

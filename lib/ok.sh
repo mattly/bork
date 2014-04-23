@@ -11,8 +11,8 @@ status_for () {
 ok_run () {
   fn=$1
   shift
-  if is_compiled; then $fn $*
-  else . $fn $*
+  if is_compiled; then ($fn $*)
+  else (. $fn $*)
   fi
 }
 
@@ -31,10 +31,19 @@ ok () {
       [ "$status" -ne 0 ] && [ -n "$output" ] && echo "$output"
       ;;
     satisfy)
-      echo "checking status: $assertion $*"
+      check="checking: $assertion $*"
+      len=${#check}
+      echo -n $check$'\r'
       status_output=$(ok_run $fn "status" $*)
       status=$?
-      echo "$(status_for $status): $assertion $*"
+      report="$(status_for $status): $assertion $*"
+      (( pad=$len-${#report} ))
+      i=1
+      while [ "$i" -le $pad ]; do
+        report+=" "
+        (( i++ ))
+      done
+      echo $report
       case $status in
         0) : ;;
         10)
