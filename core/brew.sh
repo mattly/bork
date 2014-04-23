@@ -1,6 +1,3 @@
-brew_cmd="command brew"
-if [ -n "$command_brew" ]; then brew_cmd=$command_brew; fi
-
 action=$1
 name=$2
 shift 2
@@ -12,6 +9,7 @@ if [ -z "$name" ]; then
       echo "exec: ruby"
       ;;
     status)
+      which brew
       has_exec "brew"
       [ "$?" -gt 0 ] && return 10
       changes=$(cd /usr/local; git fetch --quiet; git log master..origin/master)
@@ -21,21 +19,22 @@ if [ -z "$name" ]; then
       # bake --eval 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"'
       # ;;
     upgrade)
-      bake "$cmd update"
+      bake brew update
+      # bake "$cmd update"
       ;;
     *) return 1 ;;
   esac
 else
   case $action in
-    depends) echo "pkg: brew" ;;
+    depends) echo "exec: brew" ;;
     status)
-      $(str_contains "$($brew_cmd list)" "$name")
+      bake brew list | grep -E "^$name$"
       [ "$?" -gt 0 ] && return 10
-      $(str_contains "$($brew_cmd outdated | awk '{print $1}')" "$name")
+      bake brew outdated | awk '{print $1}' | grep -E "^$name$"
       [ "$?" -eq 0 ] && return 11
       return 0 ;;
-    install) bake "$brew_cmd install $name" ;;
-    upgrade) bake "$brew_cmd upgrade $name" ;;
+    install) bake brew install $name ;;
+    upgrade) bake brew upgrade $name ;;
     *) return 1 ;;
   esac
 fi

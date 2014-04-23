@@ -44,7 +44,3 @@ setup () {
   [ "$status" -eq 1 ]
 }
 
-@test "destinations pop returns 1 on empty stack" {
-  run destination pop
-  [ "$status" -eq 1 ]
-}

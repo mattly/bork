@@ -11,8 +11,30 @@ p () {
 
 for f in $(ls lib/*.sh); do . $f; done
 
+baking_responder=
 baking_file=$(mktemp -t bork_test)
-bake () { echo "$*" >> $baking_file; }
-bake_in () { echo "bake_in $*" >> $baking_file; }
+bake () {
+  echo "$*" >> $baking_file;
+  key=$(echo "$*" | md5)
+  handler=$(bag get responders $key)
+  if [ -n "$handler" ]; then
+    eval $handler
+  else
+    baking_responder $*
+  fi
+  return
+}
+# overwrite this in your tests
+baking_responder () { :; }
+
 baked_output () { cat $baking_file; }
+
+fixtures="$BORK_SOURCE_DIR/test/fixtures"
+
+bag init responders
+respond_to () {
+  key=$(echo "$1" | md5)
+  bag set responders "$key" "$2"
+}
+return_with () { return $1; }
 

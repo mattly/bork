@@ -1,0 +1,3 @@
+Conf current_package
+Inst outdated_package [1:9.8.1.dfsg.P1-4] (1:9.8.1.dfsg.P1-4ubuntu0.3 Ubuntu:12.04/precise-updates [i386]) []
+Conf outdated_package
