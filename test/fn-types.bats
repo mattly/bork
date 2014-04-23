@@ -7,7 +7,7 @@ operation='echo'
 @test "register: recognizes paths" {
   BORK_SCRIPT_DIR="$BORK_WORKING_DIR/test"
   register "./fixtures/custom.sh"
-  ok custom
+  ok custom foo
 }
 
 @test "register: exits 1 for non-valid values, does not add lib" {

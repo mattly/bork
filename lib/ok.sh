@@ -20,11 +20,10 @@ ok () {
   assertion=$1
   shift
   changes_reset
-  bake reset
   fn=$(lookup_type $assertion)
-  if [ "$?" -gt 0 ]; then return 1; fi
+  [ -z "$fn" ] && return 1
   case $operation in
-    echo) echo $fn $* ;;
+    echo) echo "$fn $*" ;;
     status)
       output=$(ok_run $fn "status" $*)
       status=$?
