@@ -11,8 +11,18 @@ p () {
 
 for f in $(ls lib/*.sh); do . $f; done
 
+baking_responder=
 baking_file=$(mktemp -t bork_test)
-bake () { echo "$*" >> $baking_file; }
+bake () {
+  echo "$*" >> $baking_file;
+  [ -n "$baking_responder" ] && $baking_responder $*
+  return
+}
 bake_in () { echo "bake_in $*" >> $baking_file; }
 baked_output () { cat $baking_file; }
+
+fixture () {
+  path="$BORK_SOURCE_DIR/test/fixtures/$1"
+  [ -e "$path" ] && cat "$path"
+}
 
