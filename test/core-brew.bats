@@ -3,31 +3,13 @@
 . test/helpers.sh
 brew () { . $BORK_SOURCE_DIR/core/brew.sh $*; }
 
-return_status=0
-brew_packages=
-brew_outdated=
-baked_output=
-test_brew () {
-  case $1 in
-    list) echo "$brew_packages" ;;
-    outdated) echo "$brew_outdated" ;;
+brew_responder () {
+  case "$1 $2" in
+    "brew list") cat "$fixtures/brew-list.txt" ;;
+    "brew outdated") cat "$fixtures/brew-outdated.txt" ;;
   esac
-  [ -n $return_status ] && return $return_status
 }
-
-setup () {
-  return_status=0
-  command_brew='test_brew'
-  brew_packages=$(
-    echo "current_package"
-    echo "outdated_package"
-  )
-  brew_outdated=$(
-    echo "outdated_package (0.5 < 0.6)"
-    echo "another_outdated_package (0.4 < 0.4.1)"
-  )
-  baked_output=$(mktemp -t brewtest)
-}
+baking_responder='brew_responder'
 
 @test "brew status reports a package is missing" {
   run brew status missing_package_is_missing
@@ -47,12 +29,14 @@ setup () {
 @test "brew install runs 'install'" {
   run brew install missing_package_is_missing
   [ "$status" -eq 0 ]
-  [ "$(baked_output)" = 'test_brew install missing_package_is_missing' ]
+  run baked_output
+  [ "$output" = 'brew install missing_package_is_missing' ]
 }
 
 @test "brew upgrade runs 'upgrade'" {
   run brew upgrade outdated_package
   [ "$status" -eq 0 ]
-  [ "$(baked_output)" = 'test_brew upgrade outdated_package' ]
+  run baked_output
+  [ "$output" = 'brew upgrade outdated_package' ]
 }
 
