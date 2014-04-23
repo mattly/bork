@@ -22,8 +22,4 @@ bake_in () { echo "bake_in $*" >> $baking_file; }
 baked_output () { cat $baking_file; }
 
 fixtures="$BORK_SOURCE_DIR/test/fixtures"
-fixture () {
-  path="$BORK_SOURCE_DIR/test/fixtures/$1"
-  [ -e "$path" ] && cat "$path"
-}
 
