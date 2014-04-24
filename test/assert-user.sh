@@ -3,22 +3,11 @@
 . test/helpers.sh
 user () { . $BORK_SOURCE_DIR/core/user.sh $*; }
 
-list_users () {
-  echo "existant:*:100:100::/home/existant:/bin/bash"
-}
-
-list_groups_for_user () {
-  prefix=
-  [ "$platform" = "Linux" ] && prefix="$1 : "
-  case $1 in
-    existant) echo "bee existant " ;;
-    *) return 1 ;;
-  esac
-}
-
+users_query="cat /etc/passwd"
+groups_query="groups existant"
 setup () {
-  user_list_cmd="list_users"
-  user_groups_cmd="list_groups_for_user"
+  respond_to "$users_query"   "cat $fixtures/user-list.txt"
+  respond_to "$groups_query"  "echo 'bee existant '"
 }
 
 # --- without arguments ----------------------------------------
@@ -71,8 +60,10 @@ setup () {
   run user upgrade existant --shell=/bin/zsh
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${#lines[*]}" -eq 1 ]
-  [ "${lines[0]}" = "chsh -s /bin/zsh existant" ]
+  [ "${#lines[*]}" -eq 3 ]
+  [ "${lines[0]}" = $users_query ]
+  [ "${lines[1]}" = "chsh -s /bin/zsh existant" ]
+  [ "${lines[2]}" = $groups_query ]
 }
 
 # --- with group argument ------------------------------------
@@ -114,7 +105,9 @@ setup () {
   run user upgrade existant --groups=foo,bar
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${#lines[*]}" -eq 2 ]
-  [ "${lines[0]}" = "useradd existant foo" ]
-  [ "${lines[1]}" = "useradd existant bar" ]
+  [ "${#lines[*]}" -eq 4 ]
+  [ "${lines[0]}" = $users_query ]
+  [ "${lines[1]}" = $groups_query ]
+  [ "${lines[2]}" = "useradd existant foo" ]
+  [ "${lines[3]}" = "useradd existant bar" ]
 }

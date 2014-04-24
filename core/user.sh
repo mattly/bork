@@ -5,14 +5,8 @@ shift 2
 shell=$(arguments get shell $*)
 groups=$(arguments get groups $*)
 
-users_list () {
-  if [ -n "$user_list_cmd" ]; then $user_list_cmd
-  else echo "$(cat /etc/password)"
-  fi
-}
-
 user_get () {
-  row=$(users_list | grep -E "^$1:")
+  row=$(bake cat /etc/passwd | grep -E "^$1:")
   stat=$?
   echo $row
   return $stat
@@ -28,10 +22,7 @@ user_shell () {
 }
 
 user_groups () {
-  current_groups=
-  if [ -n "$user_groups_cmd" ]; then current_groups=$($user_groups_cmd "$1")
-  else current_groups=$(groups $1)
-  fi
+  current_groups=$(bake groups $1)
   case $platform in
     Linux) current_groups=$(echo "$current" | cut -d: -f 2) ;;
   esac
@@ -73,17 +64,17 @@ case $action in
     args="-m"
     [ -n "$shell" ] && args="$args --shell $shell"
     [ -n "$groups" ] && args="$args --groups $groups"
-    bake "useradd $args $handle"
+    bake useradd $args $handle
     ;;
   upgrade)
     if ! user_shell $(user_get $handle) $shell ; then
-      bake "chsh -s $shell $handle"
+      bake chsh -s $shell $handle
     fi
     missing=$(user_groups $handle $groups)
     if [ "$?" -gt 0 ]; then
       groups_to_create=$(IFS=','; echo $missing)
       for group in $groups_to_create; do
-        bake "useradd $handle $group"
+        bake useradd $handle $group
       done
     fi
     ;;
