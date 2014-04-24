@@ -26,19 +26,20 @@ bork_symlink_name_for_file () {
 
 case "$action" in
   status)
+    # TODO: conflicts accumulator, list all conflicts
     missing=0
     accum=0
     for item in $*; do
       (( accum++ ))
       fname=$(bork_symlink_name_for_file $item $tmpl)
-      if [ -h $fname ]; then
-        if [ "$(readlink $fname)" != $item ]; then
+      if bake [ -h $fname ]; then
+        if [ "$(bake readlink $fname)" != $item ]; then
           echo "$fname points to wrong destination"
           return 20
         else
           : # is current
         fi
-      elif [ -e $fname ]; then
+      elif bake [ -e $fname ]; then
         echo "$fname exists as a non-symlink"
         return 20
       else
@@ -52,7 +53,7 @@ case "$action" in
   install|upgrade)
     for file in $*; do
       fname=$(bork_symlink_name_for_file $file $tmpl)
-      [ ! -h $fname ] && bake "ln -s $file $fname"
+      bake [ ! -h $fname ] && bake "ln -s $file $fname"
     done
     return 0
     ;;

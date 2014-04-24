@@ -6,38 +6,37 @@ git_url=$2
 shift 2
 
 git_name=$(basename $git_url .git)
-git_dir="$(destination)/$git_name"
+git_dir="$git_name"
 git_branch="master"
 
 case $action in
   depends) echo "exec: git" ;;
   status)
     # if the directory is missing, it's missing
-    [ ! -d $git_dir ] && return 10
+    bake [ ! -d $git_dir ] && return 10
 
     # if the directory is present but empty, it's missing
-    git_dir_contents=$(str_item_count "$(ls -A $git_dir)")
-    [[ $git_dir_contents = 0 ]] && return 10
+    git_dir_contents=$(str_item_count "$(bake ls -A $git_dir)")
+    [ "$git_dir_contents" -eq 0 ] && return 10
 
+    bake cd $git_dir
     # fetch from the remote without fast-forwarding
     # this *does* change the local repository's pointers and takes longer
     # up front, but I believe in the grand scheme is the right thing to do.
-    git_fetch="$(cd $git_dir; $cmd fetch 2>&1)"
+    git_fetch="$(bake git fetch 2>&1)"
     git_fetch_status=$?
 
     # If the directory isn't a git repo, conflict
-    if [ $git_fetch_status -ne 0 ]; then
+    if [ $git_fetch_status -gt 0 ]; then
       echo "destination directory $git_dir exists, not a git repository (exit status $git_fetch_status)"
       return 20
-    fi
-    if str_matches "$git_fetch" '"^fatal"'; then 
+    elif str_matches "$git_fetch" '"^fatal"'; then 
       echo "destination directory exists, not a git repository"
       echo "$git_fetch"
       return 20
     fi
 
-    git_stat="$(cd $git_dir; $cmd status -uno -b --porcelain)"
-
+    git_stat=$(bake git status -uno -b --porcelain)
     git_first_line=$(echo "$git_stat" | head -n 1)
 
     # str_matches "$git_first_line" "^\#\# $git_branch"
@@ -67,13 +66,13 @@ case $action in
     # guess we're clean, so things are OK
     ;;
   install)
-    bake "mkdir -p $git_dir"
-    bake "$cmd clone $git_url $git_dir"
+    bake mkdir -p $git_dir
+    bake git clone $git_url $git_dir
     ;;
   upgrade)
-    bake_in $git_dir
-    bake "$cmd pull"
-    bake "$cmd log HEAD@{1}.."
+    bake cd $git_dir
+    bake git pull
+    bake git log HEAD@{1}..
     printf "\n"
     ;;
   *) return 1 ;;

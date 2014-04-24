@@ -1,14 +1,18 @@
 action=$1
 shift
 
+is_directory () {
+  bake test -d $1
+}
+
 case "$action" in
   status)
     missing=0
     accum=0
     for dir in $*; do
       (( accum++ ))
-      if [ ! -d $dir ]; then
-        [ -e $dir ] && return 20
+      if bake [ ! -d $dir ]; then
+        bake [ -e $dir ] && return 20
         (( missing++ ))
       fi
     done
@@ -18,7 +22,7 @@ case "$action" in
     ;;
   install|upgrade)
     for dir in $*; do
-      [ ! -d $dir ] && bake "mkdir -p $dir"
+      bake [ ! -d $dir ] && bake mkdir -p $dir
     done
     ;;
   *) return 1 ;;

@@ -3,6 +3,9 @@
 . test/helpers.sh
 symlink () { . $BORK_SOURCE_DIR/core/symlink.sh $*; }
 
+# passes through to actual tests on the file system
+baking_responder () { eval "$*"; }
+
 tmpdir=
 setup () {
   tmpdir=$(mktemp -d -t bork-symlink)
@@ -76,9 +79,13 @@ make_links () {
   accum=0
   while [ "$accum" -lt ${#files[@]} ]; do
     fname=${files[accum]}
+    test_cmd="[ ! -h $fname ]"
     baked_cmd="ln -s $source/$fname $fname"
-    [ "${lines[accum]}" = $baked_cmd ]
-    (( accum++ ))
+    [ "${lines[accum]}" = $test_cmd ]
+    [ "${lines[(( accum + 1 ))]}" = $baked_cmd ]
+    [ -h $fname ]
+    [ "$source/$fname" = $(readlink $fname) ]
+    (( accum += 2 ))
   done
 }
 
@@ -87,9 +94,12 @@ make_links () {
   run symlink upgrade "$source/*"
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${#lines[@]}" -eq 1 ]
   bake_cmd="ln -s $source/LICENSE LICENSE"
-  [ "${lines[0]}" = $bake_cmd ]
+  [ "${lines[0]}" = "[ ! -h LICENSE ]" ]
+  [ "${lines[1]}" = $bake_cmd ]
+  [ "${lines[2]}" = "[ ! -h README ]" ]
+  [ -h LICENSE ]
+  [ "$source/LICENSE" = $(readlink LICENSE) ]
 }
 
 @test "symlink: install bakes using --tmpl" {

@@ -4,23 +4,9 @@
 
 apt () { . $BORK_SOURCE_DIR/core/apt.sh $*; }
 
-baked_output=
-
-dpkg_get_selections () {
-  echo "outdated_package              install"
-  echo "current_package               install"
-}
-apt_upgrade_dry () {
-  echo "Conf current_package"
-  echo "Inst outdated_package [1:9.8.1.dfsg.P1-4] (1:9.8.1.dfsg.P1-4ubuntu0.3 Ubuntu:12.04/precise-updates [i386]) []"
-  echo "Conf outdated_package"
-}
-
 setup () {
-  command_apt_get="test_apt"
-  command_apt_list="dpkg_get_selections"
-  command_apt_outdated="apt_upgrade_dry"
-  baked_output=$(mktemp -t apttest)
+  respond_to "dpkg --get-selections" "cat $fixtures/apt-dpkg-dependencies.txt"
+  respond_to "sudo apt-get -u update --dry-run" "cat $fixtures/apt-update-dry.txt"
 }
 
 @test "apt status reports a package is missing" {
@@ -41,12 +27,14 @@ setup () {
 @test "apt install runs 'apt-get install'" {
   run apt install missing_package
   [ "$status" -eq 0 ]
-  [ "$(baked_output)" = 'test_apt --yes install missing_package' ]
+  run baked_output
+  [ "$output" = 'sudo apt-get --yes install missing_package' ]
 }
 
 @test "apt upgrade runs 'apt-get upgrade'" {
   run apt upgrade outdated_package
   [ "$status" -eq 0 ]
-  [ "$(baked_output)" = 'test_apt --yes install outdated_package' ]
+  run baked_output
+  [ "$output" = 'sudo apt-get --yes install outdated_package' ]
 }
 
