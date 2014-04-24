@@ -3,13 +3,8 @@
 . test/helpers.sh
 group () { . $BORK_SOURCE_DIR/core/group.sh $*; }
 
-list_groups () {
-  echo "root:x:0:"
-  echo "admin:x:50:"
-}
-
 setup () {
-  group_list_cmd="list_groups"
+  respond_to "cat /etc/group" "echo 'root:x:0'; echo 'admin:x:50'"
 }
 
 @test "group status: returns 10 when group doesn't exist" {
