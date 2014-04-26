@@ -14,28 +14,10 @@ runner () {
 
   # used by include to find 'include foo/bar.sh'
   BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$2)
-
   BORK_WORKING_DIR=$PWD
 
-  if [ "$operation" = "compile" ]; then
-    echo "#!/usr/bin/env bash"
-    echo "$setupFn"
-    echo "BORK_SCRIPT_DIR=\$PWD"
-    echo "BORK_WORKING_DIR=\$PWD"
-    for file in $BORK_SOURCE_DIR/lib/*; do
-      if [ "$file" != "$BORK_SOURCE_DIR/lib/runner.sh" ]; then cat $file; fi
-    done
-
-    target_op=$(arguments get operation $*)
-    if [ -n "$target_op" ]; then
-      echo "operation=\"$target_op\""
-    else
-      echo "operation=$1"
-    fi
-    echo "BORK_IS_COMPILED=1"
-
-    . $2
-  else
-    . $2
-  fi
+  case "$operation" in
+    compile) base_compile $2 ;;
+    satisfy | status) . $2 ;;
+  esac
 }
