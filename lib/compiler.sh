@@ -56,7 +56,7 @@ is_compiled () { return 0; }
 DONE
   for file in $BORK_SOURCE_DIR/lib/*; do
     case $(basename $file .sh) in
-      compiler | runner) : ;;
+      compiler | runner | include ) : ;;
       *) cat $file | strip_blanks ;;
     esac
   done
@@ -75,6 +75,10 @@ DONE
         echo "$line"
         ;;
       register) eval "$line" ;;
+      include)
+        echo "include not supported for 'compile' operation yet" 1>&2
+        exit 1
+        ;;
       *) echo "$line" ;;
     esac
   done
