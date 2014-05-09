@@ -24,16 +24,6 @@ setup () {
   [ "$status" -eq 0 ]
 }
 
-@test "is_compiled: returns 1 if not compiled" {
-  run is_compiled
-  [ "$status" -eq 1 ]
-}
-@test "is_compiled: returns 0 if not compiled" {
-  BORK_IS_COMPILED=1
-  run is_compiled
-  [ "$status" -eq 0 ]
-}
-
 @test "include_assertion: does nothing if not compiling" {
   run include_assertion 'hello' "$example_include"
   [ "$status" -eq 0 ]

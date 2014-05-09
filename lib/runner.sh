@@ -1,41 +1,25 @@
 runner () {
   operation=$1
 
-  case $operation in
-    status | satisfy | compile)
-      if [ ! -e "$2" ]; then
-        echo "bork: $1 command requires a config script"
-        exit 1
-      fi ;;
-    *)
-      echo "bork: must give 'status' or 'satisfy' as first argument"
-      exit 1 ;;
-  esac
-
   # used by include to find 'include foo/bar.sh'
   BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$2)
-
   BORK_WORKING_DIR=$PWD
 
-  if [ "$operation" = "compile" ]; then
-    echo "#!/usr/bin/env bash"
-    echo "$setupFn"
-    echo "BORK_SCRIPT_DIR=\$PWD"
-    echo "BORK_WORKING_DIR=\$PWD"
-    for file in $BORK_SOURCE_DIR/lib/*; do
-      if [ "$file" != "$BORK_SOURCE_DIR/lib/runner.sh" ]; then cat $file; fi
-    done
+  case "$operation" in
+    compile) base_compile $2 ;;
+    satisfy | status) . $2 ;;
+    *) cat <<END
+bork usage:
 
-    target_op=$(arguments get operation $*)
-    if [ -n "$target_op" ]; then
-      echo "operation=\"$target_op\""
-    else
-      echo "operation=$1"
-    fi
-    echo "BORK_IS_COMPILED=1"
+bork operation [config-file]
 
-    . $2
-  else
-    . $2
-  fi
+where "operatiion" is one of:
+
+status: determine if the config file's conditions are met
+satisfy: satisfy the config file's conditions if possible
+compile: compile the config file to a self-contained script output to STDOUT
+END
+    exit 1
+    ;;
+  esac
 }

@@ -4,6 +4,8 @@
 
 operation='echo'
 
+is_compiled () { [ -n "$is_compiled" ]; }
+
 @test "register: recognizes paths" {
   BORK_SCRIPT_DIR="$BORK_WORKING_DIR/test"
   register "./fixtures/custom.sh"
@@ -19,7 +21,7 @@ operation='echo'
 
 # --- lookup_assertion -------------------------------------------
 @test "when is_compiled, echoes type_\$assertion" {
-  BORK_IS_COMPILED=1
+  is_compiled=true
   run lookup_type 'foo'
   [ "$status" -eq 0 ]
   [ "$output" = "type_foo" ]

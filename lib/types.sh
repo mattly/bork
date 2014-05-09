@@ -1,7 +1,6 @@
 # manages assertion types
 
-# is a key/value 'multiline' that keeps track of assertion types and how to
-# run them.
+# is a bag that keeps track of assertion types their locations
 bag init assertion_types
 
 # register a local assertion type
