@@ -1,4 +1,4 @@
-status_for () {
+_status_for () {
   case "$1" in
     "0")  echo "ok" ;;
     "10") echo "missing" ;;
@@ -8,7 +8,7 @@ status_for () {
   esac
 }
 
-ok_run () {
+_ok_run () {
   fn=$1
   shift
   if is_compiled; then ($fn $*)
@@ -19,24 +19,24 @@ ok_run () {
 ok () {
   assertion=$1
   shift
-  changes_reset
-  fn=$(lookup_type $assertion)
+  _changes_reset
+  fn=$(_lookup_type $assertion)
   [ -z "$fn" ] && return 1
   case $operation in
     echo) echo "$fn $*" ;;
     status)
-      output=$(ok_run $fn "status" $*)
+      output=$(_ok_run $fn "status" $*)
       status=$?
-      echo "$(status_for $status): $assertion $*"
+      echo "$(_status_for $status): $assertion $*"
       [ "$status" -ne 0 ] && [ -n "$output" ] && echo "$output"
       ;;
     satisfy)
       check="checking: $assertion $*"
       len=${#check}
       echo -n $check$'\r'
-      status_output=$(ok_run $fn "status" $*)
+      status_output=$(_ok_run $fn "status" $*)
       status=$?
-      report="$(status_for $status): $assertion $*"
+      report="$(_status_for $status): $assertion $*"
       (( pad=$len-${#report} ))
       i=1
       while [ "$i" -le $pad ]; do
@@ -47,13 +47,13 @@ ok () {
       case $status in
         0) : ;;
         10)
-          ok_run $fn install $*
-          changes_complete $? 'install'
+          _ok_run $fn install $*
+          _changes_complete $? 'install'
           ;;
         11)
           echo "$status_output"
-          ok_run $fn upgrade $*
-          changes_complete $? 'upgrade'
+          _ok_run $fn upgrade $*
+          _changes_complete $? 'upgrade'
           ;;
         20)
           echo "* $status_output"

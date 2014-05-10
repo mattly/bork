@@ -20,23 +20,23 @@ is_compiled () { [ -n "$is_compiled" ]; }
 }
 
 # --- lookup_assertion -------------------------------------------
-@test "when is_compiled, echoes type_\$assertion" {
+@test "lookup_type: when is_compiled, echoes type_\$assertion" {
   is_compiled=true
-  run lookup_type 'foo'
+  run _lookup_type 'foo'
   [ "$status" -eq 0 ]
   [ "$output" = "type_foo" ]
 }
 
-@test "when assertion_types include type, echoes script" {
-  bag set assertion_types foo bar
-  bag set assertion_types bar bee
-  run lookup_type 'foo'
+@test "lookup_type: when assertion_types include type, echoes script" {
+  bag set bork_assertion_types foo bar
+  bag set bork_assertion_types bar bee
+  run _lookup_type 'foo'
   [ "$status" -eq 0 ]
   [ "$output" = 'bar' ]
 }
 
-@test "when references official assertion, echoes that" {
-  run lookup_type "git"
+@test "lookup_type: when references official assertion, echoes that" {
+  run _lookup_type "git"
   [ "$status" -eq 0 ]
   path="$BORK_SOURCE_DIR/core/git.sh"
   [ "$output" = $path ]
@@ -44,7 +44,7 @@ is_compiled () { [ -n "$is_compiled" ]; }
 
 @test "when missing and references local script, echoes that" {
   script_path="test/fixtures/custom.sh"
-  run lookup_type "$script_path"
+  run _lookup_type "$script_path"
   [ "$status" -eq 0 ]
   abs_path="$BORK_SCRIPT_DIR/$script_path"
   [ "$output" = $abs_path ]

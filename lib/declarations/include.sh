@@ -8,5 +8,3 @@ include () {
   fi
 }
 
-include_start () { :; }
-include_end () { :; }
