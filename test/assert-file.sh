@@ -44,8 +44,15 @@ setup () {
   [ "${lines[1]}" = "cp path/from/source path/to/target" ]
 }
 
+@test "file install: ignores directory if not present" {
+  run file install target source
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "${lines[0]}" = "cp source target" ]
+}
+
 # -- with permission argument ------------------------
-@test "file status: returns 11 when source file has incorrect permissions" {
+@test "file status: returns 11 when target file has incorrect permissions" {
   respond_to "md5 -q tfile" "echo $readsum"
   respond_to "stat -f '%Lp' tfile" "echo 755"
   run file status tfile Readme.md --permissions=700
@@ -58,7 +65,40 @@ setup () {
   run file install target path/from/source --permissions=700
   [ "$status" -eq 0 ]
   run baked_output
-  p $output
-  [ "${lines[2]}" = "chmod 700 target" ]
+  [ "${lines[1]}" = "chmod 700 target" ]
+}
+
+# -- with owner argument -----------------------------
+@test "file status: returns 40 when target user doesn't exist" {
+  respond_to "id -u kermit" "echo 'id: kermit: no such user'; return 1"
+  run file status target Readme.md --owner=kermit
+  [ "$status" -eq 40 ]
+  [ "${lines[0]}" = "unknown owner: kermit" ]
+}
+
+@test "file status: returns 11 when target file has incorrect owner" {
+  respond_to "sudo md5 -q target" "echo $readsum"
+  respond_to "sudo ls -l target" "echo -rw-r--r--  1 kermit  staff  4604"
+  run file status target Readme.md --owner=bork
+  [ "$status" -eq 11 ]
+  [ "${lines[0]}" = "expected owner: bork" ]
+  [ "${lines[1]}" = "received owner: kermit" ]
+}
+
+@test "file status: returns 0 with owner and all is well" {
+  respond_to "sudo md5 -q target" "echo $readsum"
+  respond_to "sudo ls -l target" "echo -rw-r--r--  1 kermit  staff  4604"
+  run file status target Readme.md --owner=kermit
+  [ "$status" -eq 0 ]
+}
+
+@test "file install: copies file as correct user" {
+  run file install path/to/target path/from/source --owner=kermit
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "${lines[0]}" = "sudo mkdir -p path/to" ]
+  [ "${lines[1]}" = "sudo chown kermit path/to" ]
+  [ "${lines[2]}" = "sudo cp path/from/source path/to/target" ]
+  [ "${lines[3]}" = "sudo chown kermit path/to/target" ]
 }
 
