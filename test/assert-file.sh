@@ -11,7 +11,7 @@ setup () {
 
 # -- without arguments -------------------------------
 @test "file status: returns 10 when file is missing" {
-  respond_to "[ -e missing ]" "return 1"
+  respond_to "[ -f missing ]" "return 1"
   run file status missing path/to/missing
   [ "$status" -eq 10 ]
 }

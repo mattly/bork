@@ -3,11 +3,12 @@ targetfile=$2
 sourcefile=$3
 shift 3
 perms=$(arguments get permissions $*)
+user=$(arguments get user $*)
 
 case $action in
   status)
-    bake [ -e $targetfile ] || return 10
-    if [ ! -e $sourcefile ]; then
+    bake [ -f $targetfile ] || return 10
+    if [ ! -f $sourcefile ]; then
       echo "source file doesn't exist: $sourcefile"
       return 40
     fi
