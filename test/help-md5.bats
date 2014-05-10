@@ -12,7 +12,7 @@
 @test "md5cmd Darwin :file echoes 'md5 :file'" {
   run md5cmd Darwin Readme.md
   [ "$status" -eq 0 ]
-  [ "$output" = "md5 Readme.md" ]
+  [ "$output" = "md5 -q Readme.md" ]
 }
 
 @test "md5cmd Linux echoes md5sum with awk" {
