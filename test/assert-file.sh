@@ -30,6 +30,12 @@ setup () {
   [ "${lines[1]}" = "received sum: 123456" ]
 }
 
+@test "file status: returns 0 when all is well" {
+  respond_to "md5 -q goodfile" "echo $readsum"
+  run file status goodfile Readme.md
+  [ "$status" -eq 0 ]
+}
+
 @test "file install: creates directory, copies file" {
   run file install path/to/target path/from/source
   [ "$status" -eq 0 ]
