@@ -26,12 +26,13 @@ case $action in
         return 11
       fi
     fi
-
     return 0
     ;;
-  install)
+  install|upgrade)
     bake mkdir -p $(dirname $targetfile)
     bake cp $sourcefile $targetfile
+    [ -n "$perms" ] && bake chmod $perms $targetfile
+    return 0
     ;;
   *) return 1 ;;
 esac

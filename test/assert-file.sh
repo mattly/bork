@@ -48,3 +48,11 @@ setup () {
   [ "${lines[1]}" = "received permissions: 755" ]
 }
 
+@test "file install: sets permissions for file after copying" {
+  run file install target path/from/source --permissions=700
+  [ "$status" -eq 0 ]
+  run baked_output
+  p $output
+  [ "${lines[2]}" = "chmod 700 target" ]
+}
+
