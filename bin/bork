@@ -12,9 +12,6 @@ BORK_SOURCE_DIR="\$(getDir \$(getDir \${BASH_SOURCE[0]}))"
 HERE)
 eval "$setupFn"
 
-for file in $BORK_SOURCE_DIR/lib/*; do
-  . $file
-done
 # --------------------------------------------------------
 
-runner $*
+$BORK_SOURCE_DIR/lib/runner.sh $*

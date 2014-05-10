@@ -1,7 +1,7 @@
 # manages assertion types
 
 # is a bag that keeps track of assertion types their locations
-bag init assertion_types
+bag init bork_assertion_types
 
 # register a local assertion type
 # register $filename
@@ -20,17 +20,20 @@ register () {
   else
     exit 1
   fi
-  bag set assertion_types $type $file
+  bag set bork_assertion_types $type $file
 }
 
 # lookup assertion function
-lookup_type () {
+
+# yes, this could have been done in fewer lines with a gnarly nested IF/ELSE
+# type statement.  I have no interest in saving lines at the cost of clarity.
+_lookup_type () {
   assertion=$1
   if is_compiled; then
     echo "type_$assertion"
     return
   fi
-  fn=$(bag get assertion_types $assertion)
+  fn=$(bag get bork_assertion_types $assertion)
   if [ -n "$fn" ]; then
     echo "$fn"
     return

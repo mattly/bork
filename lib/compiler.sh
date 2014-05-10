@@ -4,8 +4,6 @@
 is_compiling () {
   [ $operation = "compile" ] && return 0 || return 1
 }
-# are we running from a compiled script?
-is_compiled () { return 1; }
 
 # multiline, keeps list of compiled types
 bag init compiled_types

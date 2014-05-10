@@ -1,4 +1,5 @@
 bag init bork_destinations
+
 destination () {
   if [ -z "$1" ]; then
     current=$(bag read bork_destinations)
