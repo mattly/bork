@@ -18,6 +18,15 @@ case $action in
       echo "received sum: $targetsum"
       return 20
     fi
+    if [ -n "$perms" ]; then
+      existing_perms=$(bake $(permission_cmd $platform) $targetfile)
+      if [ "$existing_perms" != $perms ]; then
+        echo "expected permissions: $perms"
+        echo "received permissions: $existing_perms"
+        return 11
+      fi
+    fi
+
     return 0
     ;;
   install)

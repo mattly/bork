@@ -37,3 +37,14 @@ setup () {
   [ "${lines[0]}" = "mkdir -p path/to" ]
   [ "${lines[1]}" = "cp path/from/source path/to/target" ]
 }
+
+# -- with permission argument ------------------------
+@test "file status: returns 11 when source file has incorrect permissions" {
+  respond_to "md5 -q tfile" "echo $readsum"
+  respond_to "stat -f '%Lp' tfile" "echo 755"
+  run file status tfile Readme.md --permissions=700
+  [ "$status" -eq 11 ]
+  [ "${lines[0]}" = "expected permissions: 700" ]
+  [ "${lines[1]}" = "received permissions: 755" ]
+}
+
