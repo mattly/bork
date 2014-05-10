@@ -9,7 +9,7 @@ p () {
   return 0
 }
 
-for f in $(ls lib/*.sh); do . $f; done
+. $BORK_SOURCE_DIR/lib/load.sh
 
 baking_responder=
 baking_file=$(mktemp -t bork_test)
