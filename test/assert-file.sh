@@ -102,3 +102,19 @@ setup () {
   [ "${lines[3]}" = "sudo chown kermit path/to/target" ]
 }
 
+# --- compile ----------------------------------------
+@test "file compile: echoes base64 representation to screen" {
+  run file compile path/to/target Readme.md
+  [ "$status" -eq 0 ]
+  expected="borkfiles__UmVhZG1lLm1kCg=\"$(base64 Readme.md)\""
+  [ "${lines[2]}" = $expected ]
+}
+
+@test "file status: if compiled, uses stored variable" {
+  skip
+}
+
+@test "file install: if compiled, uses stored variable" {
+  skip
+}
+

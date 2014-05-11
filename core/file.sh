@@ -10,6 +10,9 @@ _bake () {
   else bake $*
   fi
 }
+_file_varname () {
+  echo "borkfile__$(echo "$1" | base64 | sed -E 's|\+|_|' | sed -E 's|\?|__|' | sed -E 's|=+||')"
+}
 
 case $action in
   status)
@@ -61,6 +64,12 @@ case $action in
     [ -n "$owner" ] && _bake chown $owner $targetfile
     [ -n "$perms" ] && _bake chmod $perms $targetfile
     return 0
+    ;;
+  compile)
+    varname=$(_file_varname $sourcefile)
+    echo "# source: $sourcefile"
+    echo "# md5 sum: $(eval $(md5cmd $platform $sourcefile))"
+    echo "$varname=\"$(cat $sourcefile | base64)\""
     ;;
   *) return 1 ;;
 esac
