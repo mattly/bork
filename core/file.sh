@@ -11,7 +11,6 @@ _bake () {
   fi
 }
 file_varname="borkfiles__$(echo "$sourcefile" | base64 | sed -E 's|\+|_|' | sed -E 's|\?|__|' | sed -E 's|=+||')"
-p "$sourcefile: $file_varname"
 
 case $action in
   status)
@@ -66,7 +65,11 @@ case $action in
     dirn=$(dirname $targetfile)
     [ "$dirn" != . ] && _bake mkdir -p $dirn
     [ -n "$owner" ] && _bake chown $owner $dirn
-    _bake cp $sourcefile $targetfile
+    if is_compiled; then
+      _bake "echo \"${!file_varname}\" | base64 --decode > $targetfile"
+    else
+      _bake cp $sourcefile $targetfile
+    fi
     [ -n "$owner" ] && _bake chown $owner $targetfile
     [ -n "$perms" ] && _bake chmod $perms $targetfile
     return 0

@@ -121,6 +121,12 @@ is_compiled () { [ -n "$is_compiled" ]; }
 }
 
 @test "file install: if compiled, uses stored variable" {
-  skip
+  is_compiled=1
+  borkfiles__cGF0aC9mcm9tL3NvdXJjZQo="$(base64 Readme.md)"
+  run file install path/to/target path/from/source
+  [ "$status" -eq 0 ]
+  run baked_output
+  expected="echo \"$borkfiles__cGF0aC9mcm9tL3NvdXJjZQo\" | base64 --decode > path/to/target"
+  [ "${lines[1]}" = $expected ]
 }
 
