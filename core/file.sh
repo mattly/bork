@@ -17,13 +17,13 @@ case $action in
     bake [ -f $targetfile ] || return 10
     if ! is_compiled && [ ! -f $sourcefile ]; then
       echo "source file doesn't exist: $sourcefile"
-      return 31
+      return $STATUS_FAILED_ARGUMENTS
     fi
     if [ -n "$owner" ]; then
       owner_id=$(bake id -u $owner)
       if [ "$?" -gt 0 ]; then
         echo "unknown owner: $owner"
-        return 32
+        return $STATUS_FAILED_ARGUMENT_PRECONDITION
       fi
     fi
     # TODO: need to distinguish local platfrom from target platform
@@ -37,15 +37,15 @@ case $action in
     if [ "$targetsum" != $sourcesum ]; then
       echo "expected sum: $sourcesum"
       echo "received sum: $targetsum"
-      return 20
+      return $STATUS_CONFLICT_UPGRADE
     fi
-    outdated=
+    mismatch=
     if [ -n "$perms" ]; then
       existing_perms=$(_bake $(permission_cmd $platform) $targetfile)
       if [ "$existing_perms" != $perms ]; then
         echo "expected permissions: $perms"
         echo "received permissions: $existing_perms"
-        outdated=1
+        mismatch=1
       fi
     fi
     if [ -n "$owner" ]; then
@@ -53,10 +53,10 @@ case $action in
       if [ "$existing_user" != $owner ]; then
         echo "expected owner: $owner"
         echo "received owner: $existing_user"
-        outdated=1
+        mismatch=1
       fi
     fi
-    [ -n "$outdated" ] && return 11
+    [ -n "$mismatch" ] && return $STATUS_MISMATCH_UPGRADE
     return 0
     ;;
   install|upgrade)

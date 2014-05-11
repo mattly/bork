@@ -10,30 +10,30 @@ setup () {
 }
 
 # -- without arguments -------------------------------
-@test "file status: returns 10 when file is missing" {
+@test "file status: returns MISSING when file is missing" {
   respond_to "[ -f missing ]" "return 1"
   run file status missing path/to/missing
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "file status: returns 31 when source file is missing" {
+@test "file status: returns FAILED_ARGUMENTS when source file is missing" {
   run file status somefile missingfile
-  [ "$status" -eq 31 ]
+  [ "$status" -eq $STATUS_FAILED_ARGUMENTS ]
 }
 
-@test "file status: returns 20 when sum doesn't match" {
+@test "file status: returns CONFLICT_UPGRADE when sum doesn't match" {
   respond_to "md5 -q wrongfile" "echo 123456"
   run file status wrongfile Readme.md
-  [ "$status" -eq 20 ]
+  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   expected="expected sum: $readsum"
   [ "${lines[0]}" = $expected ]
   [ "${lines[1]}" = "received sum: 123456" ]
 }
 
-@test "file status: returns 0 when all is well" {
+@test "file status: returns OK when all is well" {
   respond_to "md5 -q goodfile" "echo $readsum"
   run file status goodfile Readme.md
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "file install: creates directory, copies file" {
@@ -52,11 +52,11 @@ setup () {
 }
 
 # -- with permission argument ------------------------
-@test "file status: returns 11 when target file has incorrect permissions" {
+@test "file status: returns MISMATCH_UPGRADE when target file has incorrect permissions" {
   respond_to "md5 -q tfile" "echo $readsum"
   respond_to "stat -f '%Lp' tfile" "echo 755"
   run file status tfile Readme.md --permissions=700
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
   [ "${lines[0]}" = "expected permissions: 700" ]
   [ "${lines[1]}" = "received permissions: 755" ]
 }
@@ -69,27 +69,27 @@ setup () {
 }
 
 # -- with owner argument -----------------------------
-@test "file status: returns 32 when target user doesn't exist" {
+@test "file status: returns FAILED_ARGUMENT_PRECONDITION when target user doesn't exist" {
   respond_to "id -u kermit" "echo 'id: kermit: no such user'; return 1"
   run file status target Readme.md --owner=kermit
-  [ "$status" -eq 32 ]
+  [ "$status" -eq $STATUS_FAILED_ARGUMENT_PRECONDITION ]
   [ "${lines[0]}" = "unknown owner: kermit" ]
 }
 
-@test "file status: returns 11 when target file has incorrect owner" {
+@test "file status: returns MISMATCH_UPGRADE when target file has incorrect owner" {
   respond_to "sudo md5 -q target" "echo $readsum"
   respond_to "sudo ls -l target" "echo -rw-r--r--  1 kermit  staff  4604"
   run file status target Readme.md --owner=bork
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
   [ "${lines[0]}" = "expected owner: bork" ]
   [ "${lines[1]}" = "received owner: kermit" ]
 }
 
-@test "file status: returns 0 with owner and all is well" {
+@test "file status: returns OK with owner and all is well" {
   respond_to "sudo md5 -q target" "echo $readsum"
   respond_to "sudo ls -l target" "echo -rw-r--r--  1 kermit  staff  4604"
   run file status target Readme.md --owner=kermit
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "file install: copies file as correct user" {
@@ -117,14 +117,14 @@ is_compiled () { [ -n "$is_compiled" ]; }
   borkfiles__cGF0aC9mcm9tL3NvdXJjZQo="$(base64 Readme.md)"
   respond_to "md5 -q path/to/target" "echo $readsum"
   run file status path/to/target path/from/source
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "file install: if compiled, uses stored variable" {
   is_compiled=1
   borkfiles__cGF0aC9mcm9tL3NvdXJjZQo="$(base64 Readme.md)"
   run file install path/to/target path/from/source
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
   run baked_output
   expected="echo \"$borkfiles__cGF0aC9mcm9tL3NvdXJjZQo\" | base64 --decode > path/to/target"
   [ "${lines[1]}" = $expected ]
