@@ -1,5 +1,4 @@
-BORK_WORKING_DIR=$PWD
-BORK_SOURCE_DIR=$PWD
+. bin/bork load
 BORK_SCRIPT_DIR=$PWD
 
 here=$PWD
@@ -8,8 +7,6 @@ p () {
   [ -n "$debug_mode" ] && echo "$*" >> "$here/debug"
   return 0
 }
-
-. $BORK_SOURCE_DIR/lib/load.sh
 
 baking_responder=
 baking_file=$(mktemp -t bork_test)
