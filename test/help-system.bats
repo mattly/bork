@@ -31,12 +31,15 @@
 @test "needs_exec: returns \$2 if exec found" {
   run needs_exec "cat" 0
   [ "$status" -eq 0 ]
+  [ -z "$output" ]
 
   run needs_exec "cat" 11
   [ "$status" -eq 11 ]
+  [ -z "$output" ]
 
   run needs_exec "cat"
   [ "$status" -eq 0 ]
+  [ -z "$output" ]
 }
 
 @test "needs_exec: returns \$2 + 1 if exec not found, echoes message" {

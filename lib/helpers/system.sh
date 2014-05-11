@@ -29,7 +29,7 @@ needs_exec () {
   [ -z "$2" ] && running_status=0 || running_status=$2
 
   # was seeing some weirdness on this where $1 would have carraige returns sometimes, so it's quoted.
-  bake "which $1"
+  path=$(bake "which $1")
 
   if [ "$?" -gt 0 ]; then
     echo "missing required exec: $1"
