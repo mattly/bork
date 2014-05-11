@@ -28,9 +28,9 @@ BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$2)
 BORK_WORKING_DIR=$PWD
 
 case "$operation" in
-  compile) . compile.sh $2 ;;
-  satisfy | status) . $2 ;;
+  compile) . $BORK_SOURCE_DIR/bin/bork-compile $2 ;;
   load) : ;;
+  satisfy | status) . $2 ;;
   *) cat <<END
 bork usage:
 

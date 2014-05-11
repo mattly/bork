@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # helpers related to the "compile" operation
 
 # are we compiling?
@@ -40,7 +41,6 @@ strip_blanks () {
   awk '!/^($|[:space:]*#)/{print $0}' <&0
 }
 
-base_compile () {
 cat <<DONE
 #!/usr/bin/env bash
 $setupFn
@@ -52,32 +52,34 @@ case "\$1" in
 esac
 is_compiled () { return 0; }
 DONE
-  for file in $BORK_SOURCE_DIR/lib/*; do
-    case $(basename $file .sh) in
-      compiler | runner | include ) : ;;
-      *) cat $file | strip_blanks ;;
-    esac
-  done
-  cat $1 | while read line; do
-    first_token=$(str_get_field "$line" 1)
-    case $first_token in
-      ok)
-        type=$(str_get_field "$line" 2)
-        fn=$(lookup_type $type)
-        if [ -z "$fn" ]; then
-          echo "type $type not found, can't proceed" 1>&2
-          exit 1
-        fi
-        include_assertion $type $fn
-        . $fn compile
-        echo "$line"
-        ;;
-      register) eval "$line" ;;
-      include)
-        echo "include not supported for 'compile' operation yet" 1>&2
+
+for file in $BORK_SOURCE_DIR/lib/**/*.sh; do
+  case $file in
+    declarations/include.sh ) : ;;
+    *) cat $file | strip_blanks ;;
+  esac
+done
+
+cat $1 | while read line; do
+  first_token=$(str_get_field "$line" 1)
+  case $first_token in
+    ok)
+      type=$(str_get_field "$line" 2)
+      fn=$(_lookup_type $type)
+      if [ -z "$fn" ]; then
+        echo "type $type not found, can't proceed" 1>&2
         exit 1
-        ;;
-      *) echo "$line" ;;
-    esac
-  done
-}
+      fi
+      include_assertion $type $fn
+      . $fn compile
+      echo "$line"
+      ;;
+    register) eval "$line" ;;
+    include)
+      echo "include not supported for 'compile' operation yet" 1>&2
+      exit 1
+      ;;
+    *) echo "$line" ;;
+  esac
+done
+
