@@ -7,7 +7,7 @@ with through the shell.  If you can programatically determine if it's
 present, and programatically make it present, you can probably make a bork
 assertion type out of it.
 
-## Assertion Action Calls
+## Action Calls
 
 Bork assertions are scripts that are called by the runner.  Ideally they could be run independently of the runner, provided the bork helpers are loaded via `bork load`, if they even call on the helpers.  The runner calls with an `action` and the arguments provided to `ok`.  For example, this call to `ok`:
 
@@ -29,10 +29,50 @@ The runner decides what calls to perform based on its current operation and the 
 
 When called with `status`, the assertion script should determine if the assertion is met, and return a code to indicate the current status of the assertion.  It _may_ echo messages to STDOUT indicating guidance to the user indicating any problems or warnings.
 
-#### status return codes
+Example: checks that targetfile exists, has the same md5 sum as sourcefile.
 
-- **0**: All is well, this assertion is satisfied.
-- **10**: The assertion is not satisfied, call again with 'upgrade' to
-  satisfy it.
-- **11**: The assertion is not satisfied, but it appears an older version
+See the [Status Codes Reference](assertion_status_codes) for the complete list.
+
+### install
+
+    core/file.sh install path/to/targetfile path/from/sourcefile
+
+When called with `install`, the assertion script should assume that `status` was called with the same arguments and returned `10`; that is, nothing about the assertion exists on the host system.
+
+Example: copies sourcefile to targetfile.
+
+The script should output any relevant messages, and return 0 on success.
+
+### upgrade
+
+    core/file.sh upgrade to/targetfile from/sourcefile --permissions=700
+
+When called with `upgrade`, the assertion script should assume that `status` was called with the same arguments and returned 11, 12, or 20.  Enough of the assertion exists that a different, hopefully quicker path can be taken to satisfying the assertion.
+
+Example: Updates the permissions on targetfile to 700.
+
+The script should output any relevant messages and updates, and return 0 on success.
+
+### delete
+
+    core/file.sh delete to/targetfile from/sourcefile
+
+Not implemented in the runner yet.  The script should remove the artifacts of the assertion from the system.
+
+Example: Deletes targetfile
+
+The script should output any relevant messages, and return 0 on success.
+
+### compile
+
+    core/file.sh compile to/targetfile from/sourcefile
+
+Echo any relevant information about the current system for the given arguments that will be copied to the compiled script.  The compiled script itself will be included by the compiler, as will the assertion that is calling 'compile' to begin with.
+
+When called from the compiled script, you can test `is_compiled` in status, install, etc., to determine if you need to do anything differently.
+
+Example: base64-encodes `sourcefile` and assigns it to a variable that maps to its path.  The `status` and `install` actions know to use this variable instead of looking for the sourcefile and base64-decode its contents.
+
+
+
 
