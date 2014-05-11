@@ -16,9 +16,9 @@ setup () {
   [ "$status" -eq 10 ]
 }
 
-@test "file status: returns 40 when source file is missing" {
+@test "file status: returns 31 when source file is missing" {
   run file status somefile missingfile
-  [ "$status" -eq 40 ]
+  [ "$status" -eq 31 ]
 }
 
 @test "file status: returns 20 when sum doesn't match" {
@@ -69,10 +69,10 @@ setup () {
 }
 
 # -- with owner argument -----------------------------
-@test "file status: returns 40 when target user doesn't exist" {
+@test "file status: returns 32 when target user doesn't exist" {
   respond_to "id -u kermit" "echo 'id: kermit: no such user'; return 1"
   run file status target Readme.md --owner=kermit
-  [ "$status" -eq 40 ]
+  [ "$status" -eq 32 ]
   [ "${lines[0]}" = "unknown owner: kermit" ]
 }
 

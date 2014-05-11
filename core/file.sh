@@ -17,25 +17,23 @@ case $action in
     bake [ -f $targetfile ] || return 10
     if ! is_compiled && [ ! -f $sourcefile ]; then
       echo "source file doesn't exist: $sourcefile"
-      return 40
+      return 31
     fi
     if [ -n "$owner" ]; then
       owner_id=$(bake id -u $owner)
       if [ "$?" -gt 0 ]; then
         echo "unknown owner: $owner"
-        return 40
+        return 32
       fi
     fi
     # TODO: need to distinguish local platfrom from target platform
     if is_compiled; then
       md5c=$(md5cmd $platform)
       sourcesum=$(echo "${!file_varname}" | base64 --decode | md5)
-      p $sourcesum
     else
       sourcesum=$(eval $(md5cmd $platform $sourcefile))
     fi
     targetsum=$(_bake $(md5cmd $platform $targetfile))
-    p $targetsum
     if [ "$targetsum" != $sourcesum ]; then
       echo "expected sum: $sourcesum"
       echo "received sum: $targetsum"
