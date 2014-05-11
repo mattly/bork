@@ -1,4 +1,4 @@
-#!/user/bin/env bats
+#!/usr/bin/env bats
 
 . test/helpers.sh
 group () { . $BORK_SOURCE_DIR/core/group.sh $*; }
