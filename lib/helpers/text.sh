@@ -29,7 +29,7 @@ str_item_count () {
 # pass: "foo bar bee" "o{2,}\s+"
 # fail: "foo bar bee" "ee\s+"
 str_matches () {
-  $(echo "$1" | grep -e $2 > /dev/null)
+  $(echo "$1" | grep -E "$2" > /dev/null)
   return $?
 }
 

@@ -16,67 +16,74 @@ dir_exists_handler ()   { [ "$dir_exists" -eq 0 ]; }
 dir_listing_handler ()  { echo "$dir_listing"; }
 git_status_handler ()   { echo "$git_status"; }
 
-@test "src git status: returns 10 when the directory doesn't exist" {
+@test "git status: returns FAILED_PRECONDITION when git exec is missing" {
+  respond_to "which git" "return 1"
+  run git status $repo
+  [ "$status" -eq $STATUS_FAILED_PRECONDITION ]
+}
+
+@test "src git status: returns MISSING when the directory doesn't exist" {
   dir_exists=0
   run git status $repo
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "src git status: returns 10 when the directory is empty" {
+@test "src git status: returns MISSING when the directory is empty" {
   dir_listing=''
   run git status $repo
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "src git status: returns 20 when the directory is not empty and not a git repository" {
+@test "src git status: returns CONFLICT_CLOBBER when the directory is not empty and not a git repository" {
   respond_to "git fetch" "return_with 1"
   run git status $repo
-  [ "$status" -eq 20 ]
+  [ "$status" -eq $STATUS_CONFLICT_CLOBBER ]
   echo "$output" | grep -E "bork exists"
 }
 
-@test "src git status: returns 20 when not on the desired branch" {
+@test "src git status: returns MISMATCH_UPGRADE when not on the desired branch" {
   git_status="## foobar"
   run git status $repo
-  [ "$status" -eq 20 ]
+  [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
   echo "$output" | grep -E 'incorrect branch'
 }
 
-@test "src git status: returns 20 when the local git repository uses another origin" {
+@test "src git status: returns MISMATCH_UPGRADE when the local git repository uses another origin" {
   skip
 }
 
-@test "src git status: returns 20 when the local git repository is ahead" {
+@test "src git status: returns CONFLICT_UPGRADE when the local git repository is ahead" {
   git_status="## master..origin/master [ahead 3]"
   run git status $repo
-  [ "$status" -eq 20 ]
+  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   echo "$output" | grep -E 'is ahead'
 }
 
-@test "src git status: returns 20 when the local git repository has unstaged changes" {
+@test "src git status: returns CONFLICT_UPGRADE when the local git repository has unstaged changes" {
   git_status=$(echo "## master"; echo " D foo")
   run git status git@github.com:mattly/bork
-  [ "$status" -eq 20 ]
+  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   echo "$output" | grep -E 'uncommitted'
 }
 
-@test "src git status: returns 20 when local git repository has uncommitted staged changes" {
+@test "src git status: returns CONFLICT_UPGRADE when local git repository has uncommitted staged changes" {
   git_status=$(echo "## master"; echo "D  foo")
   run git status git@github.com:mattly/bork
-  [ "$status" -eq 20 ]
+  p "$status"
+  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   echo "$output" | grep -E 'uncommitted'
 }
 
-@test "src git status: returns 11 when the local git repository is known to be behind" {
+@test "src git status: returns OUTDATED when the local git repository is known to be behind" {
   git_status="## master..origin/master [behind 3]"
   run git status git@github.com:mattly/bork
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_OUTDATED ]
 }
 
-@test "src git status: returns 0 when the git repository is up-to-date" {
+@test "src git status: returns OK when the git repository is up-to-date" {
   git_status="## master"
   run git status git@github.com:mattly/bork
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "src git install: bakes target dir, git clone" {
