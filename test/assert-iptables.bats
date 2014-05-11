@@ -16,3 +16,9 @@ iptables () { . $BORK_SOURCE_DIR/core/iptables.sh $*; }
   [ "$status" -eq 0 ]
 }
 
+@test "iptables install: bakes the -A command" {
+  run iptables install "INPUT -i lo -j ACCEPT"
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "${lines[0]}" = "sudo iptables -A INPUT -i lo -j ACCEPT" ]
+}

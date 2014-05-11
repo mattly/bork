@@ -7,5 +7,8 @@ case $action in
     status=$?
     [ "$status" -gt 0 ] && return 10
     return 0 ;;
+  install)
+    bake sudo iptables -A $*
+    ;;
   *) return 1 ;;
 esac
