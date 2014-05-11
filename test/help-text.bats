@@ -47,6 +47,16 @@
   run str_matches "$(ls)" "^Make$"
   [ "$status" -eq 1 ]
 }
+@test "matches: recognizes extended patterns" {
+  run str_matches "not a symlink: FOO" "not a symlink.+FOO$"
+  [ "$status" -eq 0 ]
+}
+@test "matches: recognizes backslash patterns" {
+  run str_matches "D  foo" '^\s?\w'
+  [ "$status" -eq 0 ]
+  run str_matches " D foo" "^\\s?\\w"
+  [ "$status" -eq 0 ]
+}
 
 # == replace
 @test "replace: replaces the matched pattern with the result" {
