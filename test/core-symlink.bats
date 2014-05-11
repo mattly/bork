@@ -45,13 +45,20 @@ make_links () {
 
 @test "symlink: status returns CONFLICT_UPGRADE if any dest is symlinked to a non-source" {
   ln -sf $source/README $tmpdir/LICENSE
+  ln -sf $source/LICENSE $tmpdir/README
   run symlink status "$source/*"
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
+  str_matches "${lines[0]}" "incorrect target.+LICENSE$"
+  str_matches "${lines[1]}" "incorrect target.+README$"
 }
+
 @test "symlink: status returns CONFLICT_UPGRADE if any dest is a non-symlink" {
   echo "foo" > $tmpdir/LICENSE
+  echo "bar" > $tmpdir/README
   run symlink status "$source/*"
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
+  str_matches "${lines[0]}" "not a symlink.+LICENSE$"
+  str_matches "${lines[1]}" "not a symlink.+README$"
 }
 
 @test "symlink: status handles --tmpl argument when missing" {
