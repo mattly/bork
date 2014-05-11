@@ -18,28 +18,31 @@ mkdirs () {
   for d in $*; do mkdir -p $d; done
 }
 
-@test "directories: status returns 0 if all directories are present" {
+@test "directories: status returns OK if all directories are present" {
   mkdirs foo bar
   run directories status foo bar
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
-@test "directories: status returns 10 if no directories are present" {
+@test "directories: status returns MISSING if no directories are present" {
   run directories status foo bar
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "directories: status returns 11 if some directories are present" {
+@test "directories: status returns PARTIAL if some directories are present" {
   mkdirs bar bee
   run directories status foo bar
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_PARTIAL ]
 }
 
-@test "directories: status returns 20 if any targets are non-directories" {
+@test "directories: status returns CONFLICT_UPGRADE if any targets are non-directories" {
   echo "FOO" > foo
+  echo "BAZ" > baz
   mkdirs bee
-  run directories status bee bar foo
-  [ "$status" -eq 20 ]
+  run directories status bee bar foo baz
+  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
+  str_matches "${lines[0]}" "exists.*foo"
+  str_matches "${lines[1]}" "exists.*baz"
 }
 
 @test "directories: install creates all target directories" {
