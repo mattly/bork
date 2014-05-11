@@ -6,11 +6,13 @@ When writing a status clause, it is best practice to traverse the codes describe
 
 `10`: Missing.  Satisfy with 'install'.
 
-`11`: Outdated.  Satisfy with 'upgrade'.
+`11`: Outdated.  Satisfy with 'upgrade'.  Indicates the existing thing is behind.
 
-`12`: Mismatched.  Satisfy with 'upgrade'.  No conflict (defined below) occurs, and the assertion is not 'outdated', but perhaps some options are different.
+`12`: Partial.  Satisfy with 'upgrade'.  Indicates the existing thing is incomplete.
 
-`13`: Mismatched.  Satisfy with 'delete' followed by 'install'.  Not supported yet.
+`13`: Mismatched, Upgrade.  Satisfy with 'upgrade'.  No conflict (defined below) occurs, and the assertion is not 'outdated', but perhaps some options are different.
+
+`14`: Mismatched, Clobber.  Satisfy with 'delete' followed by 'install'.  Not supported yet.
 
 #### Conflict Status Codes
 
@@ -18,11 +20,11 @@ When writing a status clause, it is best practice to traverse the codes describe
 
 Conflicts are not currently resolvable, but a future version of bork will prompt the user or allow a --force option to satisfy the assertion.
 
-`20`: Weak conflict, resolvable.  Satisfy with 'upgrade'.
+`20`: Conflict, Upgrade.  Satisfy with 'upgrade'.  Some data might be lost, such as a file with a different md5 sum, uncommitted SCM changes, etc.
 
-`21`: Strong conflict, resolvable.  Satisfy with 'delete' followed by 'install'.
+`21`: Conflict, Clobber.  Satisfy with 'delete' followed by 'install'.
 
-`22`: Strong conflict, un-resolvable.  The script does not know how to resolve this conflict.
+`25`: Conflict, Halt.  The script does not know how to resolve this conflict.
 
 #### Error Status Codes
 
@@ -32,7 +34,7 @@ Conflicts are not currently resolvable, but a future version of bork will prompt
 
 `31`: Failed arguments.  The script was provided with arguments that do not resolve into a resource the script can use to satisfy the result, or even further determine its status.
 
-`32`: Failed argument precondition.  The script was provided with arguments that indicate it should do something the script indicates it cannot do.  For example, use sudo privileges when they are not available.
+`32`: Failed argument precondition.  The script was provided with arguments that indicate it should do something the script knows it cannot do.  For example, use a git branch that doesn't exist.
 
 `33`: Failed precondition.  The script cannot run, a requisite condition (f.e., git) is missing.
 
