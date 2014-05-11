@@ -5,8 +5,8 @@ case $action in
   status)
     out=$(bake sudo iptables -C $* 2>&1)
     status=$?
-    [ "$status" -gt 0 ] && return 10
-    return 0 ;;
+    [ "$status" -gt 0 ] && return $STATUS_MISSING
+    return $STATUS_OK ;;
   install)
     bake sudo iptables -A $*
     ;;
