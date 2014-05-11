@@ -73,6 +73,13 @@ When called from the compiled script, you can test `is_compiled` in status, inst
 
 Example: base64-encodes `sourcefile` and assigns it to a variable that maps to its path.  The `status` and `install` actions know to use this variable instead of looking for the sourcefile and base64-decode its contents.
 
+## Bake
+
+Bork has the notion of the "source system" and the "target system".  They are currently realized only in the scope of the "compile" operation, but in the future it might be possible to run bork locally and have it execute commands on another host system via ssh.  The key to doing this is `bake`.
+
+Any command that queries the state of, or modifies the target system should be run through bake.  In normal operation, it will simply eval the command as passed.  Querying the state of the "source system" or logic do not need to be passed through bake.
+
+This is a little bit of overhead, but I believe it will yield interesting results.  Controlling remote hosts is one possibility, providing "compile" with an option to just do a super-lightweight install script is another.  It's used for mocking behavior in the tests.
 
 
 
