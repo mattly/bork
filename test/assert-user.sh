@@ -11,14 +11,20 @@ setup () {
 }
 
 # --- without arguments ----------------------------------------
-@test "user status: returns 10 when user doesn't exist" {
-  run user status nonexistant
-  [ "$status" -eq 10 ]
+@test "user status: returns FAILED_PRECONDITION when useradd isn't found" {
+  respond_to "which useradd" "return 1"
+  run user status foo
+  [ "$status" -eq $STATUS_FAILED_PRECONDITION ]
 }
 
-@test "user status: returns 0 when user exists" {
+@test "user status: returns MISSING when user doesn't exist" {
+  run user status nonexistant
+  [ "$status" -eq $STATUS_MISSING ]
+}
+
+@test "user status: returns OK when user exists" {
   run user status existant
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "user install: bakes 'useradd' with -m" {
@@ -30,22 +36,22 @@ setup () {
 }
 
 # --- with shell argument -------------------------------------
-@test "user status: with shell, returns 10 when user doesn't exist" {
+@test "user status: with shell, returns MISSING when user doesn't exist" {
   run user status nonexistant --shell=/bin/zsh
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "user status: with shell, returns 11 when user exists, wrong shell" {
+@test "user status: with shell, returns MISMATCHED_UPGRADE when user exists, wrong shell" {
   run user status existant --shell=/bin/zsh
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_MISMATCHED_UPGADE ]
   [ "${#lines[*]}" -eq 1 ]
   echo "${lines[0]}" | grep -E "^--shell:" >/dev/null
   echo "${lines[0]}" | grep -E "/bin/bash$" >/dev/null
 }
 
-@test "user status: with shell, returns 0 when user exists, right shell" {
+@test "user status: with shell, returns OK when user exists, right shell" {
   run user status existant --shell=/bin/bash
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "user install: with shell, bakes 'useradd' with --shell" {
@@ -67,30 +73,30 @@ setup () {
 }
 
 # --- with group argument ------------------------------------
-@test "user status: with group, returns 10 when user doesn't exist" {
+@test "user status: with group, returns MISSING when user doesn't exist" {
   run user status nonexistant --groups=foo,bar
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "user status: with group, returns 11 when user belongs to none" {
+@test "user status: with group, returns PARTIAL when user belongs to none" {
   run user status existant --groups=foo,bar
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_PARTIAL ]
   [ "${#lines[*]}" -eq 1 ]
   echo "${lines[0]}" | grep -E "^--groups:" >/dev/null
   echo "${lines[0]}" | grep -E "foo bar$" >/dev/null
 }
 
-@test "user status: with group, returns 11 when user belongs to some" {
+@test "user status: with group, returns PARTIAL when user belongs to some" {
   run user status existant --groups=foo,bar,bee
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_PARTIAL ]
   [ "${#lines[*]}" -eq 1 ]
   echo "${lines[0]}" | grep -E "^--groups:" >/dev/null
   echo "${lines[0]}" | grep -E "foo bar$" > /dev/null
 }
 
-@test "user status: with group, returns 0 when user belongs to all" {
+@test "user status: with group, returns OK when user belongs to all" {
   run user status existant --groups=existant,bee
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "user install: with group, bakes 'useradd' with --groups" {

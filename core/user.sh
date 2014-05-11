@@ -41,24 +41,28 @@ user_groups () {
 
 case $action in
   status)
-    outdated=
+    needs_exec "useradd" || return $STATUS_FAILED_PRECONDITION
+
     row=$(user_get $handle)
-    [ "$?" -gt 0 ] && return 10
+    [ "$?" -gt 0 ] && return $STATUS_MISSING
+
     if [ -n "$shell" ]; then
       msg=$(user_shell "$row" $shell)
       if [ "$?" -gt 0 ]; then
         echo "--shell: expected $shell; is $msg"
-        outdated=1
+        mismatched=1
       fi
     fi
+
     if [ -n "$groups" ]; then
       msg=$(user_groups $handle $groups)
       if [ "$?" -gt 0 ]; then
         echo "--groups: expected $groups; missing $(echo $msg)"
-        outdated=1
+        partial=1
       fi
     fi
-    [ "$outdated" -gt 0 ] && return 11
+    [ -n "$mismatched" ] && return $STATUS_MISMATCHED_UPGADE
+    [ -n "$partial" ] && return $STATUS_PARTIAL
     return 0 ;;
   install)
     args="-m"
