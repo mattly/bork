@@ -46,9 +46,9 @@ case "$action" in
         (( missing++ ))
       fi
     done
-    [ "$missing" -eq $accum ] && return 10
-    [ "$missing" -gt 0 ] && return 11
-    return 0
+    [ "$missing" -eq $accum ] && return $STATUS_MISSING
+    [ "$missing" -gt 0 ] && return $STATUS_PARTIAL
+    return $STATUS_OK
     ;;
   install|upgrade)
     for file in $*; do

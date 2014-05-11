@@ -25,51 +25,51 @@ make_links () {
 }
 
 
-@test "symlink: status returns 0 if all sources are symlinked in dest" {
+@test "symlink: status returns OK if all sources are symlinked in dest" {
   make_links
   run symlink status "$source/*"
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
-@test "symlink: status returns 10 if no sources are symlinked in dest" {
+@test "symlink: status returns MISSING if no sources are symlinked in dest" {
   run symlink status "$source/*"
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "symlink: status returns 11 if some sources are symlinked in dest" {
+@test "symlink: status returns PARTIAL if some sources are symlinked in dest" {
   make_links
   rm $tmpdir/LICENSE
   run symlink status "$source/*"
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_PARTIAL ]
 }
 
-@test "symlink: status returns 20 if any dest is symlinked to a non-source" {
+@test "symlink: status returns CONFLICT_UPGRADE if any dest is symlinked to a non-source" {
   ln -sf $source/README $tmpdir/LICENSE
   run symlink status "$source/*"
-  [ "$status" -eq 20 ]
+  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
 }
-@test "symlink: status returns 20 if any dest is a non-symlink" {
+@test "symlink: status returns CONFLICT_UPGRADE if any dest is a non-symlink" {
   echo "foo" > $tmpdir/LICENSE
   run symlink status "$source/*"
-  [ "$status" -eq 20 ]
+  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
 }
 
 @test "symlink: status handles --tmpl argument when missing" {
   make_links
   run symlink status --tmpl=".\$f" "$source/*"
-  [ "$status" -eq 10 ]
+  [ "$status" -eq $STATUS_MISSING ]
 }
 @test "symlink: status handles --tmpl argument when incomplete" {
   ln -s "$source/LICENSE" "$tmpdir/.LICENSE"
   run symlink status --tmpl=".\$f" "$source/*"
-  [ "$status" -eq 11 ]
+  [ "$status" -eq $STATUS_PARTIAL ]
 }
 
 @test "symlink: status handles a --dest argument" {
   make_links
   cd $(mktemp -d -t bork_sym_2)
   run symlink status --dest=$tmpdir "$source/*"
-  [ "$status" -eq 0 ]
+  [ "$status" -eq $STATUS_OK ]
 }
 
 @test "symlink: install creates all target files" {
