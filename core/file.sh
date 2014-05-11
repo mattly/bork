@@ -10,14 +10,13 @@ _bake () {
   else bake $*
   fi
 }
-_file_varname () {
-  echo "borkfile__$(echo "$1" | base64 | sed -E 's|\+|_|' | sed -E 's|\?|__|' | sed -E 's|=+||')"
-}
+file_varname="borkfiles__$(echo "$sourcefile" | base64 | sed -E 's|\+|_|' | sed -E 's|\?|__|' | sed -E 's|=+||')"
+p "$sourcefile: $file_varname"
 
 case $action in
   status)
     bake [ -f $targetfile ] || return 10
-    if [ ! -f $sourcefile ]; then
+    if ! is_compiled && [ ! -f $sourcefile ]; then
       echo "source file doesn't exist: $sourcefile"
       return 40
     fi
@@ -29,8 +28,15 @@ case $action in
       fi
     fi
     # TODO: need to distinguish local platfrom from target platform
-    sourcesum=$(eval $(md5cmd $platform $sourcefile))
+    if is_compiled; then
+      md5c=$(md5cmd $platform)
+      sourcesum=$(echo "${!file_varname}" | base64 --decode | md5)
+      p $sourcesum
+    else
+      sourcesum=$(eval $(md5cmd $platform $sourcefile))
+    fi
     targetsum=$(_bake $(md5cmd $platform $targetfile))
+    p $targetsum
     if [ "$targetsum" != $sourcesum ]; then
       echo "expected sum: $sourcesum"
       echo "received sum: $targetsum"
@@ -66,10 +72,9 @@ case $action in
     return 0
     ;;
   compile)
-    varname=$(_file_varname $sourcefile)
     echo "# source: $sourcefile"
     echo "# md5 sum: $(eval $(md5cmd $platform $sourcefile))"
-    echo "$varname=\"$(cat $sourcefile | base64)\""
+    echo "$file_varname=\"$(cat $sourcefile | base64)\""
     ;;
   *) return 1 ;;
 esac

@@ -110,8 +110,14 @@ setup () {
   [ "${lines[2]}" = $expected ]
 }
 
+is_compiled () { [ -n "$is_compiled" ]; }
+
 @test "file status: if compiled, uses stored variable" {
-  skip
+  is_compiled=1
+  borkfiles__cGF0aC9mcm9tL3NvdXJjZQo="$(base64 Readme.md)"
+  respond_to "md5 -q path/to/target" "echo $readsum"
+  run file status path/to/target path/from/source
+  [ "$status" -eq 0 ]
 }
 
 @test "file install: if compiled, uses stored variable" {
