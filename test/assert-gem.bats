@@ -22,3 +22,10 @@ setup () {
   run gem status foo
   [ "$status" -eq $STATUS_OK ]
 }
+
+@test "gem install: performs the installation" {
+  run gem install foo
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "${lines[0]}" = "sudo gem install foo" ]
+}

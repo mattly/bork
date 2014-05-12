@@ -10,4 +10,7 @@ case $action in
       return $STATUS_MISSING
     fi
     return 0 ;;
+  install)
+    bake sudo gem install "$gemname"
+    ;;
 esac
