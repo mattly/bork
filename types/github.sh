@@ -6,5 +6,5 @@ action=$1
 repo=$2
 shift 2
 
-. $BORK_SOURCE_DIR/core/git.sh $action \
+. $BORK_SOURCE_DIR/types/git.sh $action \
   "https://github.com/$(echo $repo).git" $*
