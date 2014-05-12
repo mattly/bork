@@ -1,3 +1,6 @@
+# TODO
+# - doesn't work on Darwin, is groupadd a GNU thing?
+
 action=$1
 groupname=$2
 shift 2
@@ -9,7 +12,9 @@ case $action in
     bake cat /etc/group | grep -E "^$groupname:"
     [ "$?" -gt 0 ] && return $STATUS_MISSING
     return $STATUS_OK ;;
+
   install)
     bake groupadd $groupname ;;
+
   *) return 1 ;;
 esac

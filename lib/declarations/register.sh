@@ -38,7 +38,7 @@ _lookup_type () {
     echo "$fn"
     return
   fi
-  bork_official="$BORK_SOURCE_DIR/core/$(echo $assertion).sh"
+  bork_official="$BORK_SOURCE_DIR/types/$(echo $assertion).sh"
   if [ -e "$bork_official" ]; then
     echo "$bork_official"
     return

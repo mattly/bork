@@ -2,7 +2,7 @@
 
 . test/helpers.sh
 
-iptables () { . $BORK_SOURCE_DIR/core/iptables.sh $*; }
+iptables () { . $BORK_SOURCE_DIR/types/iptables.sh $*; }
 
 @test "iptables status: returns MISSING when rule is missing" {
   respond_to "sudo iptables -C INPUT -i lo -j ACCEPT" \

@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-brew () { . $BORK_SOURCE_DIR/core/brew.sh $*; }
+brew () { . $BORK_SOURCE_DIR/types/brew.sh $*; }
 
 setup () {
   respond_to "uname -s" "echo Darwin"

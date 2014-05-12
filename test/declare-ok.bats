@@ -9,13 +9,13 @@ BORK_SCRIPT_DIR="$BORK_SOURCE_DIR/test"
   run ok directories foo
   [ "$status" -eq 0 ]
   p $output
-  [ "$BORK_SOURCE_DIR/core/directories.sh foo" = $output ]
+  [ "$BORK_SOURCE_DIR/types/directories.sh foo" = $output ]
 }
 
 @test "ok: checks against stdlib_types" {
   run ok brew foo
   [ "$status" -eq 0 ]
-  [ "$BORK_SOURCE_DIR/core/brew.sh foo" = $output ]
+  [ "$BORK_SOURCE_DIR/types/brew.sh foo" = $output ]
 }
 
 @test "ok: checks against local scripts" {

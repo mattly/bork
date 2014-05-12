@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-git () { . $BORK_SOURCE_DIR/core/git.sh $*; }
+git () { . $BORK_SOURCE_DIR/types/git.sh $*; }
 
 repo="git@github.com:mattly/bork"
 dir_exists=1
@@ -69,7 +69,6 @@ git_status_handler ()   { echo "$git_status"; }
 @test "src git status: returns CONFLICT_UPGRADE when local git repository has uncommitted staged changes" {
   git_status=$(echo "## master"; echo "D  foo")
   run git status git@github.com:mattly/bork
-  p "$status"
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   echo "$output" | grep -E 'uncommitted'
 }
