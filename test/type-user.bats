@@ -1,7 +1,7 @@
 #!/user/bin/env bats
 
 . test/helpers.sh
-user () { . $BORK_SOURCE_DIR/core/user.sh $*; }
+user () { . $BORK_SOURCE_DIR/types/user.sh $*; }
 
 users_query="cat /etc/passwd"
 groups_query="groups existant"
@@ -43,7 +43,7 @@ setup () {
 
 @test "user status: with shell, returns MISMATCHED_UPGRADE when user exists, wrong shell" {
   run user status existant --shell=/bin/zsh
-  [ "$status" -eq $STATUS_MISMATCHED_UPGADE ]
+  [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
   [ "${#lines[*]}" -eq 1 ]
   echo "${lines[0]}" | grep -E "^--shell:" >/dev/null
   echo "${lines[0]}" | grep -E "/bin/bash$" >/dev/null

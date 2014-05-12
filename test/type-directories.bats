@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-directories () { . $BORK_SOURCE_DIR/core/directories.sh $*; }
+directories () { . $BORK_SOURCE_DIR/types/directories.sh $*; }
 
 # these tests use live directories in a tempdir
 baking_responder () { eval "$*"; }

@@ -1,3 +1,7 @@
+# TODO
+# - what's the use case for the --dest argument, again?  Most other types don't work that way.
+# - can we shift that first while loop down there to the `arguments` helper?
+
 action=$1
 shift
 
@@ -44,11 +48,13 @@ case "$action" in
         (( missing++ ))
       fi
     done
+
     [ -n "$conflict" ] && return $STATUS_CONFLICT_UPGRADE
     [ "$missing" -eq $accum ] && return $STATUS_MISSING
     [ "$missing" -gt 0 ] && return $STATUS_PARTIAL
     return $STATUS_OK
     ;;
+
   install|upgrade)
     for file in $*; do
       fname=$(bork_symlink_name_for_file $file $tmpl)
@@ -56,5 +62,6 @@ case "$action" in
     done
     return 0
     ;;
+
   *) return 1;;
 esac

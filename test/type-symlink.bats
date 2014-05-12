@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-symlink () { . $BORK_SOURCE_DIR/core/symlink.sh $*; }
+symlink () { . $BORK_SOURCE_DIR/types/symlink.sh $*; }
 
 # passes through to actual tests on the file system
 baking_responder () { eval "$*"; }

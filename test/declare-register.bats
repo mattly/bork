@@ -38,7 +38,7 @@ is_compiled () { [ -n "$is_compiled" ]; }
 @test "lookup_type: when references official assertion, echoes that" {
   run _lookup_type "git"
   [ "$status" -eq 0 ]
-  path="$BORK_SOURCE_DIR/core/git.sh"
+  path="$BORK_SOURCE_DIR/types/git.sh"
   [ "$output" = $path ]
 }
 

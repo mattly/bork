@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-gem () { . $BORK_SOURCE_DIR/core/gem.sh $*; }
+gem () { . $BORK_SOURCE_DIR/types/gem.sh $*; }
 
 setup () {
   respond_to "gem list" "cat $fixtures/gem-list.txt"

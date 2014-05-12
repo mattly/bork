@@ -1,3 +1,9 @@
+# TODO
+# - check --shell argument for existence of shell, presence in /etc/shells
+# - need to check --groups to make sure they exist
+# - ability to check group memberships on Darwin?
+# - no useradd binary on Darwin
+
 action=$1
 handle=$2
 shift 2
@@ -28,6 +34,7 @@ user_groups () {
   esac
   missing_groups=
   expected_groups=$(IFS=','; echo $2)
+
   for group in $expected_groups; do
     echo "$current_groups" | grep -E "\b$group\b" > /dev/null
     if [ "$?" -gt 0 ]; then
@@ -35,6 +42,7 @@ user_groups () {
       echo $group
     fi
   done
+
   [ -n "$missing_groups" ] && return 1
   return 0
 }
@@ -61,15 +69,17 @@ case $action in
         partial=1
       fi
     fi
-    [ -n "$mismatched" ] && return $STATUS_MISMATCHED_UPGADE
+    [ -n "$mismatched" ] && return $STATUS_MISMATCH_UPGRADE
     [ -n "$partial" ] && return $STATUS_PARTIAL
     return 0 ;;
+
   install)
     args="-m"
     [ -n "$shell" ] && args="$args --shell $shell"
     [ -n "$groups" ] && args="$args --groups $groups"
     bake useradd $args $handle
     ;;
+
   upgrade)
     if ! user_shell $(user_get $handle) $shell ; then
       bake chsh -s $shell $handle
@@ -82,5 +92,6 @@ case $action in
       done
     fi
     ;;
+
   *) return 1 ;;
 esac

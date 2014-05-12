@@ -1,7 +1,13 @@
+# TODO
+# - change compiled filename transformation to md5 representation instead of base64
+# - any way to test for sudo???
+# - distinguish target from local system for file sums
+
 action=$1
 targetfile=$2
 sourcefile=$3
 shift 3
+
 perms=$(arguments get permissions $*)
 owner=$(arguments get owner $*)
 _bake () {
@@ -14,7 +20,6 @@ file_varname="borkfiles__$(echo "$sourcefile" | base64 | sed -E 's|\+|_|' | sed 
 
 case $action in
   status)
-    bake [ -f $targetfile ] || return 10
     if ! is_compiled && [ ! -f $sourcefile ]; then
       echo "source file doesn't exist: $sourcefile"
       return $STATUS_FAILED_ARGUMENTS
@@ -26,6 +31,9 @@ case $action in
         return $STATUS_FAILED_ARGUMENT_PRECONDITION
       fi
     fi
+
+    bake [ -f $targetfile ] || return $STATUS_MISSING
+
     # TODO: need to distinguish local platfrom from target platform
     if is_compiled; then
       md5c=$(md5cmd $platform)
@@ -39,6 +47,7 @@ case $action in
       echo "received sum: $targetsum"
       return $STATUS_CONFLICT_UPGRADE
     fi
+
     mismatch=
     if [ -n "$perms" ]; then
       existing_perms=$(_bake $(permission_cmd $platform) $targetfile)
@@ -59,6 +68,7 @@ case $action in
     [ -n "$mismatch" ] && return $STATUS_MISMATCH_UPGRADE
     return 0
     ;;
+
   install|upgrade)
     dirn=$(dirname $targetfile)
     [ "$dirn" != . ] && _bake mkdir -p $dirn
@@ -72,10 +82,12 @@ case $action in
     [ -n "$perms" ] && _bake chmod $perms $targetfile
     return 0
     ;;
+
   compile)
     echo "# source: $sourcefile"
     echo "# md5 sum: $(eval $(md5cmd $platform $sourcefile))"
     echo "$file_varname=\"$(cat $sourcefile | base64)\""
     ;;
+
   *) return 1 ;;
 esac

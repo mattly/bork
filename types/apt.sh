@@ -1,5 +1,9 @@
-apt_cmd="sudo apt-get"
-[ -n "$command_apt_get" ] && apt_cmd=$command_apt_get
+# TODO
+# - cache output of apt-get update, only needs to be done once per run
+# - perhaps move the apt-get update command out to a separate call without
+#   a package name, similar to how the "brew" type does it.
+# - specify versions to install with --version flag (ie, ruby=2.0.0)
+# - specify distribution to install from with --dist flag (ie ruby/unstable)
 
 action=$1
 name=$2
@@ -11,7 +15,6 @@ case $action in
     needs_exec "dpkg" $?
     [ "$?" -gt 0 ] && return $STATUS_FAILED_PRECONDITION
 
-
     echo "$(bake dpkg --get-selections)" | grep -E "^$name\\s+install$"
     [ "$?" -gt 0 ] && return $STATUS_MISSING
 
@@ -19,8 +22,13 @@ case $action in
                 | grep "^Inst" | awk '{print $2}')
     $(str_contains "$outdated" "$name")
     [ "$?" -eq 0 ] && return $STATUS_OUTDATED
-    return $STATUS_OK ;;
-  install|upgrade) bake sudo apt-get --yes install $name ;;
+    return $STATUS_OK
+    ;;
+
+  install|upgrade)
+    bake sudo apt-get --yes install $name
+    ;;
+
   *) return 1 ;;
 esac
 

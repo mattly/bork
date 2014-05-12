@@ -1,9 +1,8 @@
+# TODO
+# - add --permissions flag, perhaps copy/extract from file?
+
 action=$1
 shift
-
-is_directory () {
-  bake test -d $1
-}
 
 case "$action" in
   status)
@@ -20,16 +19,19 @@ case "$action" in
         fi
       fi
     done
+
     [ -n "$conflict" ] && return $STATUS_CONFLICT_UPGRADE
     [ "$missing" -eq $accum ] && return $STATUS_MISSING
     [ "$missing" -gt 0 ] && return $STATUS_PARTIAL
     return $STATUS_OK
     ;;
+
   install|upgrade)
     for dir in $*; do
       bake [ ! -d $dir ] && bake mkdir -p $dir
     done
     ;;
+
   *) return 1 ;;
 esac
 
