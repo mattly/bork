@@ -40,13 +40,6 @@ case $action in
     git_stat=$(bake git status -uno -b --porcelain)
     git_first_line=$(echo "$git_stat" | head -n 1)
 
-    # str_matches "$git_first_line" "^\#\# $git_branch"
-    str_matches "$(str_get_field "$git_first_line" 2)" "$git_branch"
-    if [ "$?" -ne 0 ]; then
-      echo "local git repository is on incorrect branch"
-      return $STATUS_MISMATCH_UPGRADE
-    fi
-
     git_divergence=$(str_get_field "$git_first_line" 3)
     if str_matches "$git_divergence" 'ahead'; then
       echo "local git repository is ahead of remote"
@@ -61,6 +54,13 @@ case $action in
     fi
     # if str_matches "$git_stat" $git_change_match; then return 20; fi
 
+    # str_matches "$git_first_line" "^\#\# $git_branch"
+    str_matches "$(str_get_field "$git_first_line" 2)" "$git_branch"
+    if [ "$?" -ne 0 ]; then
+      echo "local git repository is on incorrect branch"
+      return $STATUS_MISMATCH_UPGRADE
+    fi
+
     # # If it's known to be behind, outdated
     if str_matches "$git_divergence" 'behind'; then return $STATUS_OUTDATED; fi
 
@@ -73,6 +73,7 @@ case $action in
   upgrade)
     bake cd $git_dir
     bake git pull
+    bake git checkout $git_branch
     bake git log HEAD@{1}..
     printf "\n"
     ;;
