@@ -2,7 +2,7 @@
 
 . test/helpers.sh
 
-apt () { . $BORK_SOURCE_DIR/core/apt.sh $*; }
+apt () { . $BORK_SOURCE_DIR/types/apt.sh $*; }
 
 setup () {
   respond_to "uname -s" "echo Linux"

@@ -1,9 +1,13 @@
+# TODO:
+# - write tests for the packageless 'brew' assertion
+# - write install command for packageless 'brew' assertion that installs homebrew
+# - something to handle brew taps? probably a separate type.
+
 action=$1
 name=$2
 shift 2
 
 if [ -z "$name" ]; then
-  # TODO: write tests for this stuff
   case $action in
     status)
       baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
@@ -14,15 +18,19 @@ if [ -z "$name" ]; then
       [ "$(echo $changes | wc -l | awk '{print $1}')" -gt 0 ] && return $STATUS_OUTDATED
       return $STATUS_OK
       ;;
+
     # need to make sure this actually works
     # install)
       # bake --eval 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"'
       # ;;
+
     upgrade)
       bake brew update
       ;;
+
     *) return 1 ;;
   esac
+
 else
   case $action in
     status)
@@ -34,8 +42,11 @@ else
       bake brew outdated | awk '{print $1}' | grep -E "^$name$"
       [ "$?" -eq 0 ] && return $STATUS_OUTDATED
       return 0 ;;
+
     install) bake brew install $name ;;
+
     upgrade) bake brew upgrade $name ;;
+
     *) return 1 ;;
   esac
 fi

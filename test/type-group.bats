@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-group () { . $BORK_SOURCE_DIR/core/group.sh $*; }
+group () { . $BORK_SOURCE_DIR/types/group.sh $*; }
 
 setup () {
   respond_to "cat /etc/group" "echo 'root:x:0'; echo 'admin:x:50'"

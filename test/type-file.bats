@@ -2,7 +2,7 @@
 
 . test/helpers.sh
 
-file () { . $BORK_SOURCE_DIR/core/file.sh $*; }
+file () { . $BORK_SOURCE_DIR/types/file.sh $*; }
 
 setup () {
   readsum=$(eval $(md5cmd $platform Readme.md))
@@ -12,7 +12,7 @@ setup () {
 # -- without arguments -------------------------------
 @test "file status: returns MISSING when file is missing" {
   respond_to "[ -f missing ]" "return 1"
-  run file status missing path/to/missing
+  run file status missing Readme.md
   [ "$status" -eq $STATUS_MISSING ]
 }
 

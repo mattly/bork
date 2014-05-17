@@ -1,5 +1,9 @@
-cmd="command git"
-if [ -n "$command_git" ]; then cmd=$command_git; fi
+# TODO
+# - compare origins to ensure correct, provide fix for
+# - provide flag for refspec name, ensure status/install/upgrade use it properly
+# - perhaps do --depth=0 by default (quicker) & provide flag for --full ?
+# - need to dig into submodules?
+# - anything here we can extract and re-use for an hg or darcs type?
 
 action=$1
 git_url=$2
@@ -47,29 +51,28 @@ case $action in
     fi
 
     # are there changes?
-    # git_change_match="'^\\s\\?\\w'"
     if str_matches "$git_stat" "^\\s?\\w"; then
       echo "local git repository has uncommitted changes"
       return $STATUS_CONFLICT_UPGRADE
     fi
-    # if str_matches "$git_stat" $git_change_match; then return 20; fi
 
-    # str_matches "$git_first_line" "^\#\# $git_branch"
     str_matches "$(str_get_field "$git_first_line" 2)" "$git_branch"
     if [ "$?" -ne 0 ]; then
       echo "local git repository is on incorrect branch"
       return $STATUS_MISMATCH_UPGRADE
     fi
 
-    # # If it's known to be behind, outdated
+    # If it's known to be behind, outdated
     if str_matches "$git_divergence" 'behind'; then return $STATUS_OUTDATED; fi
 
     # guess we're clean, so things are OK
     return $STATUS_OK ;;
+
   install)
     bake mkdir -p $git_dir
     bake git clone $git_url $git_dir
     ;;
+
   upgrade)
     bake cd $git_dir
     bake git pull
@@ -77,6 +80,7 @@ case $action in
     bake git log HEAD@{1}..
     printf "\n"
     ;;
+
   *) return 1 ;;
 esac
 
