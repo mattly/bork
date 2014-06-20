@@ -100,6 +100,6 @@ git_status_handler ()   { echo "$git_status"; }
   [ "cd bork" = ${lines[0]} ]
   [ "git pull" = ${lines[1]} ]
   [ "git checkout master" = ${lines[2]} ]
-  [ "git log HEAD@{1}.." = ${lines[3]} ]
+  [ "git log HEAD@{2}.." = ${lines[3]} ]
 }
 

@@ -77,7 +77,7 @@ case $action in
     bake cd $git_dir
     bake git pull
     bake git checkout $git_branch
-    bake git log HEAD@{1}..
+    bake git log HEAD@{2}..
     printf "\n"
     ;;
 
