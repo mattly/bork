@@ -37,9 +37,11 @@
   - iptables
   - apt
   - cron
+      http://stackoverflow.com/questions/610839/how-can-i-programmatically-create-a-new-cron-job
 
 - mac pack
   - brew
+  - brew cask
   - defaults
   - launchd
 
