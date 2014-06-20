@@ -34,6 +34,7 @@ setup () {
 @test "brew status reports a packge is current" {
   run brew status current_package
   [ "$status" -eq $STATUS_OK ]
+  [ "${#lines[*]}" -eq 0 ]
 }
 
 @test "brew install runs 'install'" {

@@ -37,9 +37,9 @@ else
       baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
       needs_exec "brew" || return $STATUS_FAILED_PRECONDITION
 
-      bake brew list | grep -E "^$name$"
+      bake brew list | grep -E "^$name$" > /dev/null
       [ "$?" -gt 0 ] && return $STATUS_MISSING
-      bake brew outdated | awk '{print $1}' | grep -E "^$name$"
+      bake brew outdated | awk '{print $1}' | grep -E "^$name$" > /dev/null
       [ "$?" -eq 0 ] && return $STATUS_OUTDATED
       return 0 ;;
 
