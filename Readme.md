@@ -1,29 +1,20 @@
 # Bork, your Sweedish Chef Puppet
 
-Bork puts the 'sh' back into IT. [Bork Bork
-Bork](https://www.youtube.com/results?search_query=swedish+chef).
+Bork puts the 'sh' back into IT. [Bork Bork Bork](https://www.youtube.com/results?search_query=swedish+chef).
 
-Bork is a bash-based DSL for system configuration management.  Its goal is to
-provide a zero-dependency solution for making assertions about the state of
-a system and when needed, truthing them.
+Bork is a bash-based DSL for system configuration management.  Its goal is to provide a zero-dependency solution for making assertions about the state of a system and when needed, truthing them.
 
 by Matthew Lyon <matthew@lyonheart.us>
 
 ## Bare Minimum Requirements
 
-Bork is written against Bash 3.2. It may not perfectly run there yet, and that's
-where you come in :) The goal is to run out-of-box on any modern UNIX system,
-whcih should (hopefully) include sed, awk and grep.
+Bork is written against Bash 3.2. It may not perfectly run there yet, and that's where you come in :) The goal is to run out-of-box on any modern UNIX system, whcih should (hopefully) include sed, awk and grep.
 
-If you're going to use it, you'll presumably need a way to copy files to your
-target machine, such as scp or curl.
+If you're going to use it, you'll presumably need a way to copy files to your target machine, such as scp or curl.
 
 ## Why
 
-You might ask, why not use [Chef][] or [Puppet][] instead? Good question.
-They're existing mature tools for doing this kind of thing, with vibrant
-communities. However after working with both, I wanted something dramatically
-simpler and less opinionated.
+You might ask, why not use [Chef][] or [Puppet][] instead? Good question.  They're existing mature tools for doing this kind of thing, with vibrant communities. However after working with both, I wanted something dramatically simpler and less opinionated.
 
 Bork is a shell program. You run it how you want.
 
@@ -31,8 +22,7 @@ Bork is a shell program. You run it how you want.
 
 ### Configs
 
-A config is a bash script that is run under a bork "harness" that makes
-assertions about the state of a system. A basic config would look like this:
+A config is a bash script that is run under a bork "harness" that makes assertions about the state of a system. A basic config would look like this: 
 
 ``` bash
 use brew git github           # pulls these assertions out of stdlib into use
@@ -51,9 +41,7 @@ if did_update; then           # if vimproc was installed or upgraded, then re-ru
 fi
 ```
 
-This config could be tested by bork with `bork status vim.sh` or satisfied with
-`bork satisfy vim.sh`. In the future, I'd like to provide a 'compile' option to
-generate a single, portable shell script.
+This config could be tested by bork with `bork status vim.sh` or satisfied with `bork satisfy vim.sh`. In the future, I'd like to provide a 'compile' option to generate a single, portable shell script.
 
 ### Assertions
 
@@ -77,33 +65,24 @@ More assertion types are planned:
 
 * other package managers: apt, yum, etc.
 * VCS managers: hg, darcs
-* PL package managers: npm, rubygems, pip, cabal, etc. Note that bork is
-  intended for global installation of these packages, not per-project; tools
-  like Bundler or package.json are more appropriate for project-level assertions.
+* PL package managers: npm, rubygems, pip, cabal, etc. Note that bork is intended for global installation of these packages, not per-project; tools like Bundler or package.json are more appropriate for project-level assertions.
 * Cron jobs, init.d files, launchctl tasks, etc
 * Files exist with certain text, and some kind of template renderer
 * OS X settings via defaults
 
 ### Look At All The Things It's NOT Doing
 
-To the degree Bork is opinionated, it is *very* opinionated about what it does
-not want responsibility for:
+To the degree Bork is opinionated, it is *very* opinionated about what it does not want responsibility for:
 
 - **Collaboration**: Use GitHub. Or Whatever.
 - **Versioning**: Bring your own VCS. Git, Mercurial, Darcs, CVS or whatever.
-- **Orchestration**: There are plenty of good tools that do this already.
-  [Fabric][] and [Capistrano][] come immediately to mind.
-- **Role Management**: Just include another config. Compose configs from
-  sub-configs.
-- **Hardcore Dependency Management**: This should be outsourced to your package
-  manager, then managed inline in your scripts. For example, the 'rbenv'
-  package should be installed before calling an rbenv source. This is coding
-  101, people. It ain't that hard.
+- **Orchestration**: There are plenty of good tools that do this already.  [Fabric][] and [Capistrano][] come immediately to mind.
+- **Role Management**: Just include another config. Compose configs from sub-configs.
+- **Hardcore Dependency Management**: This should be outsourced to your package manager, then managed inline in your scripts. For example, the 'rbenv' package should be installed before calling an rbenv source. This is coding 101, people. It ain't that hard.
 
 ## License
 
-Bork is copyright 2013 Matthew Lyon and licensed under the MIT License. See
-LICENSE for more information.
+Bork is copyright 2013 Matthew Lyon and licensed under the MIT License. See LICENSE for more information.
 
 [rbenv]: https://github.com/sstephenson/rbenv
 [nodenv]: https://github.com/OiNutter/nodenv
