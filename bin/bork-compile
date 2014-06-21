@@ -60,6 +60,7 @@ for file in $BORK_SOURCE_DIR/lib/**/*.sh; do
   esac
 done
 
+[ -z "$1" ] && return
 cat $1 | while read line; do
   first_token=$(str_get_field "$line" 1)
   case $first_token in
