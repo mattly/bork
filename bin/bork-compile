@@ -76,7 +76,8 @@ cat $1 | while read line; do
         exit 1
       fi
       include_assertion $type $fn
-      . $fn compile
+      compile_cmd=$(echo "$line" | sed -E "s|ok $type ||")
+      . $fn compile $compile_cmd
       echo "$line"
       ;;
     register) eval "$line" ;;
