@@ -37,7 +37,7 @@ case $action in
     # TODO: need to distinguish local platfrom from target platform
     if is_compiled; then
       md5c=$(md5cmd $platform)
-      sourcesum=$(echo "${!file_varname}" | base64 --decode | md5)
+      sourcesum=$(echo "${!file_varname}" | base64 --decode | eval $md5c)
     else
       sourcesum=$(eval $(md5cmd $platform $sourcefile))
     fi
