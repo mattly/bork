@@ -53,11 +53,15 @@ esac
 is_compiled () { return 0; }
 DONE
 
-for file in $BORK_SOURCE_DIR/lib/**/*.sh; do
-  case $file in
-    declarations/include.sh ) : ;;
-    *) cat $file | strip_blanks ;;
-  esac
+libdirs="helpers declarations"
+for dir in $libdirs; do
+  for file in $BORK_SOURCE_DIR/lib/$dir/*.sh; do
+    fn="$dir/$file"
+    case $fn in
+      declarations/include.sh ) : ;;
+      *) cat $file | strip_blanks ;;
+    esac
+  done
 done
 
 cat $1 | while read line; do
