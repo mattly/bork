@@ -6,6 +6,23 @@ _ok_run () {
   fi
 }
 
+_checked_len=0
+_checking () {
+  check_str="checking: $*"
+  _checked_len=${#check_str}
+  echo -n "$check_str"$'\r'
+}
+_checked () {
+  report="$*"
+  (( pad=$_checked_len - ${#report} ))
+  i=1
+  while [ "$i" -le $pad ]; do
+    report+=" "
+    (( i++ ))
+  done
+  echo "$report"
+}
+
 ok () {
   assertion=$1
   shift
@@ -15,25 +32,17 @@ ok () {
   case $operation in
     echo) echo "$fn $*" ;;
     status)
+      _checking $assertion $*
       output=$(_ok_run $fn "status" $*)
       status=$?
-      echo "$(_status_for $status): $assertion $*"
+      _checked "$(_status_for $status): $assertion $*"
       [ "$status" -ne 0 ] && [ -n "$output" ] && echo "$output"
       ;;
     satisfy)
-      check="checking: $assertion $*"
-      len=${#check}
-      echo -n $check$'\r'
+      _checking $assertion $*
       status_output=$(_ok_run $fn "status" $*)
       status=$?
-      report="$(_status_for $status): $assertion $*"
-      (( pad=$len-${#report} ))
-      i=1
-      while [ "$i" -le $pad ]; do
-        report+=" "
-        (( i++ ))
-      done
-      echo $report
+      _checked "$(_status_for $status): $assertion $*"
       case $status in
         0) : ;;
         10)
