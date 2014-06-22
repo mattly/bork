@@ -64,6 +64,7 @@ for dir in $libdirs; do
   done
 done
 
+[ -z "$1" ] && return
 cat $1 | while read line; do
   first_token=$(str_get_field "$line" 1)
   case $first_token in
