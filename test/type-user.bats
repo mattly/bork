@@ -114,6 +114,6 @@ setup () {
   [ "${#lines[*]}" -eq 4 ]
   [ "${lines[0]}" = $users_query ]
   [ "${lines[1]}" = $groups_query ]
-  [ "${lines[2]}" = "useradd existant foo" ]
-  [ "${lines[3]}" = "useradd existant bar" ]
+  [ "${lines[2]}" = "adduser existant foo" ]
+  [ "${lines[3]}" = "adduser existant bar" ]
 }

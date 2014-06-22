@@ -88,7 +88,7 @@ case $action in
     if [ "$?" -gt 0 ]; then
       groups_to_create=$(IFS=','; echo $missing)
       for group in $groups_to_create; do
-        bake useradd $handle $group
+        bake adduser $handle $group
       done
     fi
     ;;
