@@ -5,7 +5,7 @@ use_tmpdir () {
   tmpdirname="borky"
   [ -n $bork_operation ] && tmpdirname=$bork_operation
   [ -n $1 ] && tmpdirname=$1
-  bork_using_tmpdir=$(mktemp -d -t "$tmpdirname")
+  bork_using_tmpdir=$(mktemp -d -t "$tmpdirname"".XXXX")
   destination push $bork_using_tmpdir
 }
 
