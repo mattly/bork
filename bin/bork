@@ -36,7 +36,7 @@ bork usage:
 
 bork operation [config-file]
 
-where "operatiion" is one of:
+where "operation" is one of:
 
 status: determine if the config file's conditions are met
 satisfy: satisfy the config file's conditions if possible
