@@ -23,6 +23,28 @@ _checked () {
   echo "$report"
 }
 
+_conflict_approve () {
+  echo
+  echo "== Warning! Assertion: $*"
+  echo "Attempting to satisfy has resulted in a conflict.  Satisfying this may overwrite data."
+  _yesno "Do you want to continue?"
+  return $?
+}
+
+_yesno () {
+  answered=0
+  answer=
+  while [ "$answered" -eq 0 ]; do
+    read -p "$* (yes/no) " answer
+    if [[ "$answer" == 'y' || "$answer" == "yes" || "$answer" == "n" || "$answer" == "no" ]]; then
+      answered=1
+    else
+      echo "Valid answers are: yes y no n" >&2
+    fi
+  done
+  [[ "$answer" == 'y' || "$answer" == 'yes' ]]
+}
+
 ok () {
   assertion=$1
   shift
@@ -54,8 +76,16 @@ ok () {
           _ok_run $fn upgrade $*
           _changes_complete $? 'upgrade'
           ;;
+        20)
+          echo "$status_output"
+          _conflict_approve $assertion $*
+          if [ "$?" -eq 0 ]; then
+            _ok_run $fn upgrade $*
+            _changes_complete $? 'upgrade'
+          fi
+          ;;
         *)
-          echo "* $status_output"
+          echo "$status_output"
           ;;
       esac
       clean_tmpdir
