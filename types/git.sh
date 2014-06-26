@@ -75,6 +75,7 @@ case $action in
 
   upgrade)
     bake cd $git_dir
+    bake git reset --hard
     bake git pull
     bake git checkout $git_branch
     bake git log HEAD@{2}..
