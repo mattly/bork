@@ -65,7 +65,20 @@ for dir in $libdirs; do
 done
 
 [ -z "$1" ] && return
-cat $1 | while read line; do
+config=$1
+shift
+conflicts=$(arguments get conflicts $*)
+if [ -n "$conflicts" ]; then
+  case $conflicts in
+    y|yes) echo "BORK_CONFLICT_RESOLVE=0" ;;
+    n|no) echo "BORK_CONFLICT_RESOLVE=1" ;;
+    *)
+      echo "Invalid value $conflicts provided for --conflicts argument" 1&>2
+      exit 1 ;;
+  esac
+fi
+
+cat $config | while read line; do
   first_token=$(str_get_field "$line" 1)
   case $first_token in
     ok)
