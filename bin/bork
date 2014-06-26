@@ -22,25 +22,27 @@ do
 done
 
 operation=$1
+shift
 
 # used by include to find 'include foo/bar.sh'
-BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$2)
+BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$1)
 BORK_WORKING_DIR=$PWD
 
 case "$operation" in
-  compile) . $BORK_SOURCE_DIR/bin/bork-compile $2 ;;
+  compile) . $BORK_SOURCE_DIR/bin/bork-compile $* ;;
   load) : ;;
-  satisfy | status) . $2 ;;
+  satisfy | status) . $1 ;;
   *) cat <<END
 bork usage:
 
-bork operation [config-file]
+bork operation [config-file] [options]
 
 where "operation" is one of:
 
 status: determine if the config file's conditions are met
 satisfy: satisfy the config file's conditions if possible
 compile: compile the config file to a self-contained script output to STDOUT
+  --conflicts=(y|yes|n|no)  If given, sets an automatic answer for conflict resolution.
 END
   exit 1
   ;;

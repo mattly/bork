@@ -24,6 +24,9 @@ _checked () {
 }
 
 _conflict_approve () {
+  if [ -n "$BORK_CONFLICT_RESOLVE" ]; then
+    return $BORK_CONFLICT_RESOLVE
+  fi
   echo
   echo "== Warning! Assertion: $*"
   echo "Attempting to satisfy has resulted in a conflict.  Satisfying this may overwrite data."
@@ -80,8 +83,11 @@ ok () {
           echo "$status_output"
           _conflict_approve $assertion $*
           if [ "$?" -eq 0 ]; then
+            echo "Resolving conflict..."
             _ok_run $fn upgrade $*
             _changes_complete $? 'upgrade'
+          else
+            echo "Conflict unresolved."
           fi
           ;;
         *)
