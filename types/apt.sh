@@ -9,6 +9,10 @@ action=$1
 name=$2
 shift 2
 case $action in
+  desc)
+    echo "asserts packages installed via apt-get on debian or ubuntu linux"
+    echo "* apt package-name"
+    ;;
   status)
     baking_platform_is "Linux" || return $STATUS_UNSUPPORTED_PLATFORM
     needs_exec "apt-get" 0

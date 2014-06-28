@@ -9,6 +9,11 @@ shift 2
 
 if [ -z "$name" ]; then
   case $action in
+    desc)
+      echo "asserts presence of packages installed via homebrew on mac os x" 
+      echo "* brew                  (installs homebrew)"
+      echo "* brew package-name     (instals package)"
+      ;;
     status)
       baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
       needs_exec "ruby" || return $STATUS_FAILED_PRECONDITION

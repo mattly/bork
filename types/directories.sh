@@ -5,6 +5,10 @@ action=$1
 shift
 
 case "$action" in
+  desc)
+    echo "asserts presence of directories"
+    echo "* directories ~/.ssh ~/.tmp"
+    ;;
   status)
     missing=0
     accum=0

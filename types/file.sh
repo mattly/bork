@@ -19,6 +19,12 @@ _bake () {
 file_varname="borkfiles__$(echo "$sourcefile" | base64 | sed -E 's|\+|_|' | sed -E 's|\?|__|' | sed -E 's|=+||')"
 
 case $action in
+  desc)
+    echo "asserts the presence, checksum, owner and permissions of a file"
+    echo "* file target-path source-path [arguments]"
+    echo "--permissions=755       permissions for the file"
+    echo "--owner=owner-name      owner name of the file"
+    ;;
   status)
     if ! is_compiled && [ ! -f $sourcefile ]; then
       echo "source file doesn't exist: $sourcefile"

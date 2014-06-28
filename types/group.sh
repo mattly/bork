@@ -6,6 +6,10 @@ groupname=$2
 shift 2
 
 case $action in
+  desc)
+    echo "asserts presence of a unix group"
+    echo "* group admin"
+    ;;
   status)
     needs_exec groupadd || return $STATUS_FAILED_PRECONDITION
 

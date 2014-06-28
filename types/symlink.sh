@@ -8,6 +8,7 @@ shift
 dest=
 tmpl='$f'
 
+if [ -n "$1" ]; then
 while [ ${1:0:2} = '--' ]; do
   pair=${1:2}   # strip off leading --
   key=${pair%%=*}  # everything before =
@@ -19,6 +20,7 @@ while [ ${1:0:2} = '--' ]; do
   esac
   shift
 done
+fi
 
 bork_symlink_name_for_file () {
   f=$(basename $1)
@@ -29,6 +31,11 @@ bork_symlink_name_for_file () {
 }
 
 case "$action" in
+  desc)
+    echo "assert presence and target of symlinks"
+    echo "* symlinks [options] ~/code/dotfiles/configs/*"
+    echo "--tmpl='.\$f'"
+    ;;
   status)
     missing=0
     accum=0
