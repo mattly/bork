@@ -5,6 +5,11 @@ desired_type=$4
 desired_val=$5
 
 case $action in
+  desc)
+    echo "asserts settings for OS X's 'defaults' system"
+    echo "> defaults domain key type value"
+    echo "* defaults com.apple.dock autohide bool true"
+    ;;
   status)
     current_type=$(str_get_field "$(defaults read-type $domain $key)" 3)
     current_val=$(defaults read $domain $key)
