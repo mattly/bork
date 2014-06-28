@@ -8,7 +8,9 @@ _ok_run () {
 
 _checked_len=0
 _checking () {
-  check_str="checking: $*"
+  type=$1
+  shift
+  check_str="$type: $*"
   _checked_len=${#check_str}
   echo -n "$check_str"$'\r'
 }
@@ -60,14 +62,14 @@ ok () {
   case $operation in
     echo) echo "$fn $*" ;;
     status)
-      _checking $assertion $*
+      _checking "checking" $assertion $*
       output=$(_ok_run $fn "status" $*)
       status=$?
       _checked "$(_status_for $status): $assertion $*"
       [ "$status" -ne 0 ] && [ -n "$output" ] && echo "$output"
       return $status ;;
     satisfy)
-      _checking $assertion $*
+      _checking "checking" $assertion $*
       status_output=$(_ok_run $fn "status" $*)
       status=$?
       _checked "$(_status_for $status): $assertion $*"
@@ -94,10 +96,24 @@ ok () {
           fi
           ;;
         *)
+          echo "-- sorry, bork doesn't handle this response yet"
           echo "$status_output"
           ;;
       esac
       clean_tmpdir
+      if did_update; then
+        echo "verifying $last_change_type: $assertion $*"
+        output=$(_ok_run $fn "status" $*)
+        status=$?
+        if [ "$status" -gt 0 ]; then
+          echo "* $last_change_type failed"
+          _checked "$(_status_for $status)"
+          echo "$output"
+        else
+          echo "* success"
+        fi
+        return 1
+      fi
       ;;
   esac
 }

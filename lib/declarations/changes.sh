@@ -15,11 +15,13 @@ _changes_reset () {
   bork_performed_install=0
   bork_performed_upgrade=0
   bork_performed_error=0
+  last_change_type=
 }
 
 _changes_complete () {
   status=$1
   action=$2
+  last_change_type=$action
   if [ "$status" -gt 0 ]; then bork_performed_error=1
   elif [ "$action" = "install" ]; then bork_performed_install=1
   elif [ "$action" = "upgrade" ]; then bork_performed_upgrade=1
@@ -27,6 +29,6 @@ _changes_complete () {
     echo "unknown action $2, exiting"
     exit 1
   fi
-  [ "$status" -gt 0 ] && echo "* failure" || echo "* success"
+  [ "$status" -gt 0 ] && echo "* failure"
 }
 
