@@ -53,7 +53,10 @@ ok () {
   shift
   _changes_reset
   fn=$(_lookup_type $assertion)
-  [ -z "$fn" ] && return 1
+  if [ -z "$fn" ]; then
+    echo "not found: $assertion" 1>&2
+    return 1
+  fi
   case $operation in
     echo) echo "$fn $*" ;;
     status)
