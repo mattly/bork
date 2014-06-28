@@ -62,7 +62,7 @@ ok () {
       status=$?
       _checked "$(_status_for $status): $assertion $*"
       [ "$status" -ne 0 ] && [ -n "$output" ] && echo "$output"
-      ;;
+      return $status ;;
     satisfy)
       _checking $assertion $*
       status_output=$(_ok_run $fn "status" $*)

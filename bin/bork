@@ -32,6 +32,16 @@ case "$operation" in
   compile) . $BORK_SOURCE_DIR/bin/bork-compile $* ;;
   load) : ;;
   satisfy | status) . $1 ;;
+  check)
+    fn=$1
+    shift
+    operation=status
+    $fn $* ;;
+  do)
+    fn=$1
+    shift
+    operation=satisfy
+    $fn $* ;;
   *) cat <<END
 bork usage:
 
@@ -39,10 +49,15 @@ bork operation [config-file] [options]
 
 where "operation" is one of:
 
-status: determine if the config file's conditions are met
-satisfy: satisfy the config file's conditions if possible
-compile: compile the config file to a self-contained script output to STDOUT
-  --conflicts=(y|yes|n|no)  If given, sets an automatic answer for conflict resolution.
+- check:      perform 'status' for a single command
+    example:  bork check ok github mattly/dotfiles
+- compile:    compile the config file to a self-contained script output to STDOUT
+    --conflicts=(y|yes|n|no)  If given, sets an automatic answer for conflict resolution.
+    example:  bork compile dotfiles.sh --conflicts=y > install.sh
+- do:         perform 'satisfy' for a single command
+    example:  bork do ok github mattly/dotfiles
+- satisfy:    satisfy the config file's conditions if possible
+- status:     determine if the config file's conditions are met
 END
   exit 1
   ;;
