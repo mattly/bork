@@ -76,6 +76,7 @@ where "operation" is one of:
     example:  bork do ok github mattly/dotfiles
 - satisfy:    satisfy the config file's conditions if possible
 - status:     determine if the config file's conditions are met
+- types:      list types and their usage information
 END
   exit 1
   ;;
