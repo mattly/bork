@@ -11,8 +11,11 @@ case $action in
     echo "* defaults com.apple.dock autohide bool true"
     ;;
   status)
-    current_type=$(str_get_field "$(defaults read-type $domain $key)" 3)
-    current_val=$(defaults read $domain $key)
+    needs_exec "defaults" || return $STATUS_FAILED_PRECONDITION
+    current_val=$(bake defaults read $domain $key)
+    [ "$?" -eq 1 ] && return $STATUS_MISSING
+
+    current_type=$(str_get_field "$(bake defaults read-type $domain $key)" 3)
     conflict=
 
     if [ "$current_type" = "boolean" ]; then
