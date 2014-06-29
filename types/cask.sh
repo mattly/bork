@@ -4,6 +4,8 @@ shift 2
 
 case $action in
   desc)
+    echo "asserts presenece of apps installed via caskroom.io on Mac OS X"
+    echo "* cask app-name"
     ;;
 
   status)
