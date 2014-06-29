@@ -38,7 +38,7 @@ case $action in
     [ -n "$conflict" ] && return $STATUS_MISMATCH_UPGRADE
     return 0 ;;
   install|upgrade)
-    defaults write $domain $key "-$desired_type" $desired_val
+    bake defaults write $domain $key "-$desired_type" $desired_val
     ;;
   *) return 1 ;;
 esac

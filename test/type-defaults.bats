@@ -35,3 +35,8 @@ defaults () { . $BORK_SOURCE_DIR/types/defaults.sh $*; }
   run defaults status NSGlobalDomain AppleEnableMenuBarTransparency bool false
   [ "$status" -eq $STATUS_OK ]
 }
+
+@test "defaults upgrade: runs defaults write with: \$domain \$key -\$type \$value" {
+  respond_to "defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool false" "return 0"
+  run defaults upgrade NSGlobalDomain AppleEnableMenuBarTransparency bool false
+}
