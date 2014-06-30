@@ -100,7 +100,6 @@ ok () {
           echo "$status_output"
           ;;
       esac
-      clean_tmpdir
       if did_update; then
         echo "verifying $last_change_type: $assertion $*"
         output=$(_ok_run $fn "status" $*)
