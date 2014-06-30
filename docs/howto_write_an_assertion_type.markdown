@@ -15,17 +15,23 @@ Bork assertions are scripts that are called by the runner.  Ideally they could b
 
 is transformed into one or more of calls to the `brew` assertion:
 
-    core/brew.sh status bats
-    core/brew.sh install bats
-    core/brew.sh upgrade bats
+    types/brew.sh status bats
+    types/brew.sh install bats
+    types/brew.sh upgrade bats
 
 Most of the bork "core" assertions use a case statement to switch on the provided "action".
 
 The runner decides what calls to perform based on its current operation and the state of the system.  Here are the actions a script can expect from the runner:
 
+### desc
+
+    types/file.sh desc
+
+Outputs basic usage information.  This is included in `bork types`.  Only really useful right now for scripts that are in the `types/` directory included with bork.
+
 ### status
 
-    core/file.sh status path/to/targetfile path/from/sourcefile
+    types/file.sh status path/to/targetfile path/from/sourcefile
 
 When called with `status`, the assertion script should determine if the assertion is met, and return a code to indicate the current status of the assertion.  It _may_ echo messages to STDOUT indicating guidance to the user indicating any problems or warnings.
 
@@ -35,7 +41,7 @@ See the [Status Codes Reference](./assertion_status_codes.markdown) for the comp
 
 ### install
 
-    core/file.sh install path/to/targetfile path/from/sourcefile
+    types/file.sh install path/to/targetfile path/from/sourcefile
 
 When called with `install`, the assertion script should assume that `status` was called with the same arguments and returned `10`; that is, nothing about the assertion exists on the host system.
 
@@ -45,7 +51,7 @@ The script should output any relevant messages, and return 0 on success.
 
 ### upgrade
 
-    core/file.sh upgrade to/targetfile from/sourcefile --permissions=700
+    types/file.sh upgrade to/targetfile from/sourcefile --permissions=700
 
 When called with `upgrade`, the assertion script should assume that `status` was called with the same arguments and returned 11, 12, or 20.  Enough of the assertion exists that a different, hopefully quicker path can be taken to satisfying the assertion.
 
@@ -55,7 +61,7 @@ The script should output any relevant messages and updates, and return 0 on succ
 
 ### delete
 
-    core/file.sh delete to/targetfile from/sourcefile
+    types/file.sh delete to/targetfile from/sourcefile
 
 Not implemented in the runner yet.  The script should remove the artifacts of the assertion from the system.
 
@@ -65,7 +71,7 @@ The script should output any relevant messages, and return 0 on success.
 
 ### compile
 
-    core/file.sh compile to/targetfile from/sourcefile
+    types/file.sh compile to/targetfile from/sourcefile
 
 Echo any relevant information about the current system for the given arguments that will be copied to the compiled script.  The compiled script itself will be included by the compiler, as will the assertion that is calling 'compile' to begin with.
 
@@ -83,7 +89,7 @@ Bork has the notion of the "source system" and the "target system".  They are cu
 
 Any command that queries the state of or modifies the target system should be run through bake.  In normal operation, it will simply eval the command as passed.  Querying the state of the "source system" or logic do not need to be passed through bake.
 
-This is a little bit of overhead, but I believe it will yield interesting results.  Controlling remote hosts is one possibility, providing "compile" with an option to just do a super-lightweight install script is another.  It's used for mocking behavior in the tests.
+This is a little bit of overhead, but I believe it will yield promising results.  Controlling remote hosts is one possibility, providing "compile" with an option to just do a super-lightweight install script is another.  It's used for mocking behavior in the tests.
 
 
 

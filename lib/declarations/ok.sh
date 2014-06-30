@@ -1,8 +1,8 @@
 _ok_run () {
   fn=$1
   shift
-  if is_compiled; then ($fn $*)
-  else (. $fn $*)
+  if is_compiled; then (cd $BORK_DESTINATION; $fn $*)
+  else (cd $BORK_DESTINATION; . $fn $*)
   fi
 }
 
@@ -100,7 +100,6 @@ ok () {
           echo "$status_output"
           ;;
       esac
-      clean_tmpdir
       if did_update; then
         echo "verifying $last_change_type: $assertion $*"
         output=$(_ok_run $fn "status" $*)

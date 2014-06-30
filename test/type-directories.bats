@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-directories () { . $BORK_SOURCE_DIR/types/directories.sh $*; }
+directory () { . $BORK_SOURCE_DIR/types/directory.sh $*; }
 
 # these tests use live directories in a tempdir
 baking_responder () { eval "$*"; }
@@ -18,47 +18,28 @@ mkdirs () {
   for d in $*; do mkdir -p $d; done
 }
 
-@test "directories: status returns OK if all directories are present" {
-  mkdirs foo bar
-  run directories status foo bar
+@test "directory: status returns OK if directory is present" {
+  mkdirs foo
+  run directory status foo
   [ "$status" -eq $STATUS_OK ]
 }
 
-@test "directories: status returns MISSING if no directories are present" {
-  run directories status foo bar
+@test "directory: status returns MISSING if directory isn't present" {
+  run directory status foo
   [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "directories: status returns PARTIAL if some directories are present" {
-  mkdirs bar bee
-  run directories status foo bar
-  [ "$status" -eq $STATUS_PARTIAL ]
-}
-
-@test "directories: status returns CONFLICT_UPGRADE if any targets are non-directories" {
+@test "directory: status returns CONFLICT_CLOBBER if target is non-directory" {
   echo "FOO" > foo
-  echo "BAZ" > baz
-  mkdirs bee
-  run directories status bee bar foo baz
-  [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
-  str_matches "${lines[0]}" "exists.*foo"
-  str_matches "${lines[1]}" "exists.*baz"
+  run directory status foo
+  [ "$status" -eq $STATUS_CONFLICT_CLOBBER ]
+  str_matches "${lines[0]}" "exists"
 }
 
-@test "directories: install creates all target directories" {
-  run directories install foo bar bee
+@test "directory: install creates target directory" {
+  run directory install foo
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${lines[1]}" = "mkdir -p foo" ]
-  [ "${lines[3]}" = "mkdir -p bar" ]
-  [ "${lines[5]}" = "mkdir -p bee" ]
+  [ "${lines[0]}" = "mkdir -p foo" ]
 }
 
-@test "directories: upgrade creates all missing target directories" {
-  mkdirs foo
-  run directories upgrade foo bar bee
-  [ "$status" -eq 0 ]
-  run baked_output
-  [ "${lines[2]}" = "mkdir -p bar" ]
-  [ "${lines[4]}" = "mkdir -p bee" ]
-}

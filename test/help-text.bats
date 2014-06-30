@@ -4,7 +4,7 @@
 
 # == Contains
 @test "contains: returns 0 for full matches of items in a list" {
-  run str_contains "$(ls)" "Makefile"
+  run str_contains "$(ls)" "Readme.md"
   [ "$status" -eq 0 ]
 }
 @test "contains: returns 1 when no full matches" {
@@ -40,7 +40,7 @@
 
 # == matches
 @test "matches: returns 0 for regex matches of items in a list" {
-  run str_matches "$(ls)" "^Make"
+  run str_matches "$(ls)" "^Read"
   [ "$status" -eq 0 ]
 }
 @test "matches: returns 1 on pattern misses" {

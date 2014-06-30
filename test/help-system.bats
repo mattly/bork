@@ -18,7 +18,7 @@
 }
 
 @test "has_exec: returns 0 when exec exists and matches condiditions" {
-  run has_exec "cat LICENSE" "Matthew Lyon" "MIT License"
+  run has_exec "cat LICENSE" "Matthew Lyon" "Apache"
   [ "$status" -eq 0 ]
 }
 
