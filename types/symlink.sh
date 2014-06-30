@@ -1,21 +1,11 @@
 action=$1
-source=$2
-shift 2
-
-if [ -n "$source" ]; then
-  tmpl='$f'
-  given_tmpl=$(arguments get tmpl $*)
-  [ -n "$given_tmpl" ] && tmpl=$given_tmpl
-
-  f=$(basename $source)
-  target=$(echo $(eval echo "$tmpl"))
-fi
+target=$2
+source=$3
 
 case "$action" in
   desc)
     echo "assert presence and target of a symlink"
-    echo "* symlink ~/code/dotfiles/configs/vimrc --tmpl='.\$f'"
-    echo "--tmpl='.\$f'"
+    echo "* symlink .vimrc ~/code/dotfiles/configs/vimrc"
     ;;
   status)
     if bake [ -h $target ]; then
