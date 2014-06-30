@@ -1,92 +1,72 @@
-# Bork, your Sweedish Chef Puppet
+# Bork
 
 Bork puts the 'sh' back into IT. [Bork Bork Bork](https://www.youtube.com/results?search_query=swedish+chef).
 
-Bork is a bash-based DSL for system configuration management.  Its goal is to provide a zero-dependency solution for making assertions about the state of a system and when needed, truthing them.
+## a Sweedish Chef Puppet
 
-by Matthew Lyon <matthew@lyonheart.us>
+Bork is a bash-based DSL for making assertions about the state of a system.  
 
-## Bare Minimum Requirements
+Bork was born out of frustrations with using tools like [Chef][] and [Puppet][] (or puppet-based [Boxen][]) for config management.  It aims to do one thing well: config management.  It does not on its own perform orchestration, role management, collaboration or versioning tools, or dependency management.  You *could* hack together an orchestration system on top of bork (if you think about orchestration in terms of making assertions), but on its own, bork knows nothing about that.
 
-Bork is written against Bash 3.2. It may not perfectly run there yet, and that's where you come in :) The goal is to run out-of-box on any modern UNIX system, whcih should (hopefully) include sed, awk and grep.
+Bork is written against Bash 3.2 and common unix utilities such as sed, awk and grep.  It is designed to work on any UNIX-based system, and be aware of platform differences between BSD and GPL versions of unix utilities.
 
-If you're going to use it, you'll presumably need a way to copy files to your target machine, such as scp or curl.
+[Chef]: http://www.opscode.com/chef/
+[Puppet]: http://puppetlabs.com/
+[Boxen]: https://boxen.github.com/
 
-## Why
+## Config Scripts
 
-You might ask, why not use [Chef][] or [Puppet][] instead? Good question.  They're existing mature tools for doing this kind of thing, with vibrant communities. However after working with both, I wanted something dramatically simpler and less opinionated.
+A Bork config is a bash script that bork runs.  Here's a basic example:
 
-Bork is a shell program. You run it how you want.
-
-## Concepts
-
-### Configs
-
-A config is a bash script that is run under a bork "harness" that makes assertions about the state of a system. A basic config would look like this: 
-
-``` bash
-use brew git github           # pulls these assertions out of stdlib into use
-ok git                        # asserts system pkg manager has git package installed
-ok directories ~/code         # asserts ~/code exists
-destination push ~/code       # uses the "destination stack" to change the working directory
-                              #   using this over pushd has some benefits
-ok github mattly/dotfiles     # asserts code from git@github.com:mattly/dotfiles 
-                              #   exists in ~/code/dotfiles
-ok brew vim                   # asserts homebrew has installed vim
-destination push vim/bundle
-ok github tpope/vim-pathogen  # asserts pathogen installed from github
-ok github shougo/vimproc      # asserts vimproc installed from github
-if did_update; then           # if vimproc was installed or upgraded, then re-run make
+```bash
+ok brew                         # presence, updated-ness of homebrew
+ok brew git                     # presence, updated-ness of git homebrew package
+ok directories $HOME/code       # presence of the ~/code directory
+destination $HOME/code          # following command targets ~/code
+ok github mattly/dotfiles       # presence, status of code in ~/code/dotfiles
+                                #   matching git repository at 
+                                #   https://github.com/mattly/dotfiles
+destination $HOME               # following command targets ~
+ok symlinks --tmpl='.$f' \      # presence of symlinks in ~ for each file in 
+  $HOME/code/dotfiles/configs/* #   ~/code/dotfiles/configs with a leading dot
+destination $HOME/code/dotfiles/vim/bundle
+ok github tpope/vim-pathogen    # presence, status of pathogen
+ok github shougo/vimproc        # presence, status of vimproc
+if did_update; then             # if vimproc is installed or updated, re-make it
   (cd vimproc && make clean && make)
 fi
 ```
 
-This config could be tested by bork with `bork status vim.sh` or satisfied with `bork satisfy vim.sh`. In the future, I'd like to provide a 'compile' option to generate a single, portable shell script.
+If this were 'setup.sh', you could check the status of these assertions with `bork status setup.sh`, or perform them `bork satisfy setup.sh`.  You can compile them into a standalone script with `bork compile setup.sh > install.sh`, and put that file on another machine without bork installed on it and it would perform the `satisfy` operation with `./install.sh` or check its status with `./install.sh status`.
 
-### Assertions
+The declaration `ok` tells bork that the following type and arguments should be present.  Bork makes no assumptions about things you don't tell it about -- so if for example the homebrew package "emacs" was installed manually, bork won't complain, and this is by design.  Eventually bork will have a negative declaration to assert the absence of something and remove it if desired.
 
-An assertion is basically something like:
-- "this package should be installed"
-- "this directory should exist"
-- "these files should exist from somewhere else on the internet"
-- "this file should be symlinked to somewhere else or have these permissions"
+## Assertion Types
 
-Use your imagination. Look in `core/` and `stdlib/` and see the existing ones:
+You can run `bork types` to get a list of the assertion types, and some basic info about their usage and options.  Here's an overview:
 
-* `pkg:` a pass-through to the system package manager. 
-* `brew`: homebrew, used by the above
-* `apt`: apt, used by pkg
-* `git`: code from a git repository
-* `github`: like previously, but with a github url pattern
-* `directories`: that certain directories exist
-* `symlink`: that certain files are symlinked elsewhere
+### General:
+- `gem`: presence of a ruby gem installed via `gem`
+- `git`: presence and updatedness of a cloned git repository
+- `github`: front-end for git that uses github URLs
+- `pip`: presence of a python package installed via `pip`
 
-More assertion types are planned:
+### Mac OS X:
+- `brew`: presence of a package installed via homebrew, or homebrew itself.
+- `cask`: presence of an app installed via caskroom.io.
+- `defaults`: settings for the OS X defaults system.
 
-* other package managers: apt, yum, etc.
-* VCS managers: hg, darcs
-* PL package managers: npm, rubygems, pip, cabal, etc. Note that bork is intended for global installation of these packages, not per-project; tools like Bundler or package.json are more appropriate for project-level assertions.
-* Cron jobs, init.d files, launchctl tasks, etc
-* Files exist with certain text, and some kind of template renderer
-* OS X settings via defaults
+### Linux:
+- `apt`: presence & updatedness of a package installed via `apt-get`.
 
-### Look At All The Things It's NOT Doing
+### Unix:
+- `group`: presence of a user group
+- `iptables`: presence of an iptables rule
+- `user`: presence, shell, group memberships of a user account
 
-To the degree Bork is opinionated, it is *very* opinionated about what it does not want responsibility for:
+### File System:
+- `directories`: presence of one or more directories
+- `file`: presence, contents, owner and permissions of a file
+- `symlink`: presence and target of one or more symlinks
 
-- **Collaboration**: Use GitHub. Or Whatever.
-- **Versioning**: Bring your own VCS. Git, Mercurial, Darcs, CVS or whatever.
-- **Orchestration**: There are plenty of good tools that do this already.  [Fabric][] and [Capistrano][] come immediately to mind.
-- **Role Management**: Just include another config. Compose configs from sub-configs.
-- **Hardcore Dependency Management**: This should be outsourced to your package manager, then managed inline in your scripts. For example, the 'rbenv' package should be installed before calling an rbenv source. This is coding 101, people. It ain't that hard.
-
-## License
-
-Bork is copyright 2013 Matthew Lyon and licensed under the MIT License. See LICENSE for more information.
-
-[rbenv]: https://github.com/sstephenson/rbenv
-[nodenv]: https://github.com/OiNutter/nodenv
-[Chef]: http://www.opscode.com/chef/
-[Puppet]: http://puppetlabs.com/
-[Fabric]: http://docs.fabfile.org/
-[Capistrano]: http://capistranorb.com/
+Writing new types is pretty straightforward, and there is a guide to writing them in the `docs/` directory.  There is a hitlist of new types in `todo.markdown` and features for existing types in the comments at the top of their scripts.
