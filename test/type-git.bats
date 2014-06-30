@@ -98,8 +98,9 @@ git_status_handler ()   { echo "$git_status"; }
   [ "$status" -eq 0 ]
   run baked_output
   [ "cd bork" = ${lines[0]} ]
-  [ "git pull" = ${lines[1]} ]
-  [ "git checkout master" = ${lines[2]} ]
-  [ "git log HEAD@{2}.." = ${lines[3]} ]
+  [ "git reset --hard" = ${lines[1]} ]
+  [ "git pull" = ${lines[2]} ]
+  [ "git checkout master" = ${lines[3]} ]
+  [ "git log HEAD@{2}.." = ${lines[4]} ]
 }
 
