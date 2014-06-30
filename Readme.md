@@ -28,8 +28,9 @@ ok github mattly/dotfiles       # presence, status of code in ~/code/dotfiles
                                 #   https://github.com/mattly/dotfiles
 
 destination $HOME               # following command targets $HOME
-for f in $HOME/code/dotfiles/configs/*; do
-  ok symlink .$f $f             # presence of symlink in $HOME for each file in
+for file in $HOME/code/dotfiles/configs/*; do
+  ok symlink ".$(basename file)" $file             
+                                # presence of symlink in $HOME for each file in
 done                            #   ~/code/dotfiles/configs with a leading dot
 
 destination $HOME/code/dotfiles/vim/bundle
