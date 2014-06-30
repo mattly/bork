@@ -1,8 +1,8 @@
 _ok_run () {
   fn=$1
   shift
-  if is_compiled; then ($fn $*)
-  else (. $fn $*)
+  if is_compiled; then (cd $BORK_DESTINATION; $fn $*)
+  else (cd $BORK_DESTINATION; . $fn $*)
   fi
 }
 
