@@ -29,7 +29,7 @@ ok github mattly/dotfiles       # presence, status of code in ~/code/dotfiles
 
 destination $HOME               # following command targets $HOME
 for file in $HOME/code/dotfiles/configs/*; do
-  ok symlink ".$(basename file)" $file             
+  ok symlink ".$(basename $file)" $file             
                                 # presence of symlink in $HOME for each file in
 done                            #   ~/code/dotfiles/configs with a leading dot
 
