@@ -6,7 +6,7 @@ Bork puts the 'sh' back into IT. [Bork Bork Bork](https://www.youtube.com/result
 
 Bork is a bash-based DSL for making assertions about the state of a system.  
 
-Bork was born out of frustrations with using tools like [Chef][] and [Puppet][] (or puppet-based [Boxen][]) for config management.  It aims to do one thing well: config management.  It does not on its own perform orchestration, role management, collaboration or versioning tools, or dependency management.  You *could* hack together an orchestration system on top of bork (if you think about orchestration in terms of making assertions), but on its own, bork knows nothing about that.
+Bork was born out of frustrations with using tools like [Chef][] and [Puppet][] (or puppet-based [Boxen][]) for config management.  It aims to do one thing well: config management.  It does not on its own perform orchestration, role management, collaboration or versioning tools, or dependency management.  You *could* hack together an orchestration system on top of bork (if you think about orchestration in terms of making assertions), but on its own, bork knows nothing about that.  I use bork to setup my development machines, my vagrant images, my production servers, and manage my vim plugins.
 
 Bork is written against Bash 3.2 and common unix utilities such as sed, awk and grep.  It is designed to work on any UNIX-based system, and be aware of platform differences between BSD and GPL versions of unix utilities.
 
@@ -21,14 +21,17 @@ A Bork config is a bash script that bork runs.  Here's a basic example:
 ```bash
 ok brew                         # presence, updated-ness of homebrew
 ok brew git                     # presence, updated-ness of git homebrew package
-ok directories $HOME/code       # presence of the ~/code directory
+ok directory $HOME/code         # presence of the ~/code directory
 destination $HOME/code          # following command targets ~/code
 ok github mattly/dotfiles       # presence, status of code in ~/code/dotfiles
                                 #   matching git repository at 
                                 #   https://github.com/mattly/dotfiles
-destination $HOME               # following command targets ~
-ok symlinks --tmpl='.$f' \      # presence of symlinks in ~ for each file in 
-  $HOME/code/dotfiles/configs/* #   ~/code/dotfiles/configs with a leading dot
+
+destination $HOME               # following command targets $HOME
+for f in $HOME/code/dotfiles/configs/*; do
+  ok symlink $f --tmpl='.$f'    # presence of symlink in $HOME for each file in
+done                            #   ~/code/dotfiles/configs with a leading dot
+
 destination $HOME/code/dotfiles/vim/bundle
 ok github tpope/vim-pathogen    # presence, status of pathogen
 ok github shougo/vimproc        # presence, status of vimproc
@@ -65,8 +68,8 @@ You can run `bork types` to get a list of the assertion types, and some basic in
 - `user`: presence, shell, group memberships of a user account
 
 ### File System:
-- `directories`: presence of one or more directories
+- `directory`: presence of a directory
 - `file`: presence, contents, owner and permissions of a file
-- `symlink`: presence and target of one or more symlinks
+- `symlink`: presence and target of a symlink
 
 Writing new types is pretty straightforward, and there is a guide to writing them in the `docs/` directory.  There is a hitlist of new types in `todo.markdown` and features for existing types in the comments at the top of their scripts.
