@@ -1,3 +1,6 @@
+# TODO
+# recognize when domain is path to /Library/Preferences and prefix bake cmd with sudo
+
 action=$1
 domain=$2
 key=$3
