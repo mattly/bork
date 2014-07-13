@@ -9,7 +9,8 @@ getDir () {
 }
 # used by loader to find core/ and stdlib/
 BORK_SOURCE_DIR="\$(getDir \$(getDir \${BASH_SOURCE[0]}))"
-HERE)
+HERE
+)
 eval "$setupFn"
 
 # --------------------------------------------------------
