@@ -1,6 +1,5 @@
 # TODO:
 # - write tests for the packageless 'brew' assertion
-# - write install command for packageless 'brew' assertion that installs homebrew
 # - something to handle brew taps? probably a separate type.
 
 action=$1
@@ -20,14 +19,13 @@ if [ -z "$name" ]; then
       has_exec "brew"
       [ "$?" -gt 0 ] && return $STATUS_MISSING
       changes=$(cd /usr/local; git fetch --quiet; git log master..origin/master)
-      [ "$(echo $changes | wc -l | awk '{print $1}')" -gt 0 ] && return $STATUS_OUTDATED
+      [ "$(echo $changes | sed '/^\s*$/d' | wc -l | awk '{print $1}')" -gt 0 ] && return $STATUS_OUTDATED
       return $STATUS_OK
       ;;
 
-    # need to make sure this actually works
-    # install)
-      # bake --eval 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"'
-      # ;;
+    install)
+      bake 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"'
+      ;;
 
     upgrade)
       bake brew update
