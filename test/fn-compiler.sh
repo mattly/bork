@@ -11,7 +11,7 @@ compiled_type_exists () {
 
 setup () {
   example_include="$BORK_SCRIPT_DIR/core/git.sh"
-  compiled_type_test=$(mktemp -t ctt)
+  compiled_type_test=$(mktemp -t cttXXXXXX)
 }
 
 @test "is_compiling: returns 1 if not compiling" {

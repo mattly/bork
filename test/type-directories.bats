@@ -7,7 +7,7 @@ directory () { . $BORK_SOURCE_DIR/types/directory.sh $*; }
 baking_responder () { eval "$*"; }
 
 setup () {
-  tmpdir=$(mktemp -d -t bork-dir)
+  tmpdir=$(mktemp -d -t bork-dirXXXXXX)
   cd $tmpdir
 }
 teardown () {

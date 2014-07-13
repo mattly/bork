@@ -9,7 +9,7 @@ p () {
 }
 
 baking_responder=
-baking_file=$(mktemp -t bork_test)
+baking_file=$(mktemp -t bork_test.XXXXX)
 bake () {
   echo "$*" >> $baking_file;
   key=$(echo "$*" | md5)
