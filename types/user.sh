@@ -30,7 +30,7 @@ user_shell () {
 user_groups () {
   current_groups=$(bake groups $1)
   case $platform in
-    Linux) current_groups=$(echo "$current" | cut -d: -f 2) ;;
+    Linux) current_groups=$(echo "$current_groups" | cut -d: -f 2) ;;
   esac
   missing_groups=
   expected_groups=$(IFS=','; echo $2)
