@@ -38,7 +38,7 @@ include_assertion () {
 }
 
 strip_blanks () {
-  awk '!/^($|[:space:]*#)/{print $0}' <&0
+  awk '!/^($|[[:space:]]*#)/{print $0}' <&0
 }
 
 cat <<DONE
