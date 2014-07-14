@@ -6,3 +6,7 @@ before_install:
   - export PATH=$PATH:$PWD/bats-0.3.1/bin/
   - bash --version
 script: bats --tap test
+notifications:
+  email:
+    on_success: change
+    on_failure: change
