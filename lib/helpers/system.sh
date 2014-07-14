@@ -33,7 +33,7 @@ needs_exec () {
 
   if [ "$?" -gt 0 ]; then
     echo "missing required exec: $1"
-    retval=$(($running_status+1))
+    retval=$((running_status+1))
     return $retval
   else return $running_status
   fi
