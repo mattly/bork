@@ -13,7 +13,7 @@
 }
 
 @test "has_exec: returns 20 if exec doesn't exit cleanly" {
-  run has_exec "git --" "foo"
+  run has_exec "awk --" "foo"
   [ "$status" -eq 20 ]
 }
 
