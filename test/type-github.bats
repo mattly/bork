@@ -10,9 +10,11 @@ github () { . $BORK_SOURCE_DIR/types/github.sh $*; }
   bag init compiled_types
   run github compile foo/bar
   [ "$status" -eq 0 ]
-  line_no=0
+  n=0
   for line in $git; do
-    [ "$line" = ${lines[$line_no]} ]
-    (( line_no ++ ))
+    p "expected: $line"
+    p "received: ${lines[n]}"
+    [ "${lines[n]}" = $line ]
+    n=$(( n + 1 ))
   done
 }

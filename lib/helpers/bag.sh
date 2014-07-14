@@ -16,8 +16,10 @@ bag () {
   action=$1
   varname=$2
   shift 2
-  length=$(eval "echo \${#$varname[*]}")
-  (( last= $length - 1 ))
+  if [ "$action" != "init" ]; then
+    length=$(eval "echo \${#$varname[*]}")
+    last=$(( length - 1 ))
+  fi
   case "$action" in
     init) eval "$varname=( )" ;;
     push) eval "$varname[$length]=\"$1\"" ;;

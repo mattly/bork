@@ -28,9 +28,15 @@ is_compiled () { [ -n "$is_compiled" ]; }
 }
 
 @test "lookup_type: when assertion_types include type, echoes script" {
+  p "set one"
   bag set bork_assertion_types foo bar
+  p "set two"
   bag set bork_assertion_types bar bee
+  p "done setting: "
+  p "${bork_assertion_types[@]}"
   run _lookup_type 'foo'
+  p $status
+  p $output
   [ "$status" -eq 0 ]
   [ "$output" = 'bar' ]
 }

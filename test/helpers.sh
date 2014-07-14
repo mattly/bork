@@ -8,11 +8,12 @@ p () {
   return 0
 }
 
+md5c=$(md5cmd $platform)
 baking_responder=
-baking_file=$(mktemp -t bork_test)
+baking_file=$(mktemp -t bork_test.XXXXX)
 bake () {
   echo "$*" >> $baking_file;
-  key=$(echo "$*" | md5)
+  key=$(echo "$*" | eval $md5c)
   handler=$(bag get responders $key)
   if [ -n "$handler" ]; then
     eval $handler
@@ -30,7 +31,7 @@ fixtures="$BORK_SOURCE_DIR/test/fixtures"
 
 bag init responders
 respond_to () {
-  key=$(echo "$1" | md5)
+  key=$(echo "$1" | eval $md5c)
   bag set responders "$key" "$2"
 }
 return_with () { return $1; }

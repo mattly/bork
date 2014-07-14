@@ -16,7 +16,7 @@ if [ -z "$name" ]; then
     status)
       baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
       needs_exec "ruby" || return $STATUS_FAILED_PRECONDITION
-      has_exec "brew"
+      path=$(bake which brew)
       [ "$?" -gt 0 ] && return $STATUS_MISSING
       changes=$(cd /usr/local; git fetch --quiet; git log master..origin/master)
       [ "$(echo $changes | sed '/^\s*$/d' | wc -l | awk '{print $1}')" -gt 0 ] && return $STATUS_OUTDATED

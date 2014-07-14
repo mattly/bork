@@ -1,20 +1,3 @@
-has_exec () {
-  test_cmd=$1
-  shift
-  bin=$(str_get_field "$test_cmd" 1)
-  which "$bin" > /dev/null
-  [ "$?" -ne 0 ] && return 10
-  if [ -n "$1" ]; then
-    output=$($test_cmd)
-    [ "$?" -ne 0 ] && return 20
-    for arg in $*; do
-      str_matches "$output" "$arg"
-      [ "$?" -ne 0 ] && return 11
-    done
-  fi
-  return 0
-}
-
 # to be called from an assertions's "status" action, to determine is the target
 # system has a necessary exec.  Returns 0 if found, $2 + 1 if not.
 #
@@ -33,7 +16,7 @@ needs_exec () {
 
   if [ "$?" -gt 0 ]; then
     echo "missing required exec: $1"
-    retval=$(($running_status+1))
+    retval=$((running_status+1))
     return $retval
   else return $running_status
   fi
