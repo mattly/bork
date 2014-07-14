@@ -6,7 +6,6 @@ file () { . $BORK_SOURCE_DIR/types/file.sh $*; }
 
 setup () {
   readsum=$(eval $(md5cmd $platform Readme.md))
-  platform=Darwin
 }
 
 # -- without arguments -------------------------------
@@ -22,7 +21,7 @@ setup () {
 }
 
 @test "file status: returns CONFLICT_UPGRADE when sum doesn't match" {
-  respond_to "md5 -q wrongfile" "echo 123456"
+  respond_to "$(md5cmd $platform wrongfile)" "echo 123456"
   run file status wrongfile Readme.md
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   expected="expected sum: $readsum"
@@ -31,7 +30,7 @@ setup () {
 }
 
 @test "file status: returns OK when all is well" {
-  respond_to "md5 -q goodfile" "echo $readsum"
+  respond_to "$(md5cmd $platform goodfile)" "echo $readsum"
   run file status goodfile Readme.md
   [ "$status" -eq $STATUS_OK ]
 }
@@ -53,8 +52,8 @@ setup () {
 
 # -- with permission argument ------------------------
 @test "file status: returns MISMATCH_UPGRADE when target file has incorrect permissions" {
-  respond_to "md5 -q tfile" "echo $readsum"
-  respond_to "stat -f '%Lp' tfile" "echo 755"
+  respond_to "$(md5cmd $platform tfile)" "echo $readsum"
+  respond_to "$(permission_cmd $platform) tfile" "echo 755"
   run file status tfile Readme.md --permissions=700
   [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
   [ "${lines[0]}" = "expected permissions: 700" ]
@@ -77,7 +76,7 @@ setup () {
 }
 
 @test "file status: returns MISMATCH_UPGRADE when target file has incorrect owner" {
-  respond_to "sudo md5 -q target" "echo $readsum"
+  respond_to "sudo $(md5cmd $platform target)" "echo $readsum"
   respond_to "sudo ls -l target" "echo -rw-r--r--  1 kermit  staff  4604"
   run file status target Readme.md --owner=bork
   [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
@@ -86,7 +85,7 @@ setup () {
 }
 
 @test "file status: returns OK with owner and all is well" {
-  respond_to "sudo md5 -q target" "echo $readsum"
+  respond_to "sudo $(md5cmd $platform target)" "echo $readsum"
   respond_to "sudo ls -l target" "echo -rw-r--r--  1 kermit  staff  4604"
   run file status target Readme.md --owner=kermit
   [ "$status" -eq $STATUS_OK ]
@@ -107,7 +106,13 @@ setup () {
   run file compile path/to/target Readme.md
   [ "$status" -eq 0 ]
   expected="borkfiles__UmVhZG1lLm1kCg=\"$(base64 Readme.md)\""
-  [ "${lines[2]}" = $expected ]
+  accum="${lines[2]}"
+  line=2
+  while [ "$line" -lt ${#lines[*]} ]; do
+    (( line++ ))
+    accum=$(echo "$accum"; echo "${lines[line]}")
+  done
+  [[ "$accum" = $expected ]]
 }
 
 is_compiled () { [ -n "$is_compiled" ]; }
@@ -115,7 +120,7 @@ is_compiled () { [ -n "$is_compiled" ]; }
 @test "file status: if compiled, uses stored variable" {
   is_compiled=1
   borkfiles__cGF0aC9mcm9tL3NvdXJjZQo="$(base64 Readme.md)"
-  respond_to "md5 -q path/to/target" "echo $readsum"
+  respond_to "$(md5cmd $platform path/to/target)" "echo $readsum"
   run file status path/to/target path/from/source
   [ "$status" -eq $STATUS_OK ]
 }
@@ -127,6 +132,7 @@ is_compiled () { [ -n "$is_compiled" ]; }
   [ "$status" -eq $STATUS_OK ]
   run baked_output
   expected="echo \"$borkfiles__cGF0aC9mcm9tL3NvdXJjZQo\" | base64 --decode > path/to/target"
-  [ "${lines[1]}" = $expected ]
+  expected=$(echo $expected)
+  [[ "${lines[1]}" = $expected ]]
 }
 
