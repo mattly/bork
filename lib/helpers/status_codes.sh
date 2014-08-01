@@ -1,4 +1,5 @@
 STATUS_OK=0
+STATUS_FAILED=1
 STATUS_MISSING=10
 STATUS_OUTDATED=11
 STATUS_PARTIAL=12
@@ -16,6 +17,7 @@ STATUS_UNSUPPORTED_PLATFORM=34
 _status_for () {
   case "$1" in
     $STATUS_OK) echo "ok" ;;
+    $STATUS_FAILED) echo "failed" ;;
     $STATUS_MISSING) echo "missing" ;;
     $STATUS_OUTDATED) echo "outdated" ;;
     $STATUS_PARTIAL) echo "partial" ;;

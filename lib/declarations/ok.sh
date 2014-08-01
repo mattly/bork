@@ -5,6 +5,14 @@ _ok_run () {
   else (cd $BORK_DESTINATION; . $fn $*)
   fi
 }
+_source_runner () {
+  if is_compiled; then echo "cd $BORK_DESTINATION; $1"
+  else echo "cd $BORK_DESTINATION; . $1"
+  fi
+}
+
+_bork_check_failed=0
+check_failed () { [ "$_bork_check_failed" -gt 0 ] && return 0 || return 1; }
 
 _checked_len=0
 _checking () {
@@ -53,43 +61,55 @@ _yesno () {
 ok () {
   assertion=$1
   shift
+  _bork_check_failed=0
   _changes_reset
   fn=$(_lookup_type $assertion)
   if [ -z "$fn" ]; then
     echo "not found: $assertion" 1>&2
     return 1
   fi
+  argstr=$*
+  quoted_argstr=
+  while [ -n "$1" ]; do
+    quoted_argstr=$(echo "$quoted_argstr \"$1\"")
+    shift
+  done
   case $operation in
-    echo) echo "$fn $*" ;;
+    echo) echo "$fn $argstr" ;;
     status)
-      _checking "checking" $assertion $*
-      output=$(_ok_run $fn "status" $*)
+      _checking "checking" $assertion $argstr
+      output=$(eval "$(_source_runner $fn) status $quoted_argstr")
       status=$?
-      _checked "$(_status_for $status): $assertion $*"
+      _checked "$(_status_for $status): $assertion $argstr"
+      [ "$status" -eq 1 ] && _bork_check_failed=1
       [ "$status" -ne 0 ] && [ -n "$output" ] && echo "$output"
       return $status ;;
     satisfy)
-      _checking "checking" $assertion $*
-      status_output=$(_ok_run $fn "status" $*)
+      _checking "checking" $assertion $argstr
+      status_output=$(eval "$(_source_runner $fn) status $quoted_argstr")
       status=$?
-      _checked "$(_status_for $status): $assertion $*"
+      _checked "$(_status_for $status): $assertion $argstr"
       case $status in
         0) : ;;
+        1)
+          _bork_check_failed=1
+          echo "$status_output"
+          ;;
         10)
-          _ok_run $fn install $*
+          eval "$(_source_runner $fn) install $quoted_argstr"
           _changes_complete $? 'install'
           ;;
         11|12|13)
           echo "$status_output"
-          _ok_run $fn upgrade $*
+          eval "$(_source_runner $fn) upgrade $quoted_argstr"
           _changes_complete $? 'upgrade'
           ;;
         20)
           echo "$status_output"
-          _conflict_approve $assertion $*
+          _conflict_approve $assertion $argstr
           if [ "$?" -eq 0 ]; then
             echo "Resolving conflict..."
-            _ok_run $fn upgrade $*
+            eval "$(_source_runner $fn) upgrade $quoted_argstr"
             _changes_complete $? 'upgrade'
           else
             echo "Conflict unresolved."
@@ -101,8 +121,8 @@ ok () {
           ;;
       esac
       if did_update; then
-        echo "verifying $last_change_type: $assertion $*"
-        output=$(_ok_run $fn "status" $*)
+        echo "verifying $last_change_type: $assertion $argstr"
+        output=$(eval "_ok_run $fn status $quoted_argstr")
         status=$?
         if [ "$status" -gt 0 ]; then
           echo "* $last_change_type failed"
