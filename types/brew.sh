@@ -5,6 +5,7 @@
 action=$1
 name=$2
 shift 2
+from=$(arguments get from $*)
 
 if [ -z "$name" ]; then
   case $action in
@@ -12,6 +13,7 @@ if [ -z "$name" ]; then
       echo "asserts presence of packages installed via homebrew on mac os x" 
       echo "* brew                  (installs homebrew)"
       echo "* brew package-name     (instals package)"
+      echo "--from=caskroom/cask    (source repository)"
       ;;
     status)
       baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
@@ -46,7 +48,13 @@ else
       [ "$?" -eq 0 ] && return $STATUS_OUTDATED
       return 0 ;;
 
-    install) bake brew install $name ;;
+    install)
+      if [ -z "$from" ]; then
+        bake brew install $name
+      else
+        bake brew install $from/$name
+      fi
+      ;;
 
     upgrade) bake brew upgrade $name ;;
 
