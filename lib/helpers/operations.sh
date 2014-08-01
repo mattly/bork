@@ -1,0 +1,1 @@
+satisfying () { [ "$operation" == "satisfy" ]; }
