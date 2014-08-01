@@ -10,7 +10,7 @@ case $action in
   desc)
     echo "asserts presence of iptables rule"
     echo "NOTE: does not assert ordering of rules"
-    echo "* iptables INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT"
+    echo "> iptables INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT"
     ;;
   status)
     out=$(bake sudo iptables -C $* 2>&1)

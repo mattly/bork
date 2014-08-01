@@ -50,7 +50,7 @@ user_groups () {
 case $action in
   desc)
     echo "assert presence of a user on the system"
-    echo "* user admin"
+    echo "> user admin"
     echo "--shell=/bin/fish"
     echo "--groups=admin,deploy"
     ;;

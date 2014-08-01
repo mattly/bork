@@ -16,7 +16,7 @@ git_branch="master"
 case $action in
   desc)
     echo "asserts presence and state of a git repository"
-    echo "* git git@github.com:mattly/bork"
+    echo "> git git@github.com:mattly/bork"
     ;;
   status)
     needs_exec "git" || return $STATUS_FAILED_PRECONDITION

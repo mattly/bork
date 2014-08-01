@@ -10,8 +10,8 @@ desired_val=$5
 case $action in
   desc)
     echo "asserts settings for OS X's 'defaults' system"
-    echo "> defaults domain key type value"
-    echo "* defaults com.apple.dock autohide bool true"
+    echo "* defaults domain key type value"
+    echo "> defaults com.apple.dock autohide bool true"
     ;;
   status)
     needs_exec "defaults" || return $STATUS_FAILED_PRECONDITION

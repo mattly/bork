@@ -12,7 +12,7 @@ shift 2
 case $action in
   desc)
     echo "asserts the presence of a gem in the environment's ruby"
-    echo "* gem bundler"
+    echo "> gem bundler"
     ;;
   status)
     needs_exec "gem" || return $STATUS_FAILED_PRECONDITION

@@ -5,7 +5,7 @@ source=$3
 case "$action" in
   desc)
     echo "assert presence and target of a symlink"
-    echo "* symlink .vimrc ~/code/dotfiles/configs/vimrc"
+    echo "> symlink .vimrc ~/code/dotfiles/configs/vimrc"
     ;;
   status)
     if bake [ -h $target ]; then
