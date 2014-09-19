@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# TODO: how have CI run yum tests?
 
 . test/helpers.sh
 
@@ -37,10 +38,9 @@ setup () {
   [ "$status" -eq $STATUS_OK ]
 }
 
-# TODO: how have ubuntu CI run yum test?
-# @test "yum install runs 'yum install'" {
-#   run yum install missing_package
-#   [ "$status" -eq $STATUS_OK ]
-#   run baked_output
-#   [ "$output" = 'sudo yum -y install missing_package' ]
-# }
+@test "yum install runs 'yum install'" {
+  run yum install missing_package
+  [ "$status" -eq $STATUS_OK ]
+  run baked_output
+  [ "$output" = 'sudo yum -y install missing_package' ]
+}
