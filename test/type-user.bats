@@ -99,12 +99,12 @@ setup () {
   [ "$status" -eq $STATUS_OK ]
 }
 
-@test "user install: with group, bakes 'useradd' with --groups" {
+@test "user install: with group, bakes 'useradd' with --groups and -g" {
   run user install nonexistant --groups=foo,bar
   [ "$status" -eq 0 ]
   run baked_output
   [ "${#lines[*]}" -eq 1 ]
-  [ "${lines[0]}" = "useradd -m --groups foo,bar nonexistant" ]
+  [ "${lines[0]}" = "useradd -m --groups foo,bar -g foo nonexistant" ]
 }
 
 @test "user upgrade: with group, bakes 'adduser' with user and group for each group" {

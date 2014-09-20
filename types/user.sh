@@ -82,7 +82,7 @@ case $action in
   install)
     args="-m"
     [ -n "$shell" ] && args="$args --shell $shell"
-    [ -n "$groups" ] && args="$args --groups $groups"
+    [ -n "$groups" ] login_group=(${groups//,/ }) && args="$args --groups $groups -g ${login_group[0]}"
     bake useradd $args $handle
     ;;
 
