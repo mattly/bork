@@ -1,10 +1,10 @@
-# Bork
+# Bork [![](https://travis-ci.org/mattly/bork.svg)](https://travis-ci.org/mattly/bork)
 
 Bork puts the 'sh' back into IT. [Bork Bork Bork](https://www.youtube.com/results?search_query=swedish+chef).
 
 ## a Sweedish Chef Puppet
 
-Bork is a bash-based DSL for making assertions about the state of a system.  
+Bork is a bash-based DSL for making assertions about the state of a system.
 
 Bork was born out of frustrations with using tools like [Chef][] and [Puppet][] (or puppet-based [Boxen][]) for config management.  It aims to do one thing well: config management.  It does not on its own perform orchestration, role management, collaboration or versioning tools, or dependency management.  You *could* hack together an orchestration system on top of bork (if you think about orchestration in terms of making assertions), but on its own, bork knows nothing about that.  I use bork to setup my development machines, my vagrant images, my production servers, and manage my vim plugins.
 
@@ -24,12 +24,12 @@ ok brew git                     # presence, updated-ness of git homebrew package
 ok directory $HOME/code         # presence of the ~/code directory
 destination $HOME/code          # following command targets ~/code
 ok github mattly/dotfiles       # presence, status of code in ~/code/dotfiles
-                                #   matching git repository at 
+                                #   matching git repository at
                                 #   https://github.com/mattly/dotfiles
 
 destination $HOME               # following command targets $HOME
 for file in $HOME/code/dotfiles/configs/*; do
-  ok symlink ".$(basename $file)" $file             
+  ok symlink ".$(basename $file)" $file
                                 # presence of symlink in $HOME for each file in
 done                            #   ~/code/dotfiles/configs with a leading dot
 
