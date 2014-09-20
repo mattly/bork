@@ -107,6 +107,14 @@ setup () {
   [ "${lines[0]}" = "useradd -m --groups foo,bar nonexistant" ]
 }
 
+@test "user install: with group matching user handle, bakes 'useradd' with --groups and -g" {
+  run user install nonexistant --groups=nonexistant,foo,bar
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "${#lines[*]}" -eq 1 ]
+  [ "${lines[0]}" = "useradd -m --groups nonexistant,foo,bar -g nonexistant nonexistant" ]
+}
+
 @test "user upgrade: with group, bakes 'adduser' with user and group for each group" {
   run user upgrade existant --groups=foo,bar
   [ "$status" -eq 0 ]
