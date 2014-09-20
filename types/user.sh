@@ -82,7 +82,8 @@ case $action in
   install)
     args="-m"
     [ -n "$shell" ] && args="$args --shell $shell"
-    [ -n "$groups" ] && args="$args --groups $groups"
+    [ -n "$groups" ] && groups_list=(${groups//,/ }) && args="$args --groups $groups"
+    [[ -n "$groups_list" && "${groups_list[0]}" == "$handle" ]] && args="$args -g $handle"
     bake useradd $args $handle
     ;;
 
