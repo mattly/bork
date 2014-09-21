@@ -20,7 +20,7 @@ user_get () {
 
 user_shell () {
   current_shell=$(echo "$1" | cut -d: -f 7)
-  if [ "$current_shell" != $2 ]; then
+  if [ "$current_shell" != "$2" ]; then
     echo $current_shell
     return 1
   fi
