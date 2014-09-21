@@ -20,7 +20,7 @@ case $action in
     return $STATUS_OK
     ;;
 
-  install|update)
+  install|upgrade)
     bake sudo yum -y install $name
     ;;
 

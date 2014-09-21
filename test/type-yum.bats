@@ -44,3 +44,10 @@ setup () {
   run baked_output
   [ "$output" = 'sudo yum -y install missing_package' ]
 }
+
+@test "yum upgrade runs 'yum install'" {
+  run yum upgrade outdated_package
+  [ "$status" -eq $STATUS_OK ]
+  run baked_output
+  [ "$output" = 'sudo yum -y install outdated_package' ]
+}
