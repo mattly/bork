@@ -26,7 +26,7 @@ if [ -z "$name" ]; then
       ;;
 
     install)
-      bake 'ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"'
+      bake 'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/homebrew/master/install)"'
       ;;
 
     upgrade)
