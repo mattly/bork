@@ -62,6 +62,7 @@ You can run `bork types` to get a list of the assertion types, and some basic in
 
 ### Linux:
 - `apt`: presence & updatedness of a package installed via `apt-get`.
+- `yum`: presence & updatedness of a package installed via `yum`.
 
 ### Unix:
 - `group`: presence of a user group
