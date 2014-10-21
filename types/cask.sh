@@ -11,7 +11,8 @@ case $action in
   status)
     baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
     needs_exec "brew" || return $STATUS_FAILED_PRECONDITION
-    bake "brew cask" 2&>/dev/null || return $STATUS_FAILED_PRECONDITION
+    bake brew cask 2&>/dev/null
+    [ "$?" -gt 0 ] && return $STATUS_FAILED_PRECONDITION
 
     list=$(bake brew cask list)
     echo "$list" | grep -E "^$name$" > /dev/null
