@@ -1,11 +1,13 @@
 action=$1
 name=$2
 shift 2
+appdir=$(arguments get appdir $*)
 
 case $action in
   desc)
     echo "asserts presenece of apps installed via caskroom.io on Mac OS X"
-    echo "* cask app-name"
+    echo "* cask app-name         (installs cask)"
+    echo "--appdir=/Applications  (changes symlink path)"
     ;;
 
   status)
@@ -19,7 +21,13 @@ case $action in
     [ "$?" -gt 0 ] && return $STATUS_MISSING
     return 0 ;;
 
-  install) bake brew cask install $name ;;
+  install) 
+    if [ -n "$appdir"  ]; then
+      bake brew cask install $name --appdir=$appdir
+    else
+      bake brew cask install $name
+    fi
+    ;;
 
   *) return 1 ;;
 esac
