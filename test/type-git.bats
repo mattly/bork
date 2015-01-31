@@ -90,7 +90,7 @@ git_status_handler ()   { echo "$git_status"; }
   [ "$status" -eq 0 ]
   run baked_output
   [ "mkdir -p bork" = ${lines[0]} ]
-  [ "git clone $repo bork" = ${lines[1]} ]
+  [ "git clone -b master $repo bork" = ${lines[1]} ]
 }
 
 @test "src git upgrade: merges to new ref, echoes changelog" {
