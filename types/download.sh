@@ -8,7 +8,7 @@ case "$action" in
     echo "> download "~/file.zip" \"http://server.com/file.zip\""
     ;;
   status)
-    if bake [ -f "$target" ]; then
+    if bake [ -f \"$target\" ]; then
       existing_contentlength=$(ls -al "$target" | tr -s ' ' | cut -d' ' -f5)
 
       remote_contentlength=$(curl -sI "$url" | grep Content-Length | tr -s ' ' | cut -d' ' -f2)
@@ -26,7 +26,7 @@ case "$action" in
     fi ;;
 
   install|upgrade)
-    bake  curl -so "$target" "$url" ;;
+    bake curl -so "$target" "$url" &> /dev/null ;;
 
   *) return 1;;
 esac
