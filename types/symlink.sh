@@ -13,7 +13,7 @@ case "$action" in
       if [ "$existing_source" != "$source" ]; then
         echo "received source for existing symlink: $existing_source"
         echo "expected source for symlink: $source"
-        return $STATUS_MISMATCH_CLOBBER
+        return $STATUS_MISSING
       else
         return $STATUS_OK
       fi
@@ -25,7 +25,7 @@ case "$action" in
     fi ;;
 
   install|upgrade)
-    bake ln -s "$source" "$target" ;;
+    bake ln -sf "$source" "$target" ;;
 
   *) return 1;;
 esac
