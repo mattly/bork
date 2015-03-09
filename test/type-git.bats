@@ -93,6 +93,14 @@ git_status_handler ()   { echo "$git_status"; }
   [ "git clone -b master $repo bork" = ${lines[1]} ]
 }
 
+@test "src git install: uses specified branch" {
+  run git install $repo --branch=experimental
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "mkdir -p bork" = ${lines[0]} ]
+  [ "git clone -b experimental $repo bork" = ${lines[1]} ]
+}
+
 @test "src git upgrade: merges to new ref, echoes changelog" {
   run git upgrade $repo
   [ "$status" -eq 0 ]
