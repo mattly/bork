@@ -23,7 +23,7 @@ case $action in
   desc)
     echo "asserts presence and state of a git repository"
     echo "> git git@github.com:mattly/bork"
-    echo "--branch=gh-pages                (specify branch)"
+    echo "--branch=gh-pages                (specify branch or tag)"
     ;;
   status)
     needs_exec "git" || return $STATUS_FAILED_PRECONDITION
