@@ -38,7 +38,7 @@ make_links () {
 
 @test "symlink: status returns MISMATCH_CLOBBER if dest is symlinked to a non-source" {
   ln -sf $source/README LICENSE
-  run symlink status LICENSE "$source/LICENSE"
+  run symlink status LICENSE $source/LICENSE
   [ "$status" -eq $STATUS_MISMATCH_CLOBBER ]
   str_matches "${lines[0]}" "received source.+README$"
 }
@@ -51,11 +51,12 @@ make_links () {
 }
 
 @test "symlink: install creates the target symlink" {
-  run symlink install .README "$source/README"
+  sourcefile=$source/README
+  run symlink install .README $sourcefile
   [ "$status" -eq 0 ]
   run baked_output
-  [ "ln -s $source/README .README" = ${lines[0]} ]
+  [ "ln -sf $sourcefile .README" = ${lines[0]} ]
   [ -h .README ]
-  [ "$source/README" = $(readlink .README) ]
+  [ "$sourcefile" = $(readlink .README) ]
 }
 

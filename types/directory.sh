@@ -12,8 +12,8 @@ case "$action" in
     ;;
 
   status)
-    [ ! -e $dir ] && return $STATUS_MISSING
-    [ -d $dir ] && return $STATUS_OK
+    [ ! -e "$dir" ] && return $STATUS_MISSING
+    [ -d "$dir" ] && return $STATUS_OK
     echo "target exists as non-directory"
     return $STATUS_CONFLICT_CLOBBER
     ;;
@@ -22,4 +22,3 @@ case "$action" in
 
   *) return 1 ;;
 esac
-
