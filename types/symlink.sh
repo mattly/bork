@@ -13,7 +13,7 @@ case "$action" in
       if [ "$existing_source" != "$source" ]; then
         echo "received source for existing symlink: $existing_source"
         echo "expected source for symlink: $source"
-        return $STATUS_MISMATCH_CLOBBER
+        return $STATUS_MISMATCH_UPGRADE
       else
         return $STATUS_OK
       fi

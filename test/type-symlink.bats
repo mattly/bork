@@ -36,10 +36,10 @@ make_links () {
   [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "symlink: status returns MISMATCH_CLOBBER if dest is symlinked to a non-source" {
+@test "symlink: status returns MISMATCH_UPGRADE if dest is symlinked to a non-source" {
   ln -sf $source/README LICENSE
   run symlink status LICENSE $source/LICENSE
-  [ "$status" -eq $STATUS_MISMATCH_CLOBBER ]
+  [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
   str_matches "${lines[0]}" "received source.+README$"
 }
 
