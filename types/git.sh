@@ -8,15 +8,22 @@
 action=$1
 git_url=$2
 shift 2
+branch=$(arguments get branch $*)
 
 git_name=$(basename $git_url .git)
 git_dir="$git_name"
-git_branch="master"
+
+if [[ ! -z $branch ]]; then
+  git_branch=$branch
+else
+  git_branch="master"
+fi
 
 case $action in
   desc)
     echo "asserts presence and state of a git repository"
     echo "> git git@github.com:mattly/bork"
+    echo "--branch=gh-pages                (specify branch or tag)"
     ;;
   status)
     needs_exec "git" || return $STATUS_FAILED_PRECONDITION
@@ -39,7 +46,7 @@ case $action in
     if [ $git_fetch_status -gt 0 ]; then
       echo "destination directory $git_dir exists, not a git repository (exit status $git_fetch_status)"
       return $STATUS_CONFLICT_CLOBBER
-    elif str_matches "$git_fetch" '"^fatal"'; then 
+    elif str_matches "$git_fetch" '"^fatal"'; then
       echo "destination directory exists, not a git repository"
       echo "$git_fetch"
       return $STATUS_CONFLICT_CLOBBER
@@ -74,7 +81,7 @@ case $action in
 
   install)
     bake mkdir -p $git_dir
-    bake git clone $git_url $git_dir
+    bake git clone -b $git_branch $git_url $git_dir
     ;;
 
   upgrade)
