@@ -13,7 +13,7 @@ case $action in
   status)
     baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
     needs_exec "brew" || return $STATUS_FAILED_PRECONDITION
-    bake brew cask 2&>/dev/null
+    bake brew cask
     [ "$?" -gt 0 ] && return $STATUS_FAILED_PRECONDITION
 
     list=$(bake brew cask list)
@@ -21,7 +21,7 @@ case $action in
     [ "$?" -gt 0 ] && return $STATUS_MISSING
     return 0 ;;
 
-  install) 
+  install)
     if [ -n "$appdir"  ]; then
       bake brew cask install $name --appdir=$appdir
     else
