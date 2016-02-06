@@ -2,7 +2,7 @@
 
 Bork puts the 'sh' back into IT. [Bork Bork Bork](https://www.youtube.com/results?search_query=swedish+chef).
 
-## the Sweedish Chef Puppet of Config Management
+## the Swedish Chef Puppet of Config Management
 
 Bork is a bash DSL for making declarative assertions about the state of a system.  Here's a basic example:
 
