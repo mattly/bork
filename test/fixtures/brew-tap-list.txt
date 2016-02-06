@@ -1,0 +1,2 @@
+homebrew/games
+railwaycat/emacsmacport
