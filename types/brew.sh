@@ -1,6 +1,5 @@
 # TODO:
 # - write tests for the packageless 'brew' assertion
-# - something to handle brew taps? probably a separate type.
 
 action=$1
 name=$2
