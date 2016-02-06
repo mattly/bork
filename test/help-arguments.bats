@@ -12,6 +12,11 @@
   [ -z "$result" ]
 }
 
+@test "get echoes 'true' when no equal sign" {
+  result=$(arguments get foo --foo)
+  [ "$result" = "true" ]
+}
+
 @test "unknown command returns 1" {
   run arguments
   [ "$status" -eq 1 ]

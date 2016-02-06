@@ -11,9 +11,15 @@ arguments () {
         shift
         if [ ${this:0:2} = '--' ]; then
           tmp=${this:2}       # strip off leading --
-          param=${tmp%%=*}    # everything before =
-          val=${tmp##*=}      # everything after =
-          if [ "$param" = $key ]; then value=$val; fi
+          echo "$tmp" | grep -E '=' > /dev/null
+          if [ "$?" -eq 0 ]; then
+            param=${tmp%%=*}    # everything before =
+            val=${tmp##*=}      # everything after =
+          else
+            param=$tmp
+            val="true"
+          fi
+        if [ "$param" = $key ]; then value=$val; fi
         fi
       done
       [ -n $value ] && echo "$value"
