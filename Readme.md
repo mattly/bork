@@ -42,6 +42,30 @@ type's handler function with an *action* such as `status`, `install`, or
 or bring it up to date. There are a number of included types in the `types`
 directory, and bork makes it easy to create your own.
 
+### Taking Further Action on Changes
+
+Bork doesn't have callbacks per-se, but after each assertion there are a handful
+of functions you can call to take further action:
+
+```bash
+ok brew fish
+if did_install; then
+  sudo echo "/usr/local/bin/fish" >> /etc/shells
+  chsh -s /usr/local/bin/fish
+end
+```
+
+There are four functions to help you take further actions on change:
+
+- `did_install`: did the previous assertion result in the item being installed
+  from scratch?
+- `did_upgrade`: did the previous assertion result in the existing item being
+  upgraded?
+- `did_update`: did the previous assertion result in either the item being
+  installed or upgraded?
+- `did_error`: did attempting to install or upgrade the previous assertion
+  result in an error?
+
 ### Included Types
 
 You can run `bork types` from the command line to get a list of the assertion types
