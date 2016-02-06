@@ -15,7 +15,6 @@
 ## brew
 - specify 'brew install/upgrade' options, such as --env --cc, etc
 - specify / compare package options, fe reattach-to-user-namespace --wrap-pbcopy-and-pbpaste
-- manage taps, or at least specify formula from a tap
 
 # Others
 - templates?
@@ -25,7 +24,6 @@
     http://stackoverflow.com/questions/610839/how-can-i-programmatically-create-a-new-cron-job
 - launchd
 - rbenv
-- npm
 - nenv
 - cabal
 

@@ -6,11 +6,9 @@ shift 2
 case $action in
     desc)
         echo "asserts a Mac app is installed and up-to-date from the App Store"
-        echo " via the `mas` utility https://github.com/argon/mas"
-        echo "app id is required, can be obtained from `mas` utility,"
-        echo "app name is optional"
-        echo "!WARNING! `mas` will currently perform *all* pending upgrades"
-        echo "when upgrading any app"
+        echo " via the 'mas' utility https://github.com/argon/mas"
+        echo "app id is required, can be obtained from 'mas' utility, name is optional"
+        echo "!WARNING! 'mas' will currently perform *all* pending upgrades when upgrading any app"
         echo "> mas 497799835 Xcode    (installs/upgrades Xcode)"
         ;;
 
