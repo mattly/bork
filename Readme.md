@@ -171,7 +171,8 @@ include project-two.sh
 
 Running bork without arguments will output some help:
 
-```bork usage:
+```
+bork usage:
 
 bork operation [config-file] [options]
 
