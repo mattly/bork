@@ -62,12 +62,3 @@ else
   esac
 fi
 
-# from old version, keeping it around until all functionality merged in
-# brew_taps=$(command brew tap)
-
-# brew_tap () {
-#   if ! contains "$brew_taps" $1 ; then
-#     bake "command brew tap $1"
-#   fi
-# }
-
