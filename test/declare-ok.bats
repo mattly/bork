@@ -8,7 +8,6 @@ BORK_SCRIPT_DIR="$BORK_SOURCE_DIR/test"
 @test "ok: checks against core types" {
   run ok directory foo
   [ "$status" -eq 0 ]
-  p $output
   [ "$BORK_SOURCE_DIR/types/directory.sh foo" = $output ]
 }
 

@@ -16,18 +16,21 @@ eval "$setupFn"
 # --------------------------------------------------------
 is_compiled () { return 1; }
 
+operation=$1
+shift
+
+# used by include to find 'include foo/bar.sh'
+BORK_SCRIPT_DIR=$PWD
+if [ -n "$1" ]; then
+    BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$1)
+fi
+BORK_WORKING_DIR=$PWD
+
 for file in $BORK_SOURCE_DIR/lib/helpers/*.sh \
             $BORK_SOURCE_DIR/lib/declarations/*.sh;
 do
   . $file
 done
-
-operation=$1
-shift
-
-# used by include to find 'include foo/bar.sh'
-BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$1)
-BORK_WORKING_DIR=$PWD
 
 case "$operation" in
   compile) . $BORK_SOURCE_DIR/bin/bork-compile $* ;;

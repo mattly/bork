@@ -1,5 +1,4 @@
 . bin/bork load
-BORK_SCRIPT_DIR=$PWD
 
 here=$PWD
 debug_mode="$DEBUG"
