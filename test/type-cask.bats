@@ -6,7 +6,6 @@ cask () { . $BORK_SOURCE_DIR/types/cask.sh $*; }
 setup () {
   respond_to "uname -s" "echo Darwin"
   respond_to "which brew" "echo /usr/local/bin/brew"
-  respond_to "brew cask 2" "return 0"
   respond_to "brew cask list" "cat $fixtures/cask-list.txt"
 }
 
@@ -36,6 +35,13 @@ setup () {
 @test "cask status reports an app is current" {
   run cask status installed_app
   [ "$status" -eq $STATUS_MISSING ]
+}
+
+@test "cask status reports an app is outdated" {
+  respond_to "brew cask info installed_package" "cat $fixtures/cask-outdated-info.txt"
+  run cask status installed_package
+  p $status
+  [ "$status" -eq $STATUS_OUTDATED ]
 }
 
 @test "cask install runs 'install'" {

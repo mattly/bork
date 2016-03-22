@@ -13,12 +13,17 @@ case $action in
   status)
     baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
     needs_exec "brew" || return $STATUS_FAILED_PRECONDITION
-    bake brew cask
+    bake brew cask > /dev/null
     [ "$?" -gt 0 ] && return $STATUS_FAILED_PRECONDITION
 
     list=$(bake brew cask list)
     echo "$list" | grep -E "^$name$" > /dev/null
     [ "$?" -gt 0 ] && return $STATUS_MISSING
+
+    info=$(bake brew cask info $name)
+    echo "$info" | grep 'Not installed' > /dev/null
+    [ "$?" -eq 0 ] && return $STATUS_OUTDATED
+
     return 0 ;;
 
   install)
