@@ -1,5 +1,4 @@
-# TODO:
-# - write tests for the packageless 'brew' assertion
+# TODO write tests for the packageless 'brew' assertion
 
 action=$1
 name=$2

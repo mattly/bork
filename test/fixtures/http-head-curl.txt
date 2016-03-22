@@ -1,0 +1,5 @@
+HTTP/1.1 200 OK
+Location: http://foo.com/bar.txt
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 22 Mar 2016 04:04:05 GMT
+Content-Length: 312
