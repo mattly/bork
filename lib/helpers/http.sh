@@ -2,7 +2,7 @@ has_curl () {
     needs_exec "curl"
 }
 
-http_head () {
+http_head_cmd () {
     url=$1
     shift 1
     has_curl
@@ -20,7 +20,7 @@ http_header () {
     echo "$headers" | grep "$header" | tr -s ' ' | cut -d' ' -f2
 }
 
-http_get () {
+http_get_cmd () {
     url=$1
     target=$2
     has_curl

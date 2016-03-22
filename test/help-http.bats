@@ -6,7 +6,7 @@
     respond_to "which curl" "echo /usr/bin/curl"
     url="https://foo.com"
     respond_to "curl -sI \"https://foo.com\"" "cat $fixtures/http-head-curl.txt"
-    run http_head "$url"
+    run http_head_cmd "$url"
     [ "$status" -eq 0 ]
     [ 'curl -sI "https://foo.com"' = $output ]
 }
@@ -20,8 +20,7 @@
 @test "getting a file" {
     url="https://foo.com/bar"
     target="/boo/baz"
-    run http_get "$url" "$target"
+    run http_get_cmd "$url" "$target"
     [ "$status" -eq 0 ]
-    p $output
     [ "curl -so $target \"$url\" &> /dev/null" = $output ]
 }
