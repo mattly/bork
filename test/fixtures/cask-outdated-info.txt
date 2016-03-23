@@ -1,0 +1,7 @@
+iterm2: 2.1.4
+iTerm2
+https://www.iterm2.com/
+Not installed
+https://github.com/caskroom/homebrew-cask/blob/master/Casks/iterm2.rb
+==> Contents
+  iTerm.app (app)
