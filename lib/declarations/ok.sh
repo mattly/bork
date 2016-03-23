@@ -122,7 +122,7 @@ ok () {
       esac
       if did_update; then
         echo "verifying $last_change_type: $assertion $argstr"
-        output=$(eval "_ok_run $fn status $quoted_argstr")
+        output=$(eval "$(_source_runner $fn) status $quoted_argstr")
         status=$?
         if [ "$status" -gt 0 ]; then
           echo "* $last_change_type failed"
