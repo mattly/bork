@@ -1,7 +1,6 @@
-# TODO
-# --sudo flag
-# versions
-# update
+# TODO --sudo flag
+# TODO versions
+# TODO update
 
 action=$1
 name=$2

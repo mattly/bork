@@ -1,8 +1,7 @@
-# TODO
-# tests - because it ain't code without tests
-# install - test for necessity of 'sudo' prefix
-# status - check version outdated status
-# --version - support for status, install, update
+# TODO tests - because it ain't code without tests
+# TODO install - test for necessity of 'sudo' prefix
+# TODO status - check version outdated status
+# TODO --version - support for status, install, update
 
 action=$1
 pkgname=$2

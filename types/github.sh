@@ -1,5 +1,4 @@
-# TODO
-# - some flag for git:// urls
+# TODO some flag for git:// urls
 
 action=$1
 repo=$2

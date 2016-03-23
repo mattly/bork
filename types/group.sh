@@ -1,5 +1,4 @@
-# TODO
-# - doesn't work on Darwin, is groupadd a GNU thing?
+# TODO doesn't work on Darwin, is groupadd a GNU thing?
 
 action=$1
 groupname=$2

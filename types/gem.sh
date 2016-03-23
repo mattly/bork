@@ -1,9 +1,8 @@
-# TODO
-# install - test for necessity of 'sudo' prefix
-# status - check against "gem outdated" list
-# update - update outdated gems mentioned
-# --version - support for status, install, update
-# gem flags - figure out convention to pass through, similar to brew?
+# TODO install - test for necessity of 'sudo' prefix
+# TODO status - check against "gem outdated" list
+# TODO update - update outdated gems mentioned
+# TODO --version - support for status, install, update
+# TODO gem flags - figure out convention to pass through, similar to brew?
 
 action=$1
 gemname=$2

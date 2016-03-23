@@ -1,9 +1,10 @@
-# TODO
-# - compare origins to ensure correct, provide fix for
-# - provide flag for refspec name, ensure status/install/upgrade use it properly
-# - perhaps do --depth=0 by default (quicker) & provide flag for --full ?
-# - need to dig into submodules?
-# - anything here we can extract and re-use for an hg or darcs type?
+# TODO compare origins to ensure correct, provide fix for
+# TODO provide flag for refspec name, ensure status/install/upgrade use it properly
+# TODO perhaps do --depth=0 by default (quicker) & provide flag for --full ?
+# TODO submodules?
+# TODO anything here we can extract and re-use for an hg or darcs type?
+# TODO use merge instead of pull
+# TODO specify alternate refs instead of "master"; maybe change branch?
 
 action=$1
 git_url=$2

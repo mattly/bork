@@ -1,7 +1,6 @@
-# TODO
-# - change compiled filename transformation to md5 representation instead of base64
-# - any way to test for sudo???
-# - distinguish target from local system for file sums
+# TODO change compiled filename transformation to md5 representation instead of base64
+# TODO any way to test for sudo???
+# TODO distinguish target from local system for file sums
 
 action=$1
 targetfile=$2

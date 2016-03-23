@@ -1,5 +1,5 @@
-# TODO
-# recognize when domain is path to /Library/Preferences and prefix bake cmd with sudo
+# TODO recognize when domain is path to /Library/Preferences and prefix bake cmd with sudo
+# TODO proper support for hash types
 
 action=$1
 domain=$2

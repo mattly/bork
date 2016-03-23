@@ -1,4 +1,6 @@
 # TODO write tests for the packageless 'brew' assertion
+# TODO specify install/upgrade options, such as --env, --cc, etc
+# TODO would handling --cc etc also handle package options such as --with-spacemacs-icon on emacs-mac ?
 
 action=$1
 name=$2
@@ -8,7 +10,7 @@ from=$(arguments get from $*)
 if [ -z "$name" ]; then
   case $action in
     desc)
-      echo "asserts presence of packages installed via homebrew on mac os x" 
+      echo "asserts presence of packages installed via homebrew on mac os x"
       echo "* brew                  (installs homebrew)"
       echo "* brew package-name     (instals package)"
       echo "--from=caskroom/cask    (source repository)"

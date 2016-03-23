@@ -1,7 +1,6 @@
-# TODO
-# - test for precondition of iptables exec
-# - need a way to test for ordering of rules, discussion in the original PR: https://github.com/mattly/bork/pull/10
-# - maybe take the chain as the first argument, the rule as the rest?
+# TODO test for precondition of iptables exec
+# TODO need a way to test for ordering of rules, discussion in the original PR: https://github.com/mattly/bork/pull/10
+# TODO maybe take the chain as the first argument, the rule as the rest?
 
 action=$1
 shift
