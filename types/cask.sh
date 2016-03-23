@@ -22,6 +22,7 @@ case $action in
 
     info=$(bake brew cask info $name)
     echo "$info" | grep 'Not installed' > /dev/null
+    # TODO replace with perhaps "OUTDATED_CLOBBER" ?
     [ "$?" -eq 0 ] && return $STATUS_OUTDATED
 
     return 0 ;;
@@ -31,6 +32,16 @@ case $action in
       bake brew cask install $name --appdir=$appdir
     else
       bake brew cask install $name
+    fi
+    ;;
+
+  upgrade)
+    # TODO move rm statement to remove action with clobber
+    bake rm -rf "/opt/homebrew-cask/Caskroom/$name"
+    if [ -n "$appdir" ]; then
+      bake brew cask install $name --appdir=$appdir --force
+    else
+      bake brew cask install $name --force
     fi
     ;;
 

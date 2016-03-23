@@ -40,7 +40,6 @@ setup () {
 @test "cask status reports an app is outdated" {
   respond_to "brew cask info installed_package" "cat $fixtures/cask-outdated-info.txt"
   run cask status installed_package
-  p $status
   [ "$status" -eq $STATUS_OUTDATED ]
 }
 
@@ -49,4 +48,12 @@ setup () {
   [ "$status" -eq 0 ]
   run baked_output
   [ "$output" = 'brew cask install missing_package' ]
+}
+
+@test "cask upgrade performs a force install and cleans up old versions" {
+  run cask upgrade installed_package
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "${lines[0]}" = "rm -rf /opt/homebrew-cask/Caskroom/installed_package" ]
+  [ "${lines[1]}" = "brew cask install installed_package --force" ]
 }
