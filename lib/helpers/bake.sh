@@ -1,1 +1,3 @@
-bake () { eval "$*"; }
+bake () {
+    echo "$*" >> DEBUG
+    eval "$*"; }
