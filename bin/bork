@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 
-# --- if build, we include these instead of sourcing them
-setupFn=$(cat <<HERE
+# this is done as an eval'd string instead of a straight up
+# function and statement because we want to re-use it in
+# "compile" mode without repeating ourselves.  It's a hack,
+# but a purposeful one.
+BORK_SETUP_FUNCTION=$(cat <<HERE
 getDir () {
   fname=\$1
-  [ -h \$fname ] && fname=\$(readlink \$fname)
-  echo "\$(cd "\$(dirname \$fname)" && pwd)"
+  while [ -h "\$fname" ]; do
+    dir=\$(cd -P "\$(dirname "\$fname")" && pwd)
+    fname=\$(readlink \$fname)
+    [[ \$fname != /* ]] && fname="\$dir/\$fname"
+  done
+  echo "\$(cd "\$(dirname \$fname)/.." && pwd)"
 }
 # used by loader to find core/ and stdlib/
-BORK_SOURCE_DIR="\$(getDir \$(getDir \${BASH_SOURCE[0]}))"
+BORK_SOURCE_DIR="\$(getDir \${BASH_SOURCE[0]})"
 HERE
 )
-eval "$setupFn"
+eval "$BORK_SETUP_FUNCTION"
 
 # --------------------------------------------------------
 is_compiled () { return 1; }

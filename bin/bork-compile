@@ -66,7 +66,7 @@ compile_file () {
 
 cat <<DONE
 #!/usr/bin/env bash
-$setupFn
+$BORK_SETUP_FUNCTION
 BORK_SCRIPT_DIR=\$PWD
 BORK_WORKING_DIR=\$PWD
 operation="satisfy"
