@@ -104,3 +104,14 @@
   [ "${lines[0]}" = "something" ]
 }
 
+@test "bag: print echoes each item line-by-line" {
+  bag init foo
+  bag push foo "{"
+  bag push foo "  key = value"
+  bag push foo "}"
+  run bag print foo
+  [ "${#lines[*]}" -eq 3 ]
+  [ "${lines[0]}" = "{" ]
+  [ "${lines[1]}" = "  key = value" ]
+  [ "${lines[2]}" = "}" ]
+}

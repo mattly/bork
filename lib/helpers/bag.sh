@@ -12,6 +12,7 @@
 # - **set** a key to a value.  This is stored as "$key=$value".  It will
 #   overwrite any previous value for $key.
 # - **get** the value for a key.
+# - **print** outputs the contents of the bag, one line at a time.
 bag () {
   action=$1
   varname=$2
@@ -49,6 +50,13 @@ bag () {
     get)
       line=$(bag filter $varname "^$1=" 1)
       echo "${line##*=}" ;;
+    print)
+      index=0
+      while [ "$index" -lt $length ]; do
+        eval "echo \"\${$varname[$index]}\""
+        (( index++ ))
+      done
+      ;;
     *) return 1 ;;
   esac
 }
