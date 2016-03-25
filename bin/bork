@@ -12,7 +12,7 @@ getDir () {
     fname=\$(readlink \$fname)
     [[ \$fname != /* ]] && fname="\$dir/\$fname"
   done
-  echo "\$(cd "\$(dirname \$fname)/.." && pwd)"
+  echo "\$(cd "\$(dirname \$fname)/.." && pwd -P)"
 }
 # used by loader to find core/ and stdlib/
 BORK_SOURCE_DIR="\$(getDir \${BASH_SOURCE[0]})"
@@ -29,7 +29,7 @@ shift
 # used by include to find 'include foo/bar.sh'
 BORK_SCRIPT_DIR=$PWD
 if [ -n "$1" ]; then
-    BORK_SCRIPT_DIR=$(getDir $(pwd -P)/$1)
+    BORK_SCRIPT_DIR=$(getDir "$1")
 fi
 BORK_WORKING_DIR=$PWD
 
