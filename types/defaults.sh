@@ -3,8 +3,7 @@
 # TODO maybe have multi-stage dict key/value declarations using dict-add as such:
 # ok defaults com.runningwithcrayons.Alfred-Preferences hotkey.default dict
 # ok defaults com.runningwithcrayons.Alfred-Preferences hotkey.default dict-entry key -int 49
-# ok defaul
-  ts com.runningwithcrayons.Alfred-Preferences hotkey.default dict-entry mod -int 1048576
+# ok defaults com.runningwithcrayons.Alfred-Preferences hotkey.default dict-entry mod -int 1048576
 # ok defaults com.runningwithcrayons.Alfred-Preferences hotkey.default dict-entry string Space
 
 # TODO handle array values
