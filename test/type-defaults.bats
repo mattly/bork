@@ -33,10 +33,37 @@ defaults () { . $BORK_SOURCE_DIR/types/defaults.sh $*; }
   respond_to "defaults read-type NSGlobalDomain AppleEnableMenuBarTransparency" "echo 'Type is boolean'"
   respond_to "defaults read NSGlobalDomain AppleEnableMenuBarTransparency" "echo 0"
   run defaults status NSGlobalDomain AppleEnableMenuBarTransparency bool false
+  p "bool"
+  p $output
+  [ "$status" -eq $STATUS_OK ]
+}
+
+@test "defaults status: returns OK when type is int and value matches" {
+  respond_to "defaults read-type NSGlobalDomain NSTableViewDefaultSizeMode" "echo 'Type is integer'"
+  respond_to "defaults read NSGlobalDomain NSTableViewDefaultSizeMode" "echo 2"
+  run defaults status NSGlobalDomain NSTableViewDefaultSizeMode int 2
+  p "int"
+  p $output
+  [ "$status" -eq $STATUS_OK ]
+}
+
+@test "defaults status: returns OK when type is dict and value matches" {
+  respond_to "defaults read-type com.runningwithcrayons.Alfred-Preferences hotkey.default" "echo 'Type is dictionary'"
+  respond_to "defaults read com.runningwithcrayons.Alfred-Preferences hotkey.default" "cat $fixtures/defaults-dictionary-value.txt"
+  run defaults status com.runningwithcrayons.Alfred-Preferences hotkey.default dict key -int 49 mod -int 1048576 string space
   [ "$status" -eq $STATUS_OK ]
 }
 
 @test "defaults upgrade: runs defaults write with: \$domain \$key -\$type \$value" {
-  respond_to "defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool false" "return 0"
   run defaults upgrade NSGlobalDomain AppleEnableMenuBarTransparency bool false
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "$output" = "defaults write NSGlobalDomain AppleEnableMenuBarTransparency -bool false" ]
+}
+
+@test "defaults install|upgrade: handles dict with proper args" {
+  run defaults install com.runningwithcrayons.Alfred-Preferences hotkey.default dict key -int 49 mod -int 1048576 string Space
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "$output" = "defaults write com.runningwithcrayons.Alfred-Preferences hotkey.default -dict key -int 49 mod -int 1048576 string Space" ]
 }

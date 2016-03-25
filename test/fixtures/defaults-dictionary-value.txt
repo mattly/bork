@@ -1,0 +1,5 @@
+{
+    key = 49;
+    mod = 1048576;
+    string = Space;
+}
