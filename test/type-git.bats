@@ -22,70 +22,84 @@ git_status_handler ()   { echo "$git_status"; }
   [ "$status" -eq $STATUS_FAILED_PRECONDITION ]
 }
 
-@test "src git status: returns MISSING when the directory doesn't exist" {
+@test "git status: returns MISSING when the directory doesn't exist" {
   dir_exists=0
   run git status $repo
   [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "src git status: returns MISSING when the directory is empty" {
+@test "git status: returns MISSING when the directory is empty" {
   dir_listing=''
   run git status $repo
   [ "$status" -eq $STATUS_MISSING ]
 }
 
-@test "src git status: returns CONFLICT_CLOBBER when the directory is not empty and not a git repository" {
+@test "git status: returns MISSING with directory argument for directory that doesn't exist" {
+  respond_to "ls -A ~/code/bork" "return 1"
+  run git status ~/code/bork $repo
+  [ "$status" -eq $STATUS_MISSING ]
+}
+
+@test "git status: returns CONFLICT_CLOBBER when the directory is not empty and not a git repository" {
   respond_to "git fetch" "return_with 1"
   run git status $repo
   [ "$status" -eq $STATUS_CONFLICT_CLOBBER ]
   echo "$output" | grep -E "bork exists"
 }
 
-@test "src git status: returns MISMATCH_UPGRADE when not on the desired branch" {
+@test "git status: returns MISMATCH_UPGRADE when not on the desired branch" {
   git_status="## foobar"
   run git status $repo
   [ "$status" -eq $STATUS_MISMATCH_UPGRADE ]
   echo "$output" | grep -E 'incorrect branch'
 }
 
-@test "src git status: returns MISMATCH_UPGRADE when the local git repository uses another origin" {
+@test "git status: returns MISMATCH_UPGRADE when the local git repository uses another origin" {
   skip
 }
 
-@test "src git status: returns CONFLICT_UPGRADE when the local git repository is ahead" {
+@test "git status: returns CONFLICT_UPGRADE when the local git repository is ahead" {
   git_status="## master..origin/master [ahead 3]"
   run git status $repo
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   echo "$output" | grep -E 'is ahead'
 }
 
-@test "src git status: returns CONFLICT_UPGRADE when the local git repository has unstaged changes" {
+@test "git status: returns CONFLICT_UPGRADE when the local git repository has unstaged changes" {
   git_status=$(echo "## master"; echo " D foo")
   run git status git@github.com:mattly/bork
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   echo "$output" | grep -E 'uncommitted'
 }
 
-@test "src git status: returns CONFLICT_UPGRADE when local git repository has uncommitted staged changes" {
+@test "git status: returns CONFLICT_UPGRADE when local git repository has uncommitted staged changes" {
   git_status=$(echo "## master"; echo "D  foo")
   run git status git@github.com:mattly/bork
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   echo "$output" | grep -E 'uncommitted'
 }
 
-@test "src git status: returns OUTDATED when the local git repository is known to be behind" {
+@test "git status: returns OUTDATED when the local git repository is known to be behind" {
   git_status="## master..origin/master [behind 3]"
   run git status git@github.com:mattly/bork
   [ "$status" -eq $STATUS_OUTDATED ]
 }
 
-@test "src git status: returns OK when the git repository is up-to-date" {
+@test "git status: returns OK when the git repository is up-to-date" {
   git_status="## master"
   run git status git@github.com:mattly/bork
   [ "$status" -eq $STATUS_OK ]
 }
 
-@test "src git install: bakes target dir, git clone" {
+@test "git status: returns OK with directory argument and repo is current" {
+  respond_to "[ ! -d /Users/mattly/code/bork ]" "return 1"
+  respond_to "ls -A /Users/mattly/code/bork" "dir_listing_handler"
+  git_status="## master"
+  run git status /Users/mattly/code/bork git@github.com:mattly/bork
+  [ "$status" -eq $STATUS_OK ]
+}
+
+@test "git install: bakes target dir, git clone" {
   run git install $repo
   [ "$status" -eq 0 ]
   run baked_output
@@ -93,7 +107,15 @@ git_status_handler ()   { echo "$git_status"; }
   [ "git clone -b master $repo bork" = ${lines[1]} ]
 }
 
-@test "src git install: uses specified branch" {
+@test "git install: with target argument, performs clone" {
+  run git install /Users/mattly/code/bork $repo
+  [ "$status" -eq 0 ]
+  run baked_output
+  [ "mkdir -p /Users/mattly/code/bork" = ${lines[0]} ]
+  [ "git clone -b master $repo /Users/mattly/code/bork" = ${lines[1]} ]
+}
+
+@test "git install: uses specified branch" {
   run git install $repo --branch=experimental
   [ "$status" -eq 0 ]
   run baked_output
@@ -101,7 +123,7 @@ git_status_handler ()   { echo "$git_status"; }
   [ "git clone -b experimental $repo bork" = ${lines[1]} ]
 }
 
-@test "src git upgrade: merges to new ref, echoes changelog" {
+@test "git upgrade: merges to new ref, echoes changelog" {
   run git upgrade $repo
   [ "$status" -eq 0 ]
   run baked_output

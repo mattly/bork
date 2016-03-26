@@ -9,10 +9,18 @@
 action=$1
 git_url=$2
 shift 2
+next=$1
+if [ ${next:0:1} != '-' ]; then
+  target_dir=$git_url
+  git_url=$1
+  shift
+else
+  git_name=$(basename $git_url .git)
+  target_dir="$git_name"
+fi
+
 branch=$(arguments get branch $*)
 
-git_name=$(basename $git_url .git)
-git_dir="$git_name"
 
 if [[ ! -z $branch ]]; then
   git_branch=$branch
@@ -24,19 +32,20 @@ case $action in
   desc)
     echo "asserts presence and state of a git repository"
     echo "> git git@github.com:mattly/bork"
-    echo "--branch=gh-pages                (specify branch or tag)"
+    echo "> git ~/code/bork git@github.com:mattly/bork"
+    echo "--ref=gh-pages                (specify branch, tag, or ref)"
     ;;
   status)
     needs_exec "git" || return $STATUS_FAILED_PRECONDITION
 
     # if the directory is missing, it's missing
-    bake [ ! -d $git_dir ] && return $STATUS_MISSING
+    bake [ ! -d $target_dir ] && return $STATUS_MISSING
 
     # if the directory is present but empty, it's missing
-    git_dir_contents=$(str_item_count "$(bake ls -A $git_dir)")
-    [ "$git_dir_contents" -eq 0 ] && return $STATUS_MISSING
+    target_dir_contents=$(str_item_count "$(bake ls -A $target_dir)")
+    [ "$target_dir_contents" -eq 0 ] && return $STATUS_MISSING
 
-    bake cd $git_dir
+    bake cd $target_dir
     # fetch from the remote without fast-forwarding
     # this *does* change the local repository's pointers and takes longer
     # up front, but I believe in the grand scheme is the right thing to do.
@@ -45,7 +54,7 @@ case $action in
 
     # If the directory isn't a git repo, conflict
     if [ $git_fetch_status -gt 0 ]; then
-      echo "destination directory $git_dir exists, not a git repository (exit status $git_fetch_status)"
+      echo "destination directory $target_dir exists, not a git repository (exit status $git_fetch_status)"
       return $STATUS_CONFLICT_CLOBBER
     elif str_matches "$git_fetch" '"^fatal"'; then
       echo "destination directory exists, not a git repository"
@@ -81,12 +90,12 @@ case $action in
     return $STATUS_OK ;;
 
   install)
-    bake mkdir -p $git_dir
-    bake git clone -b $git_branch $git_url $git_dir
+    bake mkdir -p $target_dir
+    bake git clone -b $git_branch $git_url $target_dir
     ;;
 
   upgrade)
-    bake cd $git_dir
+    bake cd $target_dir
     bake git reset --hard
     bake git pull
     bake git checkout $git_branch
