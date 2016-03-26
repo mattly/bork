@@ -1,13 +1,6 @@
-_ok_run () {
-  fn=$1
-  shift
-  if is_compiled; then (cd $BORK_DESTINATION; $fn $*)
-  else (cd $BORK_DESTINATION; . $fn $*)
-  fi
-}
 _source_runner () {
-  if is_compiled; then echo "cd $BORK_DESTINATION; $1"
-  else echo "cd $BORK_DESTINATION; . $1"
+  if is_compiled; then echo "$1"
+  else echo ". $1"
   fi
 }
 
