@@ -10,7 +10,7 @@ action=$1
 git_url=$2
 shift 2
 next=$1
-if [ ${next:0:1} != '-' ]; then
+if [ -n "$next" ] && [ ${next:0:1} != '-' ]; then
   target_dir=$git_url
   git_url=$1
   shift
