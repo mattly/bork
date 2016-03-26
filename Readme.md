@@ -2,7 +2,7 @@
 
 Bork puts the 'sh' back into IT. [Bork Bork Bork](https://www.youtube.com/results?search_query=swedish+chef).
 
-## the Swedish Chef Puppet of Config Management
+### the Swedish Chef Puppet of Config Management
 
 Bork is a bash DSL for making declarative assertions about the state of a system.  Here's a basic example:
 
@@ -32,39 +32,45 @@ Bork is written against Bash 3.2 and common unix utilities such as sed, awk and
 grep. It is designed to work on any UNIX-based system and maintain awareness of
 platform differences between BSD and GPL versions of unix utilities.
 
-## Assertions and Config Files
+## Installation
 
-At the heart of bork is making **assertions** in a **declarative** manner via
-the `ok` function. That is, you tell it *what* you want done instead of *how* to
-do it. An assertion takes a **type** and a number of arguments. It invokes the
-type's handler function with an *action* such as `status`, `install`, or
-`upgrade`, which determines the imperative commands needed to test the assertion
-or bring it up to date. There are a number of included types in the `types`
-directory, and bork makes it easy to create your own.
+### From source
 
-### Taking Further Action on Changes
+1. Clone this repository:  
+  `git clone https://github.com/mattly/bork /usr/local/src/bork`
+1. Symlink the bork binaries into your `$PATH`:  
+  `ln -sf /usr/local/src/bork/bin/bork /usr/local/bin/bork`  
+  `ln -sf /usr/local/src/bork/bin/bork-compile /usr/local/bin/bork-compile`  
 
-Bork doesn't have callbacks per-se, but after each assertion there are a handful
-of functions you can call to take further action:
+### via Homebrew (Mac OS X)
 
-```bash
-ok brew fish
-if did_install; then
-  sudo echo "/usr/local/bin/fish" >> /etc/shells
-  chsh -s /usr/local/bin/fish
-end
+1. Install via Homebrew:  
+  `brew install bork`
+
+## Usage and Operations
+
+Running bork without arguments will output some help:
+
+```
+bork usage:
+
+bork operation [config-file] [options]
+
+where "operation" is one of:
+
+- check:      perform 'status' for a single command
+    example:  bork check ok github mattly/dotfiles
+- compile:    compile the config file to a self-contained script output to STDOUT
+    --conflicts=(y|yes|n|no)  If given, sets an automatic answer for conflict resolution.
+    example:  bork compile dotfiles.sh --conflicts=y > install.sh
+- do:         perform 'satisfy' for a single command
+    example:  bork do ok github mattly/dotfiles
+- satisfy:    satisfy the config file's conditions if possible
+- status:     determine if the config file's conditions are met
+- types:      list types and their usage information
 ```
 
-There are four functions to help you take further actions on change:
-
-- `did_install`: did the previous assertion result in the item being installed
-  from scratch?
-- `did_upgrade`: did the previous assertion result in the existing item being
-  upgraded?
-- `did_update`: did the previous assertion result in either the item being
-  installed or upgraded?
-- `did_error`: did attempting to install or upgrade the previous assertion
-  result in an error?
+Let's explore these in more depth:
 
 ### Included Types
 
@@ -161,61 +167,6 @@ from a recent version of bork, organized a bit:
                  > iptables INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 ```
 
-### Custom Types
-
-Writing new types is pretty straightforward, and there is a guide to writing
-them in the `docs/` directory. If you wish to use a type that is not in bork's
-`types` directory, you can let bork know about it with the `register`
-declaration:
-
-```bash
-register etc/pgdb.sh
-ok pgdb my_app_db
-```
-
-### Composing Config Files
-
-You may compose config files into greater operations with the `include`
-directive with a path to a script relative to the current script's directory. 
-
-```bash
-# this is main.sh
-include databases.sh
-include etc/projects.sh
-```
-
-```bash
-# this is etc/projects.sh
-include project-one.sh
-include project-two.sh
-# these will be read from the etc/ directory
-```
-
-## Usage and Operations
-
-Running bork without arguments will output some help:
-
-```
-bork usage:
-
-bork operation [config-file] [options]
-
-where "operation" is one of:
-
-- check:      perform 'status' for a single command
-    example:  bork check ok github mattly/dotfiles
-- compile:    compile the config file to a self-contained script output to STDOUT
-    --conflicts=(y|yes|n|no)  If given, sets an automatic answer for conflict resolution.
-    example:  bork compile dotfiles.sh --conflicts=y > install.sh
-- do:         perform 'satisfy' for a single command
-    example:  bork do ok github mattly/dotfiles
-- satisfy:    satisfy the config file's conditions if possible
-- status:     determine if the config file's conditions are met
-- types:      list types and their usage information
-```
-
-Let's explore these in more depth:
-
 ### bork status myconfig.sh
 
 The `status` command will confirm that assertions are met or not, and output
@@ -275,3 +226,86 @@ scp or whatever you like and run it. Any sub-configs via `include` will be
 included in the output, and any type that needs to include resources to do what
 it does, such as the `file` type, will include their resources in the script as
 base64 encoded data.
+
+### Custom Types
+
+Writing new types is pretty straightforward, and there is a guide to writing
+them in the `docs/` directory. If you wish to use a type that is not in bork's
+`types` directory, you can let bork know about it with the `register`
+declaration:
+
+```bash
+register etc/pgdb.sh
+ok pgdb my_app_db
+```
+
+### Composing Config Files
+
+You may compose config files into greater operations with the `include`
+directive with a path to a script relative to the current script's directory. 
+
+```bash
+# this is main.sh
+include databases.sh
+include etc/projects.sh
+```
+
+```bash
+# this is etc/projects.sh
+include project-one.sh
+include project-two.sh
+# these will be read from the etc/ directory
+```
+
+### Assertions and Config Files
+
+At the heart of bork is making **assertions** in a **declarative** manner via
+the `ok` function. That is, you tell it *what* you want done instead of *how* to
+do it. An assertion takes a **type** and a number of arguments. It invokes the
+type's handler function with an *action* such as `status`, `install`, or
+`upgrade`, which determines the imperative commands needed to test the assertion
+or bring it up to date. There are a number of included types in the `types`
+directory, and bork makes it easy to create your own.
+
+### Taking Further Action on Changes
+
+Bork doesn't have callbacks per-se, but after each assertion there are a handful
+of functions you can call to take further action:
+
+```bash
+ok brew fish
+if did_install; then
+  sudo echo "/usr/local/bin/fish" >> /etc/shells
+  chsh -s /usr/local/bin/fish
+end
+``` 
+There are four functions to help you take further actions on change:
+
+- `did_install`: did the previous assertion result in the item being installed
+  from scratch?
+- `did_upgrade`: did the previous assertion result in the existing item being
+  upgraded?
+- `did_update`: did the previous assertion result in either the item being
+  installed or upgraded?
+- `did_error`: did attempting to install or upgrade the previous assertion
+  result in an error?
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch: `git checkout -b feature/my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature/my-new-feature`
+5. Submit a pull request
+
+## Requirements / Dependencies
+
+* Bash 3.2
+
+## Version
+
+0.9.1
+
+## License
+
+[Apache License 2.0](LICENSE)
