@@ -14,7 +14,8 @@ case $action in
     ;;
   status)
     needs_exec "npm" || return $STATUS_FAILED_PRECONDITION
-    pkgs=$(bake npm ls -g --depth 0 --parseable)
+    pkgs=$(bake npm ls -g --parseable |
+      grep "lib\/node_modules\/[-0-9A-Za-z\.-]*$")
     if ! str_matches "$pkgs" "\/$pkgname$"; then
       return $STATUS_MISSING
     fi
