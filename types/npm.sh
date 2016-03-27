@@ -15,14 +15,23 @@ case $action in
 
   status)
     needs_exec "npm" || return $STATUS_FAILED_PRECONDITION
+
     list=$(bake npm ls -g --depth 0)
-    echo "$list"
     str_matches "$list" " $pkgname@" || return $STATUS_MISSING
+
+    outdated=$(bake npm outdated -g)
+    # TODO further tests against version for pinned versions, git urls, etc
+    str_matches "$outdated" "^$pkgname " && return $STATUS_OUTDATED
+
     return $STATUS_OK
     ;;
 
   install)
     bake npm -g install "$pkgname"
+    ;;
+
+  upgrade)
+    bake npm -g update "$pkgname"
     ;;
 
   *) return 1 ;;
