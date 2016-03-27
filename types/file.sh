@@ -89,6 +89,14 @@ case $action in
     ;;
 
   compile)
+    if [ ! -f "$sourcefile" ]; then
+      echo "fatal: file '$sourcefile' does not exist!" 1>&2
+      exit 1
+    fi
+    if [ ! -r "$sourcefile" ]; then
+      echo "fatal: you do not have read permission for file '$sourcefile'"
+      exit 1
+    fi
     echo "# source: $sourcefile"
     echo "# md5 sum: $(eval $(md5cmd $platform $sourcefile))"
     echo "$file_varname=\"$(cat $sourcefile | base64)\""

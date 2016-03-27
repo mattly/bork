@@ -115,6 +115,12 @@ setup () {
   [[ "$accum" = $expected ]]
 }
 
+@test "file compile: outputs warning to stderr on missing file" {
+  run file compile target foo-missing
+  [ "$status" -eq 1 ]
+  [ "$output" = "fatal: file 'foo-missing' does not exist!" ]
+}
+
 is_compiled () { [ -n "$is_compiled" ]; }
 
 @test "file status: if compiled, uses stored variable" {

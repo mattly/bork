@@ -12,10 +12,10 @@ getDir () {
     fname=\$(readlink \$fname)
     [[ \$fname != /* ]] && fname="\$dir/\$fname"
   done
-  echo "\$(cd "\$(dirname \$fname)/.." && pwd -P)"
+  echo "\$(cd "\$(dirname \$fname)" && pwd -P)"
 }
 # used by loader to find core/ and stdlib/
-BORK_SOURCE_DIR="\$(getDir \${BASH_SOURCE[0]})"
+BORK_SOURCE_DIR="\$(cd \$(getDir \${BASH_SOURCE[0]})/.. && pwd -P)"
 HERE
 )
 eval "$BORK_SETUP_FUNCTION"
