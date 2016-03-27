@@ -1,8 +1,4 @@
-BORK_DESTINATION=$BORK_WORKING_DIR
 destination () {
-  BORK_DESTINATION=$1
-  if [ ! -d "$1" ]; then
-    echo "missing destination: $1"
-    return 1
-  fi
+  echo "deprecation warning: 'destination' utility will be removed in a future version - use 'cd' instead" 1>&2
+  cd $1
 }
