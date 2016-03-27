@@ -12,14 +12,27 @@ case $action in
     echo "asserts the presence of a nodejs module in npm's global installation"
     echo "> npm grunt-cli"
     ;;
+
   status)
     needs_exec "npm" || return $STATUS_FAILED_PRECONDITION
-    pkgs=$(bake npm ls -g --depth 0 --parseable)
-    if ! str_matches "$pkgs" "\/$pkgname$"; then
-      return $STATUS_MISSING
-    fi
-    return 0 ;;
+
+    list=$(bake npm ls -g --depth 0)
+    str_matches "$list" " $pkgname@" || return $STATUS_MISSING
+
+    outdated=$(bake npm outdated -g)
+    # TODO further tests against version for pinned versions, git urls, etc
+    str_matches "$outdated" "^$pkgname " && return $STATUS_OUTDATED
+
+    return $STATUS_OK
+    ;;
+
   install)
     bake npm -g install "$pkgname"
     ;;
+
+  upgrade)
+    bake npm -g update "$pkgname"
+    ;;
+
+  *) return 1 ;;
 esac

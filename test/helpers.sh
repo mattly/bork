@@ -14,6 +14,7 @@ bake () {
   echo "$*" >> $baking_file;
   key=$(echo "$*" | eval $md5c)
   handler=$(bag get responders $key)
+  p "looking up $* at $key, found $handler"
   if [ -n "$handler" ]; then
     eval $handler
   else
@@ -31,6 +32,7 @@ fixtures="$BORK_SOURCE_DIR/test/fixtures"
 bag init responders
 respond_to () {
   key=$(echo "$1" | eval $md5c)
+  p "setting $1 at $key"
   bag set responders "$key" "$2"
 }
 return_with () { return $1; }
