@@ -110,6 +110,8 @@ from a recent version of bork, organized a bit:
                  > npm grunt-cli
             pip: asserts presence of packages installed via pip
                  > pip pygments
+            apm: asserts the presence of an atom package
+                 > apm docblockr
 ```
 
 #### MacOS X specific
