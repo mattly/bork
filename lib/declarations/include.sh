@@ -13,7 +13,7 @@ include () {
         esac
         bag pop include_directories
     else
-        echo "include: $incl_script: No such file"
+        echo "include: $incl_script: No such file" 1>&2
         exit 1
     fi
     return 0
