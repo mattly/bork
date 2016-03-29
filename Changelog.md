@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file, from 2016-03-24 going forward. This project adheres to [Semantic Versioning](http://semver.org/). 
 
-## [Unreleased]
+## [0.10.0]
 
 ### Added
 
@@ -17,10 +17,10 @@ All notable changes to this project will be documented in this file, from 2016-0
 
 - `github` type: made to work with explicit destination option for `git` above.
 - `github` type: added `-ssh` option to specify `git@github.com:` style urls.
-- new `apm` type for managing packages for the [Atom](https://atom.io) text editor. Thanks @frdmn
+- new `apm` type for managing packages for the [Atom](https://atom.io) text editor. Thanks [@frdmn][]
 - `npm` type: Tests!
 - `npm` type: Added outdated/upgrade support.
-- `Readme.md`: Added installation instructions, moved some sections around. Thanks @frdmn
+- `Readme.md`: Added installation instructions, moved some sections around. Thanks [@frdmn][]
 - `Changelog.md`: moved from `History.md`, improved organization.
 
 ### Deprecated
@@ -48,3 +48,5 @@ All notable changes to this project will be documented in this file, from 2016-0
 ## [0.9] – 2016-03-24
 
 Initial tagged release, prompted by getting bork into homebrew. Conversely, about three years after I started working on this project.
+
+[@frdmn]: https://github.com/frdmn

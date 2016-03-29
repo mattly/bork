@@ -319,7 +319,7 @@ There are four functions to help you take further actions on change:
 
 ## Version
 
-0.9.1
+0.10.0
 
 ## License
 
