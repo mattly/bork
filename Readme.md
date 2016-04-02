@@ -14,16 +14,18 @@ platform differences between BSD and GPL versions of unix utilities.
 
 ## From source
 
-1. Clone this repository:  
+1. Clone this repository:
   `git clone https://github.com/mattly/bork /usr/local/src/bork`
 
-1. Symlink the bork binaries into your `$PATH`:  
-  `ln -sf /usr/local/src/bork/bin/bork /usr/local/bin/bork`  
-  `ln -sf /usr/local/src/bork/bin/bork-compile /usr/local/bin/bork-compile`  
+1. Symlink the bork binaries into your `$PATH`:
+```bash
+  ln -sf /usr/local/src/bork/bin/bork /usr/local/bin/bork
+  ln -sf /usr/local/src/bork/bin/bork-compile /usr/local/bin/bork-compile
+```
 
 ## via Homebrew (Mac OS X)
 
-1. Install via Homebrew:  
+1. Install via Homebrew:
   `brew install bork`
 
 # Usage and Operations
@@ -65,8 +67,8 @@ your own.
 Here's a basic example:
 
 ```bash
-ok brew                                       # presence and updatedness of homebrew
-ok brew git                                   # presence and updatedness of homebrew git package
+ok brew                                       # presence and updatedness of Homebrew
+ok brew git                                   # presence and updatedness of Homebrew git package
 ok directory $HOME/code                       # presence of the ~/code directory
 ok github $HOME/code/dotfiles mattly/dotfiles # presence, drift of git repository in ~/code/dotfiles
 cd $HOME
@@ -118,26 +120,26 @@ and some basic information about their usage and options.
             apm: asserts the presence of an atom package
 ```
 
-### MacOS X specific
+### Mac OS X specific
 ```
-       brew-tap: asserts a homebrew forumla repository has been tapped
-           brew: asserts presence of packages installed via homebrew on mac os x
-           cask: asserts presenece of apps installed via caskroom.io on Mac OS X
+       brew-tap: asserts a Homebrew formula repository has been tapped
+           brew: asserts presence of packages installed via Homebrew on Mac OS X
+           cask: asserts presence of apps installed via caskroom.io on Mac OS X
        defaults: asserts settings for OS X's 'defaults' system
             mas: asserts a Mac app is installed and up-to-date from the App Store
                  via the 'mas' utility https://github.com/argon/mas
-         scutil: Verifies OS X machine name with scutil
+         scutil: verifies OS X machine name with scutil
 ```
 
 ### Linux specific:
 ```
-            apt: asserts packages installed via apt-get on debian or ubuntu linux
-            yum: asserts packages installed via yum on CentOS or RedHat linux
+            apt: asserts packages installed via apt-get on Debian or Ubuntu Linux
+            yum: asserts packages installed via yum on CentOS or RedHat Linux
 ```
 
 ### User management (currently Linux-only)
 ```
-          group: asserts presence of a unix group (linux only, for now)
+          group: asserts presence of a unix group (Linux only, for now)
            user: assert presence of a user on the system
 ```
 
@@ -220,7 +222,7 @@ resolve — it will warn you about the problem so you can fix it yourself.
 ### bork do ok github mattly/dotfiles
 
 The `do` command will take a single assertion on the command line and perform a
-`satsify` operation on it as above.
+`satisfy` operation on it as above.
 
 ### bork compile myconfig.sh
 
@@ -246,7 +248,7 @@ ok pgdb my_app_db
 ### Composing Config Files
 
 You may compose config files into greater operations with the `include`
-directive with a path to a script relative to the current script's directory. 
+directive with a path to a script relative to the current script's directory.
 
 ```bash
 # this is main.sh
@@ -272,7 +274,7 @@ if did_install; then
   sudo echo "/usr/local/bin/fish" >> /etc/shells
   chsh -s /usr/local/bin/fish
 end
-``` 
+```
 There are four functions to help you take further actions on change:
 
 - `did_install`: did the previous assertion result in the item being installed
@@ -297,12 +299,12 @@ There are four functions to help you take further actions on change:
 1. Prefer clarity of intent over brevity. Bash can be an obtuse language, but it
    doesn't *have* to be. Many people have said bork has some of the clearest
    bash code they've ever seen, and that's a standard to strive for.
-   
+
 2. Favor helper abstractions over arbitrary platform-specific checks. See
    [`md5cmd`](lib/helpers/md5cmd.sh), [`http`](lib/helpers/http.sh), and
    [`permission_cmd`](lib/helpers/permission_cmd.sh), and look at how they're
    used.
-   
+
 3. Types are independent, stateless, and atomic. Do not attempt to maintain a
    cache in a type file unless you're talking to the network. An assertion is
    the *whole* of the assertion — don't attempt to create a multi-stage
