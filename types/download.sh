@@ -2,6 +2,7 @@ action=$1
 targetfile=$2
 sourceurl=$3
 shift 3
+size=$(arguments get size $*)
 
 case "$action" in
     desc)
@@ -13,7 +14,7 @@ case "$action" in
     status)
         bake [ -f "\"$targetfile\"" ] || return $STATUS_MISSING
 
-        if $(arguments get size); then
+        if [ -n "$size" ]; then
             fileinfo=$(bake ls -al "\"$targetfile\"")
             sourcesize=$(echo "$fileinfo" | tr -s ' ' | cut -d' ' -f5)
             remoteinfo=$(bake $(http_head_cmd "$sourceurl"))
