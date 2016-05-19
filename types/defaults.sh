@@ -18,7 +18,7 @@ desired_type=$4
 
 shift 4
 
-if [ ${desired_type:0:4} = "dict" ]; then
+if [ "${desired_type:0:4}" = "dict" ]; then
   desired_val=$*
 else
   desired_val=$1
