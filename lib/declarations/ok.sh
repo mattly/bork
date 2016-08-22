@@ -64,7 +64,7 @@ ok () {
   argstr=$*
   quoted_argstr=
   while [ -n "$1" ]; do
-    quoted_argstr=$(echo "$quoted_argstr \"$1\"")
+    quoted_argstr=$(echo "$quoted_argstr '$1'")
     shift
   done
   case $operation in
