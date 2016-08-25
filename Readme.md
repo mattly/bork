@@ -315,6 +315,14 @@ There are four functions to help you take further actions on change:
    a type? Return `$STATUS_FAILED_PRECONDITION` in your status check. Let the
    user decide the best way to satisfy any dependencies.
 
+## Community
+
+Feel free to join us in IRC:
+
+- Hostname: `irc.freenode.org`
+- Channel: `#bork.sh`
+- [Webmail client in case you don't have a native one](https://kiwiirc.com/client/irc.freenode.net/bork.sh)
+
 ## Requirements / Dependencies
 
 * Bash 3.2
