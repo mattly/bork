@@ -137,9 +137,17 @@ and some basic information about their usage and options.
             yum: asserts packages installed via yum on CentOS or RedHat Linux
 ```
 
-### User management (currently Linux-only)
+### User management
+
+#### Cross platform
 ```
-          group: asserts presence of a unix group (Linux only, for now)
+     loginshell: asserts current user's login shell is set to some value
+```
+
+
+#### Currently Linux-only
+```
+          group: asserts presence of a unix group
            user: assert presence of a user on the system
 ```
 
