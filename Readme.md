@@ -118,6 +118,7 @@ and some basic information about their usage and options.
             npm: asserts the presence of a nodejs module in npm's global installation
             pip: asserts presence of packages installed via pip
             apm: asserts the presence of an atom package
+         go-get: asserts the presence of a go package
 ```
 
 ### Mac OS X specific
