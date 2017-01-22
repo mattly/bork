@@ -31,7 +31,7 @@ if [ -z "$name" ]; then
       ;;
 
     upgrade)
-      bake brew update
+      HOMEBREW_NO_AUTO_UPDATE=true bake brew update
       ;;
 
     *) return 1 ;;
@@ -51,13 +51,13 @@ else
 
     install)
       if [ -z "$from" ]; then
-        bake brew install $name
+        HOMEBREW_NO_AUTO_UPDATE=true bake brew install $name
       else
-        bake brew install $from/$name
+        HOMEBREW_NO_AUTO_UPDATE=true bake brew install $from/$name
       fi
       ;;
 
-    upgrade) bake brew upgrade $name ;;
+    upgrade) HOMEBREW_NO_AUTO_UPDATE=true bake brew upgrade $name ;;
 
     *) return 1 ;;
   esac
