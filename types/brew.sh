@@ -20,7 +20,8 @@ if [ -z "$name" ]; then
       needs_exec "ruby" || return $STATUS_FAILED_PRECONDITION
       path=$(bake which brew)
       [ "$?" -gt 0 ] && return $STATUS_MISSING
-      changes=$(cd /usr/local; git fetch --quiet; git log master..origin/master)
+      repo=$(brew config | grep HOMEBREW_REPOSITORY | sed 's/HOMEBREW_REPOSITORY: //g')
+      changes=$(cd $repo; git fetch --quiet; git log master..origin/master)
       [ "$(echo $changes | sed '/^\s*$/d' | wc -l | awk '{print $1}')" -gt 0 ] && return $STATUS_OUTDATED
       return $STATUS_OK
       ;;
