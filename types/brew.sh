@@ -31,7 +31,7 @@ if [ -z "$name" ]; then
       ;;
 
     upgrade)
-      HOMEBREW_NO_AUTO_UPDATE=true bake brew update
+      bake brew update
       ;;
 
     *) return 1 ;;
