@@ -7,7 +7,7 @@ apt () { . $BORK_SOURCE_DIR/types/apt.sh $*; }
 setup () {
   respond_to "uname -s" "echo Linux"
   respond_to "dpkg --get-selections" "cat $fixtures/apt-dpkg-dependencies.txt"
-  respond_to "sudo apt-get -u update --dry-run" "cat $fixtures/apt-update-dry.txt"
+  respond_to "sudo apt-get upgrade --dry-run" "cat $fixtures/apt-upgrade-dry.txt"
 }
 
 @test "apt status reports incorrect platform" {
