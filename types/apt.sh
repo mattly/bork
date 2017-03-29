@@ -1,6 +1,6 @@
 # TODO
-# - cache output of apt-get update, only needs to be done once per run
-# - perhaps move the apt-get update command out to a separate call without
+# - cache output of apt-get upgrade, only needs to be done once per run
+# - perhaps move the apt-get upgrade command out to a separate call without
 #   a package name, similar to how the "brew" type does it.
 # - specify versions to install with --version flag (ie, ruby=2.0.0)
 # - specify distribution to install from with --dist flag (ie ruby/unstable)
@@ -22,7 +22,7 @@ case $action in
     echo "$(bake dpkg --get-selections)" | grep -E "^$name\\s+install$"
     [ "$?" -gt 0 ] && return $STATUS_MISSING
 
-    outdated=$(bake sudo apt-get -u update --dry-run \
+    outdated=$(bake sudo apt-get upgrade --dry-run \
                 | grep "^Inst" | awk '{print $2}')
     $(str_contains "$outdated" "$name")
     [ "$?" -eq 0 ] && return $STATUS_OUTDATED
