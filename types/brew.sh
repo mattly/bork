@@ -11,27 +11,19 @@ if [ -z "$name" ]; then
   case $action in
     desc)
       echo "asserts presence of packages installed via homebrew on mac os x"
-      echo "* brew                  (installs homebrew)"
-      echo "* brew package-name     (instals package)"
-      echo "--from=caskroom/cask    (source repository)"
+      echo "* brew                  (installs/updates homebrew)"
+      echo "* brew package-name     (installs package)"
       ;;
     status)
       baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
       needs_exec "ruby" || return $STATUS_FAILED_PRECONDITION
       path=$(bake which brew)
       [ "$?" -gt 0 ] && return $STATUS_MISSING
-      repo=$(brew config | grep HOMEBREW_REPOSITORY | sed 's/HOMEBREW_REPOSITORY: //g')
-      changes=$(cd $repo; git fetch --quiet; git log master..origin/master)
-      [ "$(echo $changes | sed '/^\s*$/d' | wc -l | awk '{print $1}')" -gt 0 ] && return $STATUS_OUTDATED
-      return $STATUS_OK
+      bake brew update && return $STATUS_OK || return $STATUS_FAILED
       ;;
 
     install)
       bake 'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
-      ;;
-
-    upgrade)
-      bake brew update
       ;;
 
     *) return 1 ;;
@@ -62,4 +54,3 @@ else
     *) return 1 ;;
   esac
 fi
-
