@@ -322,7 +322,7 @@ Feel free to join us in IRC:
 
 - Hostname: `irc.freenode.org`
 - Channel: `#bork.sh`
-- [Webmail client in case you don't have a native one](https://kiwiirc.com/client/irc.freenode.net/bork.sh)
+- [Web IRC client in case you don't have a native one](https://kiwiirc.com/client/irc.freenode.net/bork.sh)
 
 ## Requirements / Dependencies
 
