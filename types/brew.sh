@@ -13,6 +13,7 @@ if [ -z "$name" ]; then
       echo "asserts presence of packages installed via homebrew on mac os x"
       echo "* brew                  (installs/updates homebrew)"
       echo "* brew package-name     (installs package)"
+      echo "--from=caskroom/cask    (source repository)"
       ;;
     status)
       baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
