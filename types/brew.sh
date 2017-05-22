@@ -11,8 +11,8 @@ if [ -z "$name" ]; then
   case $action in
     desc)
       echo "asserts presence of packages installed via homebrew on mac os x"
-      echo "* brew                  (installs homebrew)"
-      echo "* brew package-name     (instals package)"
+      echo "* brew                  (installs/updates homebrew)"
+      echo "* brew package-name     (installs package)"
       echo "--from=caskroom/cask    (source repository)"
       ;;
     status)
@@ -20,17 +20,11 @@ if [ -z "$name" ]; then
       needs_exec "ruby" || return $STATUS_FAILED_PRECONDITION
       path=$(bake which brew)
       [ "$?" -gt 0 ] && return $STATUS_MISSING
-      changes=$(cd /usr/local; git fetch --quiet; git log master..origin/master)
-      [ "$(echo $changes | sed '/^\s*$/d' | wc -l | awk '{print $1}')" -gt 0 ] && return $STATUS_OUTDATED
-      return $STATUS_OK
+      bake brew update && return $STATUS_OK || return $STATUS_FAILED
       ;;
 
     install)
       bake 'ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"'
-      ;;
-
-    upgrade)
-      bake brew update
       ;;
 
     *) return 1 ;;
@@ -50,15 +44,14 @@ else
 
     install)
       if [ -z "$from" ]; then
-        bake brew install $name
+        HOMEBREW_NO_AUTO_UPDATE=true bake brew install $name
       else
-        bake brew install $from/$name
+        HOMEBREW_NO_AUTO_UPDATE=true bake brew install $from/$name
       fi
       ;;
 
-    upgrade) bake brew upgrade $name ;;
+    upgrade) HOMEBREW_NO_AUTO_UPDATE=true bake brew upgrade $name ;;
 
     *) return 1 ;;
   esac
 fi
-
