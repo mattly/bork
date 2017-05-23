@@ -5,9 +5,9 @@ action=$1
 pkgname=$2
 shift 2
 
-if needs_exec "apm"; then
+if hash "apm" 2>/dev/null; then
   bin="apm"
-elif needs_exec "apm-beta"; then
+elif hash "apm-beta" 2>/dev/null; then
   bin="apm-beta"
 fi
 
