@@ -2,7 +2,7 @@ When writing a status clause, it is best practice to traverse the codes describe
 
 #### Normal Status Codes
 
-`0`: Satsified.  No further action needed.
+`0`: Satisfied.  No further action needed.
 
 `10`: Missing.  Satisfy with 'install'.
 
