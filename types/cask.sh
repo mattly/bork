@@ -13,7 +13,7 @@ case $action in
   status)
     baking_platform_is "Darwin" || return $STATUS_UNSUPPORTED_PLATFORM
     needs_exec "brew" || return $STATUS_FAILED_PRECONDITION
-    bake brew cask > /dev/null
+    bake brew cask --version > /dev/null
     [ "$?" -gt 0 ] && return $STATUS_FAILED_PRECONDITION
 
     list=$(bake brew cask list)
