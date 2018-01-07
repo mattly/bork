@@ -1,0 +1,7 @@
+Packages and scripts installed through pipsi:
+  Package "pipsi":
+    /home/user/.local/bin/pipsi
+  Package "current_package":
+    /home/user/.local/bin/current_package
+  Package "outdated_package":
+    /home/user/.local/bin/outdated_package
