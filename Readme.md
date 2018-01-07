@@ -117,6 +117,7 @@ and some basic information about their usage and options.
             gem: asserts the presence of a gem in the environment's ruby
             npm: asserts the presence of a nodejs module in npm's global installation
             pip: asserts presence of packages installed via pip
+          pipsi: asserts presence of pipsi or packages installed via pipsi
             apm: asserts the presence of an atom package
          go-get: asserts the presence of a go package
 ```
