@@ -8,7 +8,7 @@
     respond_to "curl -sI \"https://foo.com\"" "cat $fixtures/http-head-curl.txt"
     run http_head_cmd "$url"
     [ "$status" -eq 0 ]
-    [ 'curl -sI "https://foo.com"' = $output ]
+    [[ 'curl -sI "https://foo.com"' == $output ]]
 }
 
 @test "http_header: extracting a header value" {
@@ -22,5 +22,5 @@
     target="/boo/baz"
     run http_get_cmd "$url" "$target"
     [ "$status" -eq 0 ]
-    [ "curl -so \"$target\" \"$url\" &> /dev/null" = $output ]
+    [[ "curl -so \"$target\" \"$url\" &> /dev/null" == $output ]]
 }

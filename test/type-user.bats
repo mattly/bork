@@ -67,9 +67,9 @@ setup () {
   [ "$status" -eq 0 ]
   run baked_output
   [ "${#lines[*]}" -eq 3 ]
-  [ "${lines[0]}" = $users_query ]
-  [ "${lines[1]}" = "chsh -s /bin/zsh existant" ]
-  [ "${lines[2]}" = $groups_query ]
+  [[ ${lines[0]} == $users_query ]]
+  [[ ${lines[1]} == "chsh -s /bin/zsh existant" ]]
+  [[ ${lines[2]} == $groups_query ]]
 }
 
 # --- with group argument ------------------------------------
@@ -120,8 +120,8 @@ setup () {
   [ "$status" -eq 0 ]
   run baked_output
   [ "${#lines[*]}" -eq 4 ]
-  [ "${lines[0]}" = $users_query ]
-  [ "${lines[1]}" = $groups_query ]
-  [ "${lines[2]}" = "adduser existant foo" ]
-  [ "${lines[3]}" = "adduser existant bar" ]
+  [[ ${lines[0]} == $users_query ]]
+  [[ ${lines[1]} == $groups_query ]]
+  [[ ${lines[2]} == "adduser existant foo" ]]
+  [[ ${lines[3]} == "adduser existant bar" ]]
 }
