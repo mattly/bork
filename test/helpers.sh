@@ -9,7 +9,7 @@ p () {
 
 md5c=$(md5cmd $platform)
 baking_responder=
-baking_file=$(mktemp -t bork_test.XXXXX)
+baking_file=$(mktemp -t bork_test.XXXXXX)
 bake () {
   echo "$*" >> $baking_file;
   key=$(echo "$*" | eval $md5c)
