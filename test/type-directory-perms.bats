@@ -4,7 +4,7 @@
 directory () { . $BORK_SOURCE_DIR/types/directory.sh $*; }
 
 setup() {
-  respond_to "stat --printf %U:%G:%a foo" "printf '%s:%s:%s' user users 755"
+  respond_to "stat --printf %U\n%G\n%a foo" "printf '%s\n%s\n%s' user users 755"
 }
 
 @test "directory: status returns MISMATCH_UPGRADE when target directory has incorrect owner" {
