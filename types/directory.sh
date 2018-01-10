@@ -28,7 +28,7 @@ case "$action" in
 
     mismatch=false
     if [[ -n ${owner} || -n ${group} || -n ${mode} ]]; then
-      readarray -t dir_stat < <(bake stat --printf '%U\n%G\n%a' "${dir}")
+      readarray -t dir_stat < <(bake stat --printf '%U\\n%G\\n%a' "${dir}")
 
       if [[ -n ${owner} && ${dir_stat[0]} != ${owner} ]]; then
         printf '%s owner: %s\n' \
