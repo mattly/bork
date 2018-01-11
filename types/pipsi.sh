@@ -11,6 +11,12 @@ else
   global=$(arguments get global $*)
 fi
 
+bootstrap=false
+if [[ -z ${name} ]]; then
+  bootstrap=true
+  name='pipsi'
+fi
+
 # set paths, try variables pipsi itself uses first and fall-back to
 # defaults; take the 'global' option into account
 declare -a pipsi_opts=( )
@@ -56,16 +62,14 @@ case "${action}" in
   status)
     needs_exec "python3" || return "${STATUS_FAILED_PRECONDITION}"
 
-    if [[ -z ${name} ]]; then  # operate on pipsi itself
+    if ${bootstrap}; then  # operate on pipsi itself
       status_have_pipsi || {
         status="$?"
         needs_exec "curl" || return "${STATUS_FAILED_PRECONDITION}"
         needs_exec "git" || return "${STATUS_FAILED_PRECONDITION}"
         return "${status}"
       }
-      # we got here so pipsi is available, check if up-to-date same as
-      # a regular packge
-      name="pipsi"
+      # pipsi is available, fall back to common check for up-to-date
     else  # operate on provided packge
       bake which pipsi || return "${STATUS_FAILED_PRECONDITION}"
 
@@ -84,7 +88,7 @@ case "${action}" in
     ;;
   install)
     su="$(get_su)"
-    if [[ -z ${name} ]]; then  # operate on pipsi itself
+    if ${bootstrap}; then  # operate on pipsi itself
       # escape the pipe as we want `bake` to evaluate it lazily
       # install pipsi from git master for now as release on pypi is
       # ancient, master contains many fixes and some new features
@@ -99,9 +103,6 @@ case "${action}" in
   upgrade|delete)
     if [[ ${action} == delete ]]; then
       action="uninstall"
-    fi
-    if [[ -z ${name} ]]; then
-      name="pipsi"
     fi
     bake "$(get_su)" pipsi "${pipsi_opts[@]}" "${action}" "${name}"
     ;;
