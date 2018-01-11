@@ -57,14 +57,8 @@ setup() {
   (( status == STATUS_MISSING ))
 }
 
-@test "pipsi status (no-pkg) returns FAILED_PRECONDITION when python is missing" {
-  respond_to 'which python' 'return 1'
-  run pipsi status
-  (( status == STATUS_FAILED_PRECONDITION ))
-}
-
-@test "pipsi status (no-pkg) returns FAILED_PRECONDITION when virtualenv is missing" {
-  respond_to 'which virtualenv' 'return 1'
+@test "pipsi status (no-pkg) returns FAILED_PRECONDITION when python 3 is missing" {
+  respond_to 'which python3' 'return 1'
   run pipsi status
   (( status == STATUS_FAILED_PRECONDITION ))
 }
@@ -92,7 +86,7 @@ setup() {
   (( status == 0 ))
   run baked_output
   [[ ${output} =~ curl\ .*get-pipsi\.py ]]
-  [[ ${output} =~ '|  python' ]]
+  [[ ${output} =~ '|  python3' ]]
   [[ ${output} =~ --bin-dir=${pipsi_global_bin_dir} ]]
   [[ ${output} =~ --home=${pipsi_global_home} ]]
 }
@@ -105,7 +99,7 @@ setup() {
   (( status == 0 ))
   run baked_output
   [[ ${output} =~ curl\ .*get-pipsi\.py ]]
-  [[ ${output} =~ '| sudo python' ]]
+  [[ ${output} =~ '| sudo python3' ]]
 }
 
 @test "pipsi upgrade (no-pkg) upgrades itself" {
