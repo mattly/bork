@@ -69,6 +69,14 @@ setup() {
   (( status == STATUS_FAILED_PRECONDITION ))
 }
 
+@test "pipsi status (no-pkg) returns FAILED_PRECONDITION when pipsi and curl are missing" {
+  respond_to 'which pipsi' 'return 1'
+  respond_to 'which curl' 'return 1'
+
+  run pipsi status
+  (( status == STATUS_FAILED_PRECONDITION ))
+}
+
 @test "pipsi install (no-pkg) bootstraps itself" {
   run pipsi install
   (( status == 0 ))

@@ -31,6 +31,20 @@ get_su() {
   printf '%s' "${su}"
 }
 
+# return STATUS_MISSING if pipsi (local or global, according to option)
+# is missing, return 0 otherwise
+# note this is only useful in case of operating on pipsi itself, if any
+# pipsi is available it is capable of installing packages either
+# locally or globally
+status_have_pipsi() {
+  bake which pipsi || return "${STATUS_MISSING}"
+  if [[ ${global} == true ]]; then
+    bake type -ap pipsi |grep '^/usr' || return "${STATUS_MISSING}"
+  else
+    bake type -ap pipsi |grep "^${HOME}" || return "${STATUS_MISSING}"
+  fi
+}
+
 case "${action}" in
   desc)
     printf '%s\n' \
@@ -44,12 +58,11 @@ case "${action}" in
     needs_exec "virtualenv" || return "${STATUS_FAILED_PRECONDITION}"
 
     if [[ -z ${name} ]]; then  # operate on pipsi itself
-      bake which pipsi || return "${STATUS_MISSING}"
-      if [[ ${global} == true ]]; then
-        bake type -ap pipsi |grep '^/usr' || return "${STATUS_MISSING}"
-      else
-        bake type -ap pipsi |grep "^${HOME}" || return "${STATUS_MISSING}"
-      fi
+      status_have_pipsi || {
+        status="$?"
+        needs_exec "curl" || return "${STATUS_FAILED_PRECONDITION}"
+        return "${status}"
+      }
       # we got here so pipsi is available, check if up-to-date same as
       # a regular packge
       name="pipsi"
