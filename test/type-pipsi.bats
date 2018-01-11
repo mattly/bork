@@ -71,11 +71,21 @@ setup() {
   (( status == STATUS_FAILED_PRECONDITION ))
 }
 
+@test "pipsi status (no-pkg) returns FAILED_PRECONDITION when pipsi and git are missing" {
+  respond_to 'which pipsi' 'return 1'
+  respond_to 'which git' 'return 1'
+
+  run pipsi status
+  (( status == STATUS_FAILED_PRECONDITION ))
+}
+
 @test "pipsi install (no-pkg) bootstraps itself" {
   run pipsi install
   (( status == 0 ))
   run baked_output
   [[ ${output} =~ curl\ .*get-pipsi\.py ]]
+  # should be installed from git master
+  [[ ${output} =~ 'git+https://github.com/mitsuhiko/pipsi.git#egg=pipsi' ]]
 }
 
 @test "pipsi install global (no-pkg) bootstraps itself globally" {
