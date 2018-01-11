@@ -54,8 +54,7 @@ case "${action}" in
       '--global               (work on global packages instead of per-user)'
     ;;
   status)
-    needs_exec "python" || return "${STATUS_FAILED_PRECONDITION}"
-    needs_exec "virtualenv" || return "${STATUS_FAILED_PRECONDITION}"
+    needs_exec "python3" || return "${STATUS_FAILED_PRECONDITION}"
 
     if [[ -z ${name} ]]; then  # operate on pipsi itself
       status_have_pipsi || {
@@ -88,7 +87,7 @@ case "${action}" in
       # escape the pipe as we want `bake` to evaluate it lazily
       bake curl -fsSL \
         https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py \
-        \| "${su}" python - "${pipsi_opts[@]}"
+        \| "${su}" python3 - "${pipsi_opts[@]}"
     else  # operate on provided packge
       bake "${su}" pipsi "${pipsi_opts[@]}" install "${name}"
     fi
