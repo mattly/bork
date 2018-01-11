@@ -60,6 +60,7 @@ case "${action}" in
       status_have_pipsi || {
         status="$?"
         needs_exec "curl" || return "${STATUS_FAILED_PRECONDITION}"
+        needs_exec "git" || return "${STATUS_FAILED_PRECONDITION}"
         return "${status}"
       }
       # we got here so pipsi is available, check if up-to-date same as
@@ -85,9 +86,12 @@ case "${action}" in
     su="$(get_su)"
     if [[ -z ${name} ]]; then  # operate on pipsi itself
       # escape the pipe as we want `bake` to evaluate it lazily
+      # install pipsi from git master for now as release on pypi is
+      # ancient, master contains many fixes and some new features
       bake curl -fsSL \
         https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py \
-        \| "${su}" python3 - "${pipsi_opts[@]}"
+        \| "${su}" python3 - "${pipsi_opts[@]}" \
+        --src 'git+https://github.com/mitsuhiko/pipsi.git#egg=pipsi'
     else  # operate on provided packge
       bake "${su}" pipsi "${pipsi_opts[@]}" install "${name}"
     fi
