@@ -27,6 +27,7 @@ if [[ ${global} == true ]]; then
   pipsi_home="${PIPSI_GLOBAL_HOME:-"/usr/local/lib/pipsi"}"
   pipsi_opts+=( --bin-dir=${pipsi_bin_dir} --home=${pipsi_home} )
 fi
+pip="${pipsi_home}/${name}/bin/pip"
 
 # if bin_dir or home are not writable, automatically attempt to elevate
 # permissions using sudo
@@ -79,9 +80,7 @@ case "${action}" in
     fi
 
     # pipsi doesn't provide a way to check if packge is up-to-date,
-    # so for now have to use `pip` directly, which also means we need
-    # to know location of pipsi virtualenvs
-    pip="${pipsi_home}/${name}/bin/pip"
+    # so for now have to use `pip` directly
     ! bake "${pip}" list --outdated --format=legacy | egrep "^${name} " \
       || return "${STATUS_OUTDATED}"
     return "${STATUS_OK}"
@@ -99,6 +98,7 @@ case "${action}" in
     else  # operate on provided packge
       bake "${su}" pipsi "${pipsi_opts[@]}" install "${name}"
     fi
+    bake "${pip}" install --upgrade pip setuptools
     ;;
   upgrade|delete)
     if [[ ${action} == delete ]]; then
