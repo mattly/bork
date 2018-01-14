@@ -14,8 +14,8 @@ case "${action}" in
     needs_exec "rpm" || return "${STATUS_FAILED_PRECONDITION}"
     needs_exec "zypper" || return "${STATUS_FAILED_PRECONDITION}"
 
-    bake rpm -q "${name}" || return "${STATUS_MISSING}"
-    ! bake zypper --terse list-updates | egrep " ${name} " \
+    bake rpm -q "${name}" &>/dev/null || return "${STATUS_MISSING}"
+    ! bake zypper --terse list-updates | egrep -q " ${name} " \
       || return "${STATUS_OUTDATED}"
     return "${STATUS_OK}"
     ;;
