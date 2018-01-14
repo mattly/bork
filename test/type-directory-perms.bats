@@ -37,6 +37,7 @@ setup() {
   run directory install foo --owner=bork
   (( status == 0 ))
   run baked_output
+  [[ ${lines[-1]} =~ ^sudo\ install ]]
   [[ ${lines[-1]} =~ '-o bork' ]]
 }
 
@@ -44,6 +45,7 @@ setup() {
   run directory install foo --group=bork
   (( status == 0 ))
   run baked_output
+  [[ ${lines[-1]} =~ ^sudo\ install ]]
   [[ ${lines[-1]} =~ '-g bork' ]]
 }
 
@@ -51,5 +53,6 @@ setup() {
   run directory install foo --mode=700
   (( status == 0 ))
   run baked_output
+  [[ ${lines[-1]} =~ ^install ]]
   [[ ${lines[-1]} =~ '-m 700' ]]
 }
