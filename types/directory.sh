@@ -60,11 +60,12 @@ case "$action" in
     ;;
 
   install|upgrade)
-    inst_opts=( -C -d )
-    [[ -z ${owner} ]] || inst_opts+=( -o "${owner}" )
-    [[ -z ${group} ]] || inst_opts+=( -g "${group}" )
-    [[ -z ${mode} ]] || inst_opts+=( -m "${mode}" )
-    bake install "${inst_opts[@]}" "${dir}"
+    inst_cmd=( install -C -d )
+    [[ -z ${owner} && -z ${group} ]] || inst_cmd=( sudo "${inst_cmd[@]}" )
+    [[ -z ${owner} ]] || inst_cmd+=( -o "${owner}" )
+    [[ -z ${group} ]] || inst_cmd+=( -g "${group}" )
+    [[ -z ${mode} ]] || inst_cmd+=( -m "${mode}" )
+    bake "${inst_cmd[@]}" "${dir}"
     ;;
 
   *) return 1 ;;
