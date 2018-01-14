@@ -94,6 +94,7 @@ case "${action}" in
       bake curl -fsSL \
         https://raw.githubusercontent.com/mitsuhiko/pipsi/master/get-pipsi.py \
         \| "${su}" python3 - "${pipsi_opts[@]}" \
+        --ignore-existing \
         --src 'git+https://github.com/mitsuhiko/pipsi.git#egg=pipsi'
     else  # operate on provided packge
       bake "${su}" pipsi "${pipsi_opts[@]}" install "${name}"
