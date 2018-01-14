@@ -84,6 +84,8 @@ setup() {
   (( status == 0 ))
   run baked_output
   [[ ${output} =~ curl\ .*get-pipsi\.py ]]
+  # should not check if already installed (bork type already does that)
+  [[ ${output} =~ --ignore-existing ]]
   # should be installed from git master
   [[ ${output} =~ 'git+https://github.com/mitsuhiko/pipsi.git#egg=pipsi' ]]
 }
@@ -105,6 +107,8 @@ setup() {
   [[ ${output} =~ '|  python3' ]]
   [[ ${output} =~ --bin-dir=${pipsi_global_bin_dir} ]]
   [[ ${output} =~ --home=${pipsi_global_home} ]]
+  # should not check if already installed (bork type already does that)
+  [[ ${output} =~ --ignore-existing ]]
 }
 
 @test "pipsi install global (no-pkg) uses sudo if necessary to write to target dirs" {
