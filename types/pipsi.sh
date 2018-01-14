@@ -44,11 +44,11 @@ get_su() {
 # pipsi is available it is capable of installing packages either
 # locally or globally
 status_have_pipsi() {
-  bake which pipsi || return "${STATUS_MISSING}"
+  bake which pipsi &>/dev/null || return "${STATUS_MISSING}"
   if [[ ${global} == true ]]; then
-    bake type -ap pipsi |grep '^/usr' || return "${STATUS_MISSING}"
+    bake type -ap pipsi |grep -q '^/usr' || return "${STATUS_MISSING}"
   else
-    bake type -ap pipsi |grep "^${HOME}" || return "${STATUS_MISSING}"
+    bake type -ap pipsi |grep -q "^${HOME}" || return "${STATUS_MISSING}"
   fi
 }
 
