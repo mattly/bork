@@ -18,6 +18,7 @@ setup() {
   respond_to 'type -ap pipsi' "echo ${HOME}/.local/bin/pipsi; return 0"
   run pipsi status
   (( status == STATUS_OK ))
+  [[ -z ${output} ]]
 }
 
 @test "pipsi status global (no-pkg) returns OK when global pipsi is available" {
@@ -27,6 +28,7 @@ setup() {
 
   run pipsi status --global
   (( status == STATUS_OK ))
+  [[ -z ${output} ]]
 }
 
 @test "pipsi status global (no-pkg) returns OK when pipsi is installed as both local and global" {
@@ -37,6 +39,7 @@ setup() {
 
   run pipsi status --global
   (( status == STATUS_OK ))
+  [[ -z ${output} ]]
 }
 
 @test "pipsi status (no-pkg) returns MISSING when pipsi is missing" {
@@ -49,12 +52,14 @@ setup() {
   respond_to 'which pipsi' "echo ${pipsi_global_bin_dir}/pipsi; return 0"
   run pipsi status
   (( status == STATUS_MISSING ))
+  [[ -z ${output} ]]
 }
 
 @test "pipsi status global (no-pkg) returns MISSING when global pipsi is missing" {
   respond_to 'which pipsi' "echo ${HOME}/.local/bin/pipsi; return 0"
   run pipsi status --global
   (( status == STATUS_MISSING ))
+  [[ -z ${output} ]]
 }
 
 @test "pipsi status (no-pkg) returns FAILED_PRECONDITION when python 3 is missing" {
