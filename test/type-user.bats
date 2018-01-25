@@ -122,7 +122,7 @@ setup () {
   [[ -z ${output} ]]
   run baked_output
   [ "${#lines[*]}" -eq 3 ]
-  [ "${lines[0]}" = $groups_query ]
+  [ "${lines[0]}" = "$groups_query" ]
   [ "${lines[1]}" = "adduser existant foo" ]
   [ "${lines[2]}" = "adduser existant bar" ]
 }
