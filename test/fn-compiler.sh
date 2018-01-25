@@ -10,7 +10,7 @@ compiled_type_exists () {
 }
 
 setup () {
-  example_include="$BORK_SCRIPT_DIR/core/git.sh"
+  example_include="$BORK_SCRIPT_DIR/types/git.sh"
   compiled_type_test=$(mktemp -t cttXXXXXX)
 }
 
@@ -33,13 +33,14 @@ setup () {
   operation="compile"
   run include_assertion 'hello' "$example_include"
   [ "$status" -eq 0 ]
-  git_length=$(cat $example_include | grep -E '\S+' | wc -l | awk '{print $1}')
+  git_length=$(cat $example_include | strip_blanks | wc -l | awk '{print $1}')
   (( git_length = $git_length + 3 ))
   [ "${#lines[*]}" -eq $git_length ]
   comment_leader="# $example_include"
   [ "${lines[0]}" = $comment_leader ]
   [ "${lines[1]}" = "type_hello () {" ]
-  [ "${lines[2]}" = $(cat $example_include | head -n 1) ]
+  expected_first_line="  $(cat $example_include | strip_blanks | head -n 1)"
+  [ "${lines[2]}" = "$expected_first_line" ]
   run cat $compiled_type_test
   [ "${#lines[*]}" -eq 1 ]
   [ "${lines[0]}" = "hello" ]
