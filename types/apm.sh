@@ -5,10 +5,10 @@ action=$1
 pkgname=$2
 shift 2
 
-if hash "apm" 2>/dev/null; then
-  bin="apm"
-elif hash "apm-beta" 2>/dev/null; then
+if hash "apm-beta" 2>/dev/null; then
   bin="apm-beta"
+elif hash "apm" 2>/dev/null; then
+  bin="apm"
 fi
 
 case $action in
