@@ -39,4 +39,7 @@ str_replace () {
   echo $(echo "$1" | sed -E 's|'"$2"'|'"$3"'|g')
 }
 
-
+# Removes blank or comment-only lines from stdin
+strip_blanks () {
+  awk '!/^($|[[:space:]]*#)/{print $0}' <&0
+}

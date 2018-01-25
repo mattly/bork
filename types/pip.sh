@@ -13,7 +13,7 @@ case $action in
     ;;
   status)
     needs_exec "pip" || return $STATUS_FAILED_PRECONDITION
-    pkgs=$(bake pip list)
+    pkgs=$(PIP_FORMAT=legacy bake pip list)
     if ! str_matches "$pkgs" "^$name"; then
       return $STATUS_MISSING
     fi

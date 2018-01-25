@@ -46,8 +46,8 @@ setup () {
     run brew-tap install homebrew/science --pin
     [ "$status" -eq 0 ]
     run baked_output
-    [ "brew tap homebrew/science" = ${lines[0]} ]
-    [ "brew tap-pin homebrew/science" = ${lines[1]} ]
+    [[ "brew tap homebrew/science" == ${lines[0]} ]]
+    [[ "brew tap-pin homebrew/science" == ${lines[1]} ]]
 }
 
 @test "brew-tap upgrade with pin adds pin" {
