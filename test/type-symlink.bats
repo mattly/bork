@@ -55,8 +55,7 @@ make_links () {
   run symlink install .README $sourcefile
   [ "$status" -eq 0 ]
   run baked_output
-  [ "ln -sf $sourcefile .README" = ${lines[0]} ]
+  [[ "ln -sf $sourcefile .README" == ${lines[0]} ]]
   [ -h .README ]
-  [ "$sourcefile" = $(readlink .README) ]
+  [[ ${sourcefile} == $(readlink .README) ]]
 }
-

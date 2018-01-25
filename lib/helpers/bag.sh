@@ -24,7 +24,7 @@ bag () {
   case "$action" in
     init) eval "$varname=( )" ;;
     push) eval "$varname[$length]=\"$1\"" ;;
-    pop) eval "unset $varname[$last]=" ;;
+    pop) eval "unset $varname[$last]" ;;
     read)
       [ "$length" -gt 0 ] && echo $(eval "echo \${$varname[$last]}") ;;
     size) echo $length ;;

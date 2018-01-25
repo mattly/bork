@@ -103,34 +103,33 @@ git_status_handler ()   { echo "$git_status"; }
   run git install $repo
   [ "$status" -eq 0 ]
   run baked_output
-  [ "mkdir -p bork" = ${lines[0]} ]
-  [ "git clone -b master $repo bork" = ${lines[1]} ]
+  [[ "mkdir -p bork" == ${lines[0]} ]]
+  [[ "git clone -b master $repo bork" == ${lines[1]} ]]
 }
 
 @test "git install: with target argument, performs clone" {
   run git install /Users/mattly/code/bork $repo
   [ "$status" -eq 0 ]
   run baked_output
-  [ "mkdir -p /Users/mattly/code/bork" = ${lines[0]} ]
-  [ "git clone -b master $repo /Users/mattly/code/bork" = ${lines[1]} ]
+  [[ "mkdir -p /Users/mattly/code/bork" == ${lines[0]} ]]
+  [[ "git clone -b master $repo /Users/mattly/code/bork" == ${lines[1]} ]]
 }
 
 @test "git install: uses specified branch" {
   run git install $repo --branch=experimental
   [ "$status" -eq 0 ]
   run baked_output
-  [ "mkdir -p bork" = ${lines[0]} ]
-  [ "git clone -b experimental $repo bork" = ${lines[1]} ]
+  [[ "mkdir -p bork" == ${lines[0]} ]]
+  [[ "git clone -b experimental $repo bork" == ${lines[1]} ]]
 }
 
 @test "git upgrade: merges to new ref, echoes changelog" {
   run git upgrade $repo
   [ "$status" -eq 0 ]
   run baked_output
-  [ "cd bork" = ${lines[0]} ]
-  [ "git reset --hard" = ${lines[1]} ]
-  [ "git pull" = ${lines[2]} ]
-  [ "git checkout master" = ${lines[3]} ]
-  [ "git log HEAD@{2}.." = ${lines[4]} ]
+  [[ "cd bork" == ${lines[0]} ]]
+  [[ "git reset --hard" == ${lines[1]} ]]
+  [[ "git pull" == ${lines[2]} ]]
+  [[ "git checkout master" == ${lines[3]} ]]
+  [[ "git log HEAD@{2}.." == ${lines[4]} ]]
 }
-

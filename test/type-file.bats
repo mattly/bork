@@ -25,8 +25,8 @@ setup () {
   run file status wrongfile Readme.md
   [ "$status" -eq $STATUS_CONFLICT_UPGRADE ]
   expected="expected sum: $readsum"
-  [ "${lines[0]}" = $expected ]
-  [ "${lines[1]}" = "received sum: 123456" ]
+  [[ ${lines[0]} == $expected ]]
+  [[ ${lines[1]} == "received sum: 123456" ]]
 }
 
 @test "file status: returns OK when all is well" {
@@ -141,4 +141,3 @@ is_compiled () { [ -n "$is_compiled" ]; }
   expected=$(echo $expected)
   [[ "${lines[1]}" = $expected ]]
 }
-

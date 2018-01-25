@@ -28,9 +28,5 @@ git_call="intercept_git"
   bag init compiled_types
   run github compile foo/bar
   [ "$status" -eq 0 ]
-  n=0
-  for line in $gitfn; do
-    [ "${lines[n]}" = $line ]
-    n=$(( n + 1 ))
-  done
+  [[ ${output} == "${gitfn}" ]]
 }
