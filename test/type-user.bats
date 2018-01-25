@@ -118,10 +118,11 @@ setup () {
 @test "user upgrade: with group, bakes 'adduser' with user and group for each group" {
   run user upgrade existant --groups=foo,bar
   [ "$status" -eq 0 ]
+  # expect no output or errors
+  [[ -z ${output} ]]
   run baked_output
-  [ "${#lines[*]}" -eq 4 ]
-  [[ ${lines[0]} == $users_query ]]
-  [[ ${lines[1]} == $groups_query ]]
-  [[ ${lines[2]} == "adduser existant foo" ]]
-  [[ ${lines[3]} == "adduser existant bar" ]]
+  [ "${#lines[*]}" -eq 3 ]
+  [ "${lines[0]}" = $groups_query ]
+  [ "${lines[1]}" = "adduser existant foo" ]
+  [ "${lines[2]}" = "adduser existant bar" ]
 }

@@ -87,7 +87,8 @@ case $action in
     ;;
 
   upgrade)
-    if ! user_shell $(user_get $handle) $shell ; then
+    if [[ -n ${shell} ]] \
+        && ! user_shell "$(user_get "${handle}")" "${shell}"; then
       bake chsh -s $shell $handle
     fi
     missing=$(user_groups $handle $groups)
