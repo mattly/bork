@@ -14,9 +14,7 @@ case "${action}" in
     needs_exec "apk" || return "${STATUS_FAILED_PRECONDITION}"
 
     bake apk info --installed "${name}" || return "${STATUS_MISSING}"
-    o=$(bake apk version | awk '{print $1}' | grep -E "^${name}-\d")
-    [ -n "$o" ] && return "${STATUS_OUTDATED}"
-    # bake apk version | awk '{print $1}' | grep -E "^${name}-\d" > /dev/null && return "${STATUS_OUTDATED}"
+    bake apk version | grep -E "^${name}-\d+\.\d+" > /dev/null && return "${STATUS_OUTDATED}"
     return "${STATUS_OK}"
     ;;
   install|upgrade)
