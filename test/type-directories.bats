@@ -40,6 +40,5 @@ mkdirs () {
   run directory install foo
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${lines[0]}" = "mkdir -p foo" ]
+  [ "${lines[0]}" = "install -C -d foo" ]
 }
-
