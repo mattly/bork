@@ -23,6 +23,7 @@ apk() { . $BORK_SOURCE_DIR/types/apk.sh "$@"; }
     'echo current_package'
 
   run apk status current_package
+  echo "$output"
   (( status == STATUS_OK ))
 }
 
