@@ -21,7 +21,7 @@ case "${action}" in
     bake apk version | grep -e "^${name}-\d"
     echo "----"
     bake apk version | awk '{print $1}' | grep -E "^${name}-\d"
-    bake apk version | awk '{print $1}' | grep -E "^${name}-\d" > /dev/null && return "${STATUS_OUTDATED}"
+    bake apk version | awk '{print $1}' | grep -E "^${name}-\d" > /dev/null || return "${STATUS_OUTDATED}"
     return "${STATUS_OK}"
     ;;
   install|upgrade)
