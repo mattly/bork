@@ -31,7 +31,7 @@ case $action in
     ;;
 
   upgrade)
-    bake npm -g update "$pkgname"
+    bake npm -g install "$pkgname"
     ;;
 
   *) return 1 ;;

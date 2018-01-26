@@ -39,5 +39,5 @@ setup () {
   run npm upgrade foo
   [ "$status" -eq 0 ]
   run baked_output
-  [ "${lines[0]}" = "npm -g update foo" ]
+  [ "${lines[0]}" = "npm -g install foo" ]
 }
