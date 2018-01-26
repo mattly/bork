@@ -27,7 +27,7 @@ apk() { . $BORK_SOURCE_DIR/types/apk.sh "$@"; }
 }
 
 @test "apk status returns OUTDATED when package is installed but outdated" {
-  respond_to "apk version" "cat ${fixtures}/apk-version.txt"
+  respond_to "apk version" "cat $fixtures/apk-version.txt"
 
   run apk status outdated_package
   echo "$output"
