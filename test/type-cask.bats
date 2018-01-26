@@ -22,7 +22,7 @@ setup () {
 }
 
 @test "cask status reports missing cask package" {
-  respond_to "brew cask" "return 1"
+  respond_to "brew cask --version" "return 1"
   run cask status something
   [ "$status" -eq $STATUS_FAILED_PRECONDITION ]
 }
