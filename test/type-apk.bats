@@ -30,7 +30,7 @@ apk() { . $BORK_SOURCE_DIR/types/apk.sh "$@"; }
   respond_to "apk version" "cat ${fixtures}/apk-version.txt"
 
   run apk status outdated_package
-  echo "$status"
+  echo "$output"
   (( status == STATUS_OUTDATED ))
 }
 

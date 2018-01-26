@@ -14,6 +14,7 @@ case "${action}" in
     needs_exec "apk" || return "${STATUS_FAILED_PRECONDITION}"
 
     bake apk info --installed "${name}" || return "${STATUS_MISSING}"
+    bake apk version | egrep "^${name}-\d"
     bake apk version | egrep "^${name}-\d" > /dev/null && return "${STATUS_OUTDATED}"
     return "${STATUS_OK}"
     ;;
