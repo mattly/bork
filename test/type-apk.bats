@@ -7,8 +7,6 @@ apk() { . $BORK_SOURCE_DIR/types/apk.sh "$@"; }
 @test "apk status returns FAILED_PRECONDITION when apk is missing" {
   respond_to 'which apk' 'return 1'
   run apk status something
-  echo "# status: ${status}"
-  echo '# output:'; echo "${output}" | sed -re 's/^/#   /'
   (( status == STATUS_FAILED_PRECONDITION ))
 }
 
