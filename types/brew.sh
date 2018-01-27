@@ -7,8 +7,6 @@ name=$2
 shift 2
 from=$(arguments get from $*)
 
-HOMEBREW_NO_AUTO_UPDATE=true
-
 if [ -z "$name" ]; then
   case $action in
     desc)
