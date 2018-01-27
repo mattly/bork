@@ -23,7 +23,7 @@ Hey folks, sorry it's been a while! I started a new job not long after 0.10.0 wa
 - Add version flag to `brew cask` check to bypass warning. Thanks [@rmhsilva][]
 - Readme typo fix. Thanks [@indigo423][]
 - force legacy listing format for PIP for conformative parsing. Thanks [@frdmn][]
-- fix apt-status for outdated packages. Thanks [@dylanvaugn][]
+- fix apt-status for outdated packages. Thanks [@dylanvaughn][]
 - bypass homebrew not to auto-update itself when performing checks. Thanks [@frdmn][]
 - the `desired_type` variable on the `defaults` type is now escaped when checking. Thanks [@bcomnes][]
 - the `--size` flag check on the `download` type. Thanks [@bcomnes][]
@@ -78,7 +78,7 @@ Hey folks, sorry it's been a while! I started a new job not long after 0.10.0 wa
 Initial tagged release, prompted by getting bork into homebrew. Conversely, about three years after I started working on this project.
 
 [@bcomnes]: https://github.com/bcomnes
-[@dylanvaugh]: https://github.com/dylanvaughn
+[@dylanvaughn]: https://github.com/dylanvaughn
 [@edrex]: https://github.com/edrex
 [@frdmn]: https://github.com/frdmn
 [@indigo423]: https://github.com/indigo423
