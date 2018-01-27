@@ -1,7 +1,35 @@
 # Change Log
-All notable changes to this project will be documented in this file, from 2016-03-24 going forward. This project adheres to [Semantic Versioning](http://semver.org/). 
+All notable changes to this project will be documented in this file, from 2016-03-24 going forward. This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.10.0]
+## [0.11.0] - 2018-01-27
+
+Hey folks, sorry it's been a while! I started a new job not long after 0.10.0 was relased and then had my first child not long after that. I'm finally feeling a bit like I have some spare time. -- [@mattly][]
+
+### Added
+- new `--owner`, `--group`, and `--mode` flags for the `directory` type that do what you think they do. Thanks [@jitakirin][]
+- `zypper` type for working with the SUSE package manager. Thanks [@jitakirin][]
+- `pipsi` type for installing python packages to virtualenvs. Thanks [@jitakirin][]
+- Reference to `#bork` freenode IRC channel in Readme.
+- `go-get` type for asserting the presence of a go package. Thanks [@edrex][]
+- Use `apm-beta` over `apm` if it is available. Thanks [@frdmn][]
+
+### Improved
+- Let homebrew itself tell us whether it is outdated. Thanks [@frdmn][]
+
+### Fixed
+- Use `npm install` to update npm packages, because `npm upgrade` could install things "newer" than the latest, causing an "outdated" status from bork. By [@mattly][]
+- Don't check a user's shell if not requested. Thanks [@jitakirin][]
+- Fix for removing an item from a bag value. Thanks [@ngkz][]
+- Add version flag to `brew cask` check to bypass warning. Thanks [@rmhsilva][]
+- Readme typo fix. Thanks [@indigo423]
+- force legacy listing format for PIP for conformative parsing. Thanks [@frdmn][]
+- fix apt-status for outdated packages. Thanks [@dylanvaugn][]
+- bypass homebrew not to auto-update itself when performing checks. Thanks [@frdmn][]
+- the `desired_type` variable on the `defaults` type is now escaped when checking. Thanks [@bcomnes][]
+- the `--size` flag check on the `download` type. Thanks [@bcomnes][]
+- Some typos in the readme. Thanks [@rgieseke][]
+
+## [0.10.0] - 2016-03-29
 
 ### Added
 
@@ -12,7 +40,7 @@ All notable changes to this project will be documented in this file, from 2016-0
     cd ~/code; ok git git@somewhere.com:/me/someproject.git
     ok git ~/code/someproject git@somewhere.com:/me/someproject.git
     ```
-    
+
     I am inclined to deprecate the original implicit version, and welcome feedback about this.
 
 - `github` type: made to work with explicit destination option for `git` above.
@@ -26,7 +54,7 @@ All notable changes to this project will be documented in this file, from 2016-0
 ### Deprecated
 
 - `destination` declaration is now a proxy for unix `cd`, and will emit to STDERR a message stating it will be removed in the future.
-  
+
 ### Removed
 
 - `ok` declaration no longer runs commands from the set `destination`; it will run them from the current directory.
@@ -49,4 +77,13 @@ All notable changes to this project will be documented in this file, from 2016-0
 
 Initial tagged release, prompted by getting bork into homebrew. Conversely, about three years after I started working on this project.
 
+[@bcomnes]: https://github.com/bcomnes
+[@dylanvaugh]: https://github.com/dylanvaughn
+[@edrex]: https://github.com/edrex
 [@frdmn]: https://github.com/frdmn
+[@indigo423]: https://github.com/indigo423
+[@jitakirin]: https://github.com/jitakirin
+[@mattly]: https://github.com/mattly
+[@ngkz]: https://github.com/ngkz
+[@rgieseke]: https://github.com/rgieseke
+[@rmhsilva]: https://github.com/rmhsilva
