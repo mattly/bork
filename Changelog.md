@@ -21,7 +21,7 @@ Hey folks, sorry it's been a while! I started a new job not long after 0.10.0 wa
 - Don't check a user's shell if not requested. Thanks [@jitakirin][]
 - Fix for removing an item from a bag value. Thanks [@ngkz][]
 - Add version flag to `brew cask` check to bypass warning. Thanks [@rmhsilva][]
-- Readme typo fix. Thanks [@indigo423]
+- Readme typo fix. Thanks [@indigo423][]
 - force legacy listing format for PIP for conformative parsing. Thanks [@frdmn][]
 - fix apt-status for outdated packages. Thanks [@dylanvaugn][]
 - bypass homebrew not to auto-update itself when performing checks. Thanks [@frdmn][]
