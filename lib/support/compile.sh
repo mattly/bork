@@ -57,3 +57,45 @@ compile_file () {
         esac
     done
 }
+
+
+bork_compile () {
+  cat <<DONE
+#!/usr/bin/env bash
+$BORK_SETUP_FUNCTION
+BORK_SCRIPT_DIR=\$PWD
+BORK_WORKING_DIR=\$PWD
+operation="satisfy"
+case "\$1" in
+  status) operation="\$1"
+esac
+is_compiled () { return 0; }
+DONE
+
+  libdirs="helpers declarations"
+  for dir in $libdirs; do
+    for file in $BORK_SOURCE_DIR/lib/$dir/*.sh; do
+      fn="$dir/$file"
+      case $fn in
+        declarations/include.sh ) : ;;
+        *) cat $file | strip_blanks ;;
+      esac
+    done
+  done
+
+  [ -z "$1" ] && return
+  config=$1
+  shift
+  conflicts=$(arguments get conflicts $*)
+  if [ -n "$conflicts" ]; then
+    case $conflicts in
+      y|yes) echo "BORK_CONFLICT_RESOLVE=0" ;;
+      n|no) echo "BORK_CONFLICT_RESOLVE=1" ;;
+      *)
+        echo "Invalid value $conflicts provided for --conflicts argument" 1&>2
+        exit 1 ;;
+    esac
+  fi
+
+  compile_file $config
+}
