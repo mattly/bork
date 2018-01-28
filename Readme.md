@@ -20,7 +20,6 @@ platform differences between BSD and GPL versions of unix utilities.
 1. Symlink the bork binaries into your `$PATH`:
 ```bash
   ln -sf /usr/local/src/bork/bin/bork /usr/local/bin/bork
-  ln -sf /usr/local/src/bork/bin/bork-compile /usr/local/bin/bork-compile
 ```
 
 ## via Homebrew (Mac OS X)

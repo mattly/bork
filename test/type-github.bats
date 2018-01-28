@@ -1,7 +1,6 @@
 #!/usr/bin/env bats
 
 . test/helpers.sh
-. bin/bork-compile > /dev/null
 github () { . $BORK_SOURCE_DIR/types/github.sh $*; }
 
 intercept_git () { echo "$*"; }
