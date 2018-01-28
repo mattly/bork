@@ -173,8 +173,6 @@ setup() {
 @test "pipsi status global runs 'list' with appropriate options" {
   run pipsi status something --global
   run baked_output
-  echo "# output:"
-  echo "${output}" |sed -re 's/^/#   /'
   [[ ${lines[-1]} =~ ^pipsi ]]
   [[ ${lines[-1]} =~ --bin-dir=${pipsi_global_bin_dir} ]]
   [[ ${lines[-1]} =~ --home=${pipsi_global_home} ]]
