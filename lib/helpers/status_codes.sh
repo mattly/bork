@@ -30,8 +30,7 @@ _status_for () {
     $STATUS_FAILED_ARGUMENTS) echo "error (failed arguments)" ;;
     $STATUS_FAILED_ARGUMENT_PRECONDITION) echo "error (failed argument precondition)" ;;
     $STATUS_FAILED_PRECONDITION) echo "error (failed precondition)" ;;
-    $STATUS_UNSUPPORTED_PLATFORM) echo "error (unsupported platform)" ;;
+    $STATUS_UNSUPPORTED_PLATFORM) echo "error (unsupported platform $baking_platform)" ;;
     *)    echo "unknown status: $1" ;;
   esac
 }
-
