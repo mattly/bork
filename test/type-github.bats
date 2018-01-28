@@ -8,7 +8,7 @@ git_call="intercept_git"
 
 @test "github status: handles implicit target" {
   run github status mattly/bork
-  [ "$output" = "status https://github.com/mattly/bork.git" ]
+  [ "$output" = "status  https://github.com/mattly/bork.git" ]
 }
 
 @test "github status: handles explicit target" {
@@ -18,7 +18,7 @@ git_call="intercept_git"
 
 @test "github status: handles --ssh argument" {
   run github status mattly/bork --ssh
-  [ "$output" = "status git@github.com:mattly/bork.git" ]
+  [ "$output" = "status  git@github.com:mattly/bork.git" ]
 }
 
 @test "github compile: outputs git type via include_assertion" {
