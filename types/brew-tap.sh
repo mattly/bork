@@ -1,5 +1,5 @@
 action=$1
-name=$2
+name="$(echo $2 | awk '{print tolower($0)}')"
 shift 2
 pin=$(arguments get pin $*)
 

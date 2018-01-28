@@ -1,2 +1,3 @@
 homebrew/games
 railwaycat/emacsmacport
+caskroom/cask
