@@ -123,8 +123,8 @@ and some basic information about their usage and options.
 
 ### Mac OS X specific
 ```
-       brew-tap: asserts a Homebrew formula repository has been tapped
            brew: asserts presence of packages installed via Homebrew on Mac OS X
+       brew-tap: asserts a Homebrew formula repository has been tapped; does NOT assert updatedness of a tap's formula. Use `ok brew` for that.
            cask: asserts presence of apps installed via caskroom.io on Mac OS X
        defaults: asserts settings for OS X's 'defaults' system
             mas: asserts a Mac app is installed and up-to-date from the App Store

@@ -6,6 +6,7 @@ pin=$(arguments get pin $*)
 case $action in
     desc)
         echo "asserts a homebrew forumla repository has been tapped"
+        echo "does NOT assert the updated-ness of a tap's formula - use `ok brew`"
         echo "> brew-tap homebrew/games    (taps homebrew/games)"
         echo "--pin                        (pins the formula repository)"
     ;;
