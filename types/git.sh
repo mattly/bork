@@ -11,7 +11,7 @@ git_url=$2
 shift 2
 next=$1
 if [ -n "$next" ] && [ ${next:0:1} != '-' ]; then
-  target_dir=$git_url
+  target_dir="$git_url"
   git_url=$1
   shift
 else
@@ -20,8 +20,6 @@ else
 fi
 
 branch=$(arguments get branch $*)
-
-
 if [[ ! -z $branch ]]; then
   git_branch=$branch
 else
@@ -39,13 +37,13 @@ case $action in
     needs_exec "git" || return $STATUS_FAILED_PRECONDITION
 
     # if the directory is missing, it's missing
-    bake [ ! -d $target_dir ] && return $STATUS_MISSING
+    bake [ ! -d "$target_dir" ] && return $STATUS_MISSING
 
     # if the directory is present but empty, it's missing
-    target_dir_contents=$(str_item_count "$(bake ls -A $target_dir)")
+    target_dir_contents=$(str_item_count $(bake ls -A "$target_dir"))
     [ "$target_dir_contents" -eq 0 ] && return $STATUS_MISSING
 
-    bake cd $target_dir
+    bake cd "$target_dir"
     # fetch from the remote without fast-forwarding
     # this *does* change the local repository's pointers and takes longer
     # up front, but I believe in the grand scheme is the right thing to do.
@@ -63,6 +61,7 @@ case $action in
     fi
 
     git_stat=$(bake git status -uno -b --porcelain)
+    echo "$git_stat"
     git_first_line=$(echo "$git_stat" | head -n 1)
 
     git_divergence=$(str_get_field "$git_first_line" 3)
@@ -77,9 +76,11 @@ case $action in
       return $STATUS_CONFLICT_UPGRADE
     fi
 
-    str_matches "$(str_get_field "$git_first_line" 2)" "$git_branch"
+    echo "porcelain: ${git_first_line}"
+    current_git_branch=$(str_get_field "$git_first_line" 2)
+    str_matches "$current_git_branch" "$git_branch"
     if [ "$?" -ne 0 ]; then
-      echo "local git repository is on incorrect branch"
+      echo "local git repository is on incorrect branch: $current_git_branch"
       return $STATUS_MISMATCH_UPGRADE
     fi
 
@@ -90,12 +91,12 @@ case $action in
     return $STATUS_OK ;;
 
   install)
-    bake mkdir -p $target_dir
-    bake git clone -b $git_branch $git_url $target_dir
+    bake mkdir -p "$target_dir"
+    bake git clone -b "$git_branch" "$git_url" "$target_dir"
     ;;
 
   upgrade)
-    bake cd $target_dir
+    bake cd "$target_dir"
     bake git reset --hard
     bake git pull
     bake git checkout $git_branch
@@ -105,4 +106,3 @@ case $action in
 
   *) return 1 ;;
 esac
-

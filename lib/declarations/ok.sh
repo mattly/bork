@@ -61,11 +61,16 @@ ok () {
     echo "not found: $assertion" 1>&2
     return 1
   fi
-  argstr=$*
-  quoted_argstr=
-  while [ -n "$1" ]; do
-    quoted_argstr=$(echo "$quoted_argstr \"$1\"")
-    shift
+  argstr=$@
+  quoted_argstr=''
+  for i in "$@"; do
+      case "$i" in
+          *\'*)
+              i=`printf "%s" "$i" | sed "s/'/'\"'\"'/g"`
+              ;;
+          *) : ;;
+      esac
+      quoted_argstr="$quoted_argstr '$i'"
   done
   case $operation in
     echo) echo "$fn $argstr" ;;
@@ -129,5 +134,3 @@ ok () {
       ;;
   esac
 }
-
-
