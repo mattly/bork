@@ -30,14 +30,14 @@ case $action in
       repo=$1
       shift
     fi
-    args="$*"
+    args="$@"
     if [ -n  "$(arguments get ssh $*)" ]; then
       url="git@github.com:$(echo $repo).git"
       args=$(echo "$args" | sed -E 's|--ssh||')
     else
       url="https://github.com/$(echo $repo).git"
     fi
-    eval "$git_call $action $target_dir $url $args"
+    eval "$git_call $action '$target_dir' '$url' $args"
     ;;
 
   *) return 1 ;;
