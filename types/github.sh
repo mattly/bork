@@ -2,7 +2,7 @@
 
 if [ -z "$git_call" ]; then
   git_call=". $BORK_SOURCE_DIR/types/git.sh"
-  is_compiled && git_call="git"
+  is_compiled && git_call="type_git"
 fi
 
 action=$1
