@@ -29,6 +29,11 @@ setup () {
     [ "$status" -eq $STATUS_OK ]
 }
 
+@test "brew-tap status reports ok when provided tap name has capitals" {
+    run brew-tap status Caskroom/cask
+    [ "$status" -eq $STATUS_OK ]
+}
+
 @test "brew-tap status reports ok when installed has correct yes-pin status" {
     run brew-tap status homebrew/games --pin
     [ "$status" -eq $STATUS_OK ]
