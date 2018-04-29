@@ -71,9 +71,9 @@ ok brew git                                   # presence and updatedness of Home
 ok directory $HOME/code                       # presence of the ~/code directory
 ok github $HOME/code/dotfiles mattly/dotfiles # presence, drift of git repository in ~/code/dotfiles
 cd $HOME
-for file in $HOME/code/dotfiles/configs/*
+for file in $HOME/code/dotfiles/configs/.[!.]*
 do                                            # for each file in ~/code/dotfiles/configs,
-  ok symlink ".$(basename $file)" $file       # presense of a symlink to file in ~ with a leading dot
+  ok symlink "$(basename $file)" $file       # presense of a symlink to file in ~ with a leading dot
 done
 ```
 
