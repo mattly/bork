@@ -275,7 +275,7 @@ ok brew fish
 if did_install; then
   sudo echo "/usr/local/bin/fish" >> /etc/shells
   chsh -s /usr/local/bin/fish
-end
+fi
 ```
 There are four functions to help you take further actions on change:
 
