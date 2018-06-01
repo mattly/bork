@@ -33,7 +33,7 @@ case $action in
     echo "asserts presence and state of a git repository"
     echo "> git git@github.com:mattly/bork"
     echo "> git ~/code/bork git@github.com:mattly/bork"
-    echo "--ref=gh-pages                (specify branch, tag, or ref)"
+    echo "--branch=gh-pages             (specify branch, tag, or ref)"
     ;;
   status)
     needs_exec "git" || return $STATUS_FAILED_PRECONDITION
