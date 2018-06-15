@@ -3,7 +3,7 @@
 here=$PWD
 debug_mode="$DEBUG"
 p () {
-  [ -n "$debug_mode" ] && echo "$*" >> "$here/debug"
+  [ -n "$debug_mode" ] && echo "$@" >> "$here/debug"
   return 0
 }
 
@@ -11,14 +11,14 @@ md5c=$(md5cmd $platform)
 baking_responder=
 baking_file=$(mktemp -t bork_test.XXXXXX)
 bake () {
-  echo "$*" >> $baking_file;
-  key=$(echo "$*" | eval $md5c)
+  echo "$@" >> $baking_file;
+  key=$(echo "$@" | eval $md5c)
   handler=$(bag get responders $key)
-  p "looking up $* at $key, found $handler"
+  p "looking up $@ at $key, found $handler"
   if [ -n "$handler" ]; then
     eval $handler
   else
-    baking_responder $*
+    baking_responder "$@"
   fi
   return
 }
