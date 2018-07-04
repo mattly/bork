@@ -1,4 +1,6 @@
-# Bork [![](https://travis-ci.org/mattly/bork.svg)](https://travis-ci.org/mattly/bork)
+# Bork - [seeking new maintainer](https://github.com/mattly/bork/issues/138)
+
+[![](https://travis-ci.org/mattly/bork.svg)](https://travis-ci.org/mattly/bork)
 
 Bork puts the 'sh' back into IT. [Bork Bork Bork](https://www.youtube.com/results?search_query=swedish+chef).
 
