@@ -1,4 +1,6 @@
-# Bork - [seeking new maintainer](https://github.com/mattly/bork/issues/138)
+# Bork - (no longer under development)
+
+Bork is no longer under active development. If you fork it and your fork gets some steam going, please let me know, I will be happy to point people at your fork.
 
 [![](https://travis-ci.org/mattly/bork.svg)](https://travis-ci.org/mattly/bork)
 
